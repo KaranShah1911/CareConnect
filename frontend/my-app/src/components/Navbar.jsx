@@ -15,8 +15,8 @@ export default function Navbar() {
         {/* Navigation Links */}
         <nav className="hidden md:flex gap-8 text-gray-600 text-lg font-medium">
           <a href="#home" className="relative nav-items ">Home</a>
+          <a href="#all-doctors" className="relative nav-items transition">All Doctors</a>
           <a href="#about" className="relative nav-items ">About</a>
-          <a href="#services" className="relative nav-items transition">Services</a>
           <a href="#contact" className="relative nav-items transition">Contact</a>
         </nav>
 

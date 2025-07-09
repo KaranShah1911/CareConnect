@@ -71,7 +71,7 @@ const HomePage = () => {
                 <div className="w-full md:w-1/2">
                     <MediaSlider />
                     {/* Replace with your slider component or images */}
-                    {/* <img src="https://randomuser.me/api/portraits/men/46.jpg" alt="Doctor Preview" className="rounded-xl shadow-lg" /> */}
+                    {/* <img src="https://randomuser.me/api/portraits/men/46.jpg" alt="Doctor Preview" className="rounded-xl shadow-lg" /> */}  
                 </div>
 
                 {/* Right: Text Content */}
@@ -163,35 +163,36 @@ const HomePage = () => {
 
             {/* Testimonials section */}
             <section className="py-20 px-6 bg-white text-center" id="testimonials">
-      <h2 className="text-3xl sm:text-4xl font-bold text-[#5C67F2] mb-4">
-        What Our Users Say
-      </h2>
-      <p className="text-gray-600 max-w-2xl mx-auto mb-12">
-        Real stories from real users who found the care they needed through CareConnect.
-      </p>
+              <h2 className="text-3xl sm:text-4xl font-bold text-[#5C67F2] mb-4">
+                What Our Users Say
+              </h2>
+              <p className="text-gray-600 max-w-2xl mx-auto mb-12">
+                Real stories from real users who found the care they needed through CareConnect.
+              </p>
 
-      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
-        {testimonials.map((user, idx) => (
-          <div
-            key={idx}
-            className="bg-gray-50 p-6 rounded-xl shadow-md hover:shadow-lg transition"
-          >
-            <div className="flex flex-col items-center text-center">
-              <img
-                src={user.image}
-                alt={user.name}
-                className="w-16 h-16 rounded-full object-cover mb-4"
-              />
-              <h3 className="font-semibold text-lg text-gray-800">
-                {user.name}
-              </h3>
-              <p className="text-sm text-gray-500 mb-3">{user.role}</p>
-              <p className="text-gray-600 italic">"{user.feedback}"</p>
+              <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
+              {testimonials.map((user, idx) => (
+                <div
+                  key={idx}
+                  className="bg-gray-50 p-6 rounded-xl shadow-md hover:shadow-lg transition"
+                >
+                  <div className="flex flex-col items-center text-center">
+                    <img
+                      src={user.image}
+                      alt={user.name}
+                      className="w-16 h-16 rounded-full object-cover mb-4"
+                    />
+                    <h3 className="font-semibold text-lg text-gray-800">
+                      {user.name}
+                    </h3>
+                    <p className="text-sm text-gray-500 mb-3">{user.role}</p>
+                    <p className="text-gray-600 italic">"{user.feedback}"</p>
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
-        ))}
-      </div>
-    </section>
+            </section>
+
         </div>
     );
 };
