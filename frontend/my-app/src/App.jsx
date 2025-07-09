@@ -1,12 +1,14 @@
 import React from "react"
+import HomePage from "./pages/Home"
+import Navbar from "./components/Navbar"
+import Footer from "./components/Footer"
 
 function App() {
   return (
     <>
-    <div className="bg-gradient-to-br from-blue-600 from-30% via-blue-400 via-60% to-white w-screen h-screen">
-
-      <h1 className="text-white text-4xl font-bold">Home Page</h1>
-    </div>
+    <Navbar/>
+    <HomePage/>
+    <Footer/>
     </>
   )
 }
