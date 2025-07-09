@@ -16,7 +16,13 @@ app.use(cookieParser());
 
 // routes :
 import adminRoutes from "./routes/admin.routes.js";
+import doctorRouter from "./routes/doctor.routes.js";
+import userRouter from "./routes/user.route.js";
 app.use("/api/admin", adminRoutes);
+
+app.use('/api/doctor', doctorRouter)
+
+app.use('/api/user', userRouter)
 
 app.get("/", (req, res) => {
   res.send("Hello from backend");
