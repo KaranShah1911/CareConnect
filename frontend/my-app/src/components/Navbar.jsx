@@ -1,5 +1,5 @@
-// Navbar.jsx
 import React from 'react';
+import { Link } from 'react-router-dom';
 import "../styles/Navbar.css"
 
 export default function Navbar() {
@@ -14,10 +14,10 @@ export default function Navbar() {
 
         {/* Navigation Links */}
         <nav className="hidden md:flex gap-8 text-gray-600 text-lg font-medium">
-          <a href="#home" className="relative nav-items ">Home</a>
-          <a href="#all-doctors" className="relative nav-items transition">All Doctors</a>
-          <a href="#about" className="relative nav-items ">About</a>
-          <a href="#contact" className="relative nav-items transition">Contact</a>
+          <Link to="/" className="relative nav-items ">Home</Link>
+          <Link to="all-doctors" className="relative nav-items transition">All Doctors</Link>
+          <Link to="/about" className="relative nav-items ">About</Link>
+          <Link to="/contact" className="relative nav-items transition">Contact</Link>
         </nav>
 
         {/* Auth Buttons */}

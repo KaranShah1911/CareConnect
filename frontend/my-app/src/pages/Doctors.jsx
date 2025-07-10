@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 // dummy doctors data
 const doctors = [
@@ -94,6 +95,7 @@ const doctors = [
 
 // dummy category data
 const doctorCategories = [
+  "All",
   "Cardiologist",
   "Dermatologist",
   "Neurologist",
@@ -106,87 +108,56 @@ const doctorCategories = [
 const Doctors = () => {
   // using this speciality variable we will filter doctors - react router work
   // const {speciality} = useParams();  
-  const [speciality,setSpeciality] = useState(null); // this is for temporary ,we will be using query params here 
-  const [filterDoctors, setFilterDoctors] = useState([]);
+  const [speciality, setSpeciality] = useState(null); // this is for temporary ,we will be using query params here 
+  const [filterDoctors, setFilterDoctors] = useState(doctors);
+  const [seeMore, toggleseeMore] = useState(false)
 
-  const applyFilter = () => {
-    if(speciality) {
-      setFilterDoctors(doctors.filter(doctor => doctor.specialty===speciality));
-    }
-    else {
+  const applyFilter = (category) => {
+    if(category === "All"){
       setFilterDoctors(doctors);
+      return;
     }
+    setFilterDoctors(doctors.filter((doctor) => doctor.specialty==category));
   }
 
-  useEffect(() => {
-      console.log(speciality)
-      applyFilter();
-  }, [speciality])
-
-
   return (
-    <div className="bg-white m-auto md:w-[78vw]">
-      {/* <div>Doctors</div> */}
+    <section className="bg-white m-auto md:w-[78vw] flex gap-x-5 pt-24 pb-10">
+      {/* Filter */}
+      <section className="sticky top-15 max-h-max p-5 transition-all bg-[#1E1E2F] rounded-xl">
+        <span className="text-white">Browse through the doctors specialist.</span>
 
-      <p className="pt-28">Browse through the doctors specialist.</p>
-
-      {/* filter + doctors info */}
-      <section className="flex gap-x-5 mt-5 mb-10">
-        
-        {/* filer */}
-        <div>
+        <div className={`text-[#1E1E2F] ${seeMore ? "max-h-[80vh] overflow-y-scroll" : "max-h-[30vh] overflow-hidden"}`}>
           {doctorCategories.map((category, index) => (
             <button
               key={index}
-              onClick={() => {
-                speciality != category ? setSpeciality(category) : setSpeciality(null)
-              }}
+              onClick={() => applyFilter(category)}
               className={`block h-[40px] w-[95vw] sm:w-[230px] border pl-5 mb-3 rounded-md hover:bg-[#F2F5FF] text-start ${speciality === category ? 'bg-[#F2F5FF]' : 'bg-white'}`}
             >
               {category}
             </button>
           ))}
         </div>
+        <button onClick={() => toggleseeMore(prev => !prev)} className="cursor-pointer text-white pt-2">{seeMore ? "See Less" : "See More"}</button>
+      </section>
 
-        {/* doctors */}
-        <div className="w-full grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-5 cursor-pointer h-fit">
-          {/* dummy card */}
-          {/* <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 text-white">
-                <a href="#">
-                <img class="rounded-t-lg" src="/logo.png" alt="" />
-                </a>
-                <div class="p-5">
-                <p>{true ? "available" : "not available"}</p>
-
-                <a href="#">
-                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                    Name
-                    </h5>
-                </a>
-                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                    category of work
-                </p>
-                </div>
-            </div> */}
-
-          {filterDoctors ? (
-            filterDoctors.map((doctor, index) => (
+      <div className="flex flex-wrap gap-5 justify-center px-5 ">
+        {filterDoctors ? (
+          filterDoctors.map((doctor, index) => (
+            <Link>
               <div
                 key={index}
-                className="max-w-sm bg-white border border-gray-primary rounded-lg shadow-sm text-black hover:translate-y-[-7px] transition-all duration-300"
+                className="max-w-sm bg-white border border-gray-primary rounded-lg shadow-sm text-black hover:-translate-y-[7px] transition-all duration-300"
               >
-                <a href="#">
-                  <img
-                    className="rounded-t-lg w-full h-[260px] object-cover border-b-1"
-                    src={doctor.image}
-                    alt={doctor.name}
-                  />
-                </a>
+                <img
+                  className="rounded-t-lg w-full h-[260px] object-cover border-b-1"
+                  src={doctor.image}
+                  alt={doctor.name}
+                />
                 <div className="p-5 pl-4 pb-1">
                   <p
                     className={`
-                      ${doctor.availability ? "text-green-400" : "text-red-400"}
-                      text-sm
+                    ${doctor.availability ? "text-green-400" : "text-red-400"}
+                    text-sm
                     `}
                   >
                     {doctor.availability ? "Available" : "Not Available"}
@@ -202,14 +173,15 @@ const Doctors = () => {
                   </p>
                 </div>
               </div>
-            ))
-          ) 
+            </Link>
+          ))
+        )
           : (
-            <p>No Doctors</p>
+            <p className="text-white">No Doctors</p>
           )}
-        </div>
-      </section>
-    </div>
+      </div>
+      {/* </section> */}
+    </section>
   );
 };
 
