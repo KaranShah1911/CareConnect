@@ -5,3 +5,8 @@
 *{
     font-family: Outfit;    
 }
+
+/* hides scroll bar */
+::-webkit-scrollbar {
+    display: none;
+}

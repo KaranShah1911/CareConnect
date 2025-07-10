@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 // dummy doctors data
 const doctors = [
@@ -28,7 +28,7 @@ const doctors = [
   },
   {
     name: "Dr. Arjun Singh",
-    specialty: "Pediatrician",
+    specialty: "Neurologist",
     rating: 4.9,
     reviews: 110,
     image: "https://randomuser.me/api/portraits/men/40.jpg",
@@ -36,7 +36,7 @@ const doctors = [
   },
   {
     name: "Dr. Kavita Joshi",
-    specialty: "Psychiatrist",
+    specialty: "Cardiologist",
     rating: 4.6,
     reviews: 95,
     image: "https://randomuser.me/api/portraits/women/50.jpg",
@@ -52,19 +52,11 @@ const doctors = [
   },
   {
     name: "Dr. Priya Reddy",
-    specialty: "Orthopedic",
+    specialty: "Cardiologist",
     rating: 4.7,
     reviews: 87,
     image: "https://randomuser.me/api/portraits/women/52.jpg",
     availability: false,
-  },
-  {
-    name: "Dr. Vikram Desai",
-    specialty: "ENT Specialist",
-    rating: 4.5,
-    reviews: 78,
-    image: "https://randomuser.me/api/portraits/men/54.jpg",
-    availability: true,
   },
   {
     name: "Dr. Sneha Kulkarni",
@@ -76,18 +68,10 @@ const doctors = [
   },
   {
     name: "Dr. Rohan Mehta",
-    specialty: "Ophthalmologist",
+    specialty: "Cardiologist",
     rating: 4.8,
     reviews: 102,
     image: "https://randomuser.me/api/portraits/men/56.jpg",
-    availability: true,
-  },
-  {
-    name: "Dr. Ananya Pillai",
-    specialty: "Urologist",
-    rating: 4.7,
-    reviews: 88,
-    image: "https://randomuser.me/api/portraits/women/56.jpg",
     availability: true,
   },
   {
@@ -99,62 +83,6 @@ const doctors = [
     availability: false,
   },
   {
-    name: "Dr. Swati Deshmukh",
-    specialty: "Gastroenterologist",
-    rating: 4.6,
-    reviews: 84,
-    image: "https://randomuser.me/api/portraits/women/60.jpg",
-    availability: true,
-  },
-  {
-    name: "Dr. Aman Kapoor",
-    specialty: "Pulmonologist",
-    rating: 4.7,
-    reviews: 92,
-    image: "https://randomuser.me/api/portraits/men/60.jpg",
-    availability: false,
-  },
-  {
-    name: "Dr. Tanya Gupta",
-    specialty: "Nephrologist",
-    rating: 4.5,
-    reviews: 75,
-    image: "https://randomuser.me/api/portraits/women/62.jpg",
-    availability: true,
-  },
-  {
-    name: "Dr. Deepak Chawla",
-    specialty: "Endocrinologist",
-    rating: 4.8,
-    reviews: 100,
-    image: "https://randomuser.me/api/portraits/men/62.jpg",
-    availability: true,
-  },
-  {
-    name: "Dr. Richa Bhatt",
-    specialty: "Rheumatologist",
-    rating: 4.4,
-    reviews: 70,
-    image: "https://randomuser.me/api/portraits/women/64.jpg",
-    availability: false,
-  },
-  {
-    name: "Dr. Abhay Singh",
-    specialty: "Physiotherapist",
-    rating: 4.6,
-    reviews: 80,
-    image: "https://randomuser.me/api/portraits/men/64.jpg",
-    availability: true,
-  },
-  {
-    name: "Dr. Snehal Pawar",
-    specialty: "Homeopathic Doctor",
-    rating: 4.5,
-    reviews: 76,
-    image: "https://randomuser.me/api/portraits/women/66.jpg",
-    availability: false,
-  },
-  {
     name: "Dr. Rohit Shetty",
     specialty: "Dentist",
     rating: 4.9,
@@ -163,30 +91,39 @@ const doctors = [
     availability: true,
   },
 ];
+
 // dummy category data
 const doctorCategories = [
   "Cardiologist",
   "Dermatologist",
-  "Dentist",
   "Neurologist",
-  "Pediatrician",
-  "Psychiatrist",
   "Gynecologist",
-  "Orthopedic",
-  "ENT Specialist",
   "General Physician",
-  "Ophthalmologist",
-  "Urologist",
+  "Dentist",
   "Oncologist",
-  "Gastroenterologist",
-  "Pulmonologist",
-  "Nephrologist",
-  "Endocrinologist",
-  "Rheumatologist",
-  "Physiotherapist",
-  "Homeopathic Doctor",
 ];
+
 const Doctors = () => {
+  // using this speciality variable we will filter doctors - react router work
+  // const {speciality} = useParams();  
+  const [speciality,setSpeciality] = useState(null); // this is for temporary ,we will be using query params here 
+  const [filterDoctors, setFilterDoctors] = useState([]);
+
+  const applyFilter = () => {
+    if(speciality) {
+      setFilterDoctors(doctors.filter(doctor => doctor.specialty===speciality));
+    }
+    else {
+      setFilterDoctors(doctors);
+    }
+  }
+
+  useEffect(() => {
+      console.log(speciality)
+      applyFilter();
+  }, [speciality])
+
+
   return (
     <div className="bg-white m-auto md:w-[78vw]">
       {/* <div>Doctors</div> */}
@@ -201,7 +138,10 @@ const Doctors = () => {
           {doctorCategories.map((category, index) => (
             <button
               key={index}
-              className="block h-[40px] w-[230px] border pl-5 mb-3 rounded-md hover:bg-[#F2F5FF] text-start"
+              onClick={() => {
+                speciality != category ? setSpeciality(category) : setSpeciality(null)
+              }}
+              className={`block h-[40px] w-[95vw] sm:w-[230px] border pl-5 mb-3 rounded-md hover:bg-[#F2F5FF] text-start ${speciality === category ? 'bg-[#F2F5FF]' : 'bg-white'}`}
             >
               {category}
             </button>
@@ -209,7 +149,7 @@ const Doctors = () => {
         </div>
 
         {/* doctors */}
-        <div className="w-full grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-5 cursor-pointer">
+        <div className="w-full grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-5 cursor-pointer h-fit">
           {/* dummy card */}
           {/* <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 text-white">
                 <a href="#">
@@ -229,34 +169,35 @@ const Doctors = () => {
                 </div>
             </div> */}
 
-          {doctors ? (
-            doctors.map((doctor, index) => (
+          {filterDoctors ? (
+            filterDoctors.map((doctor, index) => (
               <div
                 key={index}
-                className="max-w-sm bg-white border border-gray-primary rounded-lg shadow-sm text-black hover:translate-y-[-7px] transition-all duration-500"
+                className="max-w-sm bg-white border border-gray-primary rounded-lg shadow-sm text-black hover:translate-y-[-7px] transition-all duration-300"
               >
                 <a href="#">
                   <img
-                    className="rounded-t-lg w-full h-[260px] object-cover"
+                    className="rounded-t-lg w-full h-[260px] object-cover border-b-1"
                     src={doctor.image}
                     alt={doctor.name}
                   />
                 </a>
-                <div className="p-5">
+                <div className="p-5 pl-4 pb-1">
                   <p
-                    className={
-                      doctor.availability ? "text-green-400" : "text-red-400"
-                    }
+                    className={`
+                      ${doctor.availability ? "text-green-400" : "text-red-400"}
+                      text-sm
+                    `}
                   >
                     {doctor.availability ? "Available" : "Not Available"}
                   </p>
 
                   <a href="#">
-                    <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 ">
+                    <h5 className="mt-1 text-xl font-medium tracking-tight text-gray-900 ">
                       {doctor.name}
                     </h5>
                   </a>
-                  <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
+                  <p className="mb-1 font-normal text-gray-700 dark:text-gray-400">
                     {doctor.specialty}
                   </p>
                 </div>
