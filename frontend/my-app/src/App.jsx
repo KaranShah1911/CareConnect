@@ -12,9 +12,8 @@ function App() {
     <>
     <Navbar/>
 
-    {/* <HomePage/> commenting temporary  */}
+    <HomePage/>
 
-    <Doctors/>
     <Footer/>
 
     </>
