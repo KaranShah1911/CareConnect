@@ -4,8 +4,13 @@ import {
   loginUser,
   getProfile,
   updateProfile,
+  bookAppointment,
+  listAppointments,
 } from "../controllers/user.controller.js";
-import { verifyJWT } from "../middlewares/auth.middleware.js";
+import {
+  verifyJWT,
+  checkForAuthorization,
+} from "../middlewares/auth.middleware.js";
 import { upload } from "../middlewares/multer.js";
 
 const userRouter = express.Router();
@@ -21,5 +26,14 @@ userRouter.post(
   verifyJWT,
   updateProfile
 );
+
+userRouter.post(
+  "/book-appointment",
+  checkForAuthorization(["USER"]),
+  verifyJWT,
+  bookAppointment
+);
+
+userRouter.get("/list-appointments", verifyJWT, listAppointments);
 
 export default userRouter;
