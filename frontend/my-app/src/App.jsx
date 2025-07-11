@@ -8,18 +8,24 @@ import Doctors from "./pages/Doctors"
 import Contact from "./pages/Contact"
 import About from "./pages/About"
 import AppointmentPage from "./pages/AppointmentPage"
+import Login from "./pages/Login"
+import Signup from "./pages/Signup"
+import AuthSwitch from "./pages/AuthSwitch"
 
 
 function App() {
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
+      <AuthSwitch/>
       <Routes>
         <Route path="/" element={<HomePage />}></Route>
         <Route path="/all-doctors" element={<Doctors />}></Route>
         <Route path="/contact" element={<Contact />}></Route>
         <Route path="/about" element={<About />}></Route>
         <Route path="/appointment" element={<AppointmentPage/>}></Route>
+        <Route path="/login" element={<Login/>}></Route>
+        <Route path="/signup" element={<Signup/>}></Route>
       </Routes>
       <Footer />
 
