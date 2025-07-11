@@ -289,22 +289,36 @@ const Doctors = () => {
     <section className="bg-white flex flex-col items-center pb-5">
       {/* Filter */}
       <div className="m-auto md:w-[78vw] flex gap-x-5 pt-24 pb-10">
-        <section className="sticky top-24 max-h-max p-5 transition-all bg-[#1E1E2F] rounded-xl">
-          <span className="text-white">Browse through the doctors specialist.</span>
+        <section className="sticky top-24 max-h-max p-5 transition-all bg-white rounded-xl shadow-sm border border-gray-200">
+  <span className="text-gray-800 font-medium text-sm">
+    Browse through the doctor's specialty:
+  </span>
 
-          <div className={`text-[#1E1E2F] ${seeMore ? "max-h-[80vh] overflow-y-scroll" : "max-h-[30vh] overflow-hidden"}`}>
-            {doctorCategories.map((category, index) => (
-              <button
-                key={index}
-                onClick={() => applyFilter(category)}
-                className={`block h-[40px] w-[95vw] sm:w-[230px] border pl-5 mb-3 rounded-md hover:bg-[#F2F5FF] text-start ${specialty === category ? "text-[#1E1E2F]" : "text-white"} hover:text-[#1E1E2F] ${specialty === category ? "bg-white " : ""}`}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-          <button onClick={() => toggleseeMore(prev => !prev)} className="cursor-pointer text-white pt-2">{seeMore ? "See Less" : "See More"}</button>
-        </section>
+  <div className={`mt-4 ${seeMore ? "max-h-[80vh] overflow-y-scroll" : "max-h-[30vh] overflow-hidden"}`}>
+    {doctorCategories.map((category, index) => (
+      <button
+        key={index}
+        onClick={() => applyFilter(category)}
+        className={`block h-[40px] w-[95vw] sm:w-[230px] border pl-4 pr-2 mb-3 rounded-md text-start text-sm transition-all
+          ${
+            specialty === category
+              ? "bg-blue-100 border-blue-500 text-blue-700 font-medium"
+              : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+          }`}
+      >
+        {category}
+      </button>
+    ))}
+  </div>
+
+  <button
+    onClick={() => toggleseeMore((prev) => !prev)}
+    className="text-sm text-blue-600 mt-2 hover:underline"
+  >
+    {seeMore ? "See Less" : "See More"}
+  </button>
+</section>
+
 
         <div className="flex flex-wrap gap-5 justify-center px-5 ">
           {filterDoctors ? (

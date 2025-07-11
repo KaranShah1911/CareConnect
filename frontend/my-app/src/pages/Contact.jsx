@@ -12,8 +12,8 @@ const Contact = () => {
           <div className='mb-10'>
             <p className='text-3xl font-medium mb-5'>OUR OFFICE</p>
             <div>
-              <p>🏢 Office No. 4, Ram Sadan CHS</p>
-              <p>📍 Matunga Station - 400 019</p>  
+              <p>🏢  123 Health Street</p>
+              <p>📍 Mumbai, India- 400 019</p>  
             </div>
           </div>
 
@@ -21,8 +21,8 @@ const Contact = () => {
             <p className='text-3xl font-medium mb-5'>Contact Information </p>
             <div>
             </div>
-              <p>📞 Phone: +91 741 092 3421</p>
-              <p>✉️ Email: CareConnect@gmail.com</p> 
+              <p>📞 Phone: <a href="tel:+919876543210" className="hover:text-gray-500">+91 98765 43210</a></p>
+              <p>✉️ Email: <a href="mailto:support@careconnect.com" className="hover:text-gray-500">support@careconnect.com</a></p> 
           </div>
         </div>
       </div>

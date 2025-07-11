@@ -8,7 +8,7 @@ export default function Navbar() {
     <header className="fixed top-0 left-[50%] -translate-x-[50%] rounded-full w-[80%] bg-white shadow-md z-50">
       <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
         {/* Logo and Brand */}
-        <div className="flex items-center gap-2">
+        <div onClick={() => navigate('/')} className="flex items-center gap-2">
           <img src="/logo.png" alt="CareConnect Logo" className="h-15 w-15 rounded-full" />
           <span className="text-xl font-bold text-[#5C67F2]">CareConnect</span>
         </div>

@@ -11,6 +11,7 @@ import AppointmentPage from "./pages/AppointmentPage"
 import Login from "./pages/Login"
 import Signup from "./pages/Signup"
 import AuthSwitch from "./pages/AuthSwitch"
+import MyAppointments from "./components/MyAppointment"
 
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
         <Route path="/appointment" element={<AppointmentPage/>}></Route>
         <Route path="/login" element={<Login/>}></Route>
         <Route path="/signup" element={<Signup/>}></Route>
+        <Route path="/my-appointment" element={<MyAppointments/>}></Route>
       </Routes>
       <Footer />
 
