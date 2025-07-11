@@ -1,5 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { FaArrowRight } from "react-icons/fa";
+import { FaArrowLeft } from "react-icons/fa6";
+
+<FaArrowRight />
+
 
 // dummy doctors data
 const doctors = [
@@ -91,6 +96,150 @@ const doctors = [
     image: "https://randomuser.me/api/portraits/men/66.jpg",
     availability: true,
   },
+  {
+    name: "Dr. Rohit Shetty",
+    specialty: "Dentist",
+    rating: 4.9,
+    reviews: 120,
+    image: "https://randomuser.me/api/portraits/men/66.jpg",
+    availability: true,
+  },
+  {
+    name: "Dr. Rohit Shetty",
+    specialty: "Dentist",
+    rating: 4.9,
+    reviews: 120,
+    image: "https://randomuser.me/api/portraits/men/66.jpg",
+    availability: true,
+  },
+  {
+    name: "Dr. Rohit Shetty",
+    specialty: "Dentist",
+    rating: 4.9,
+    reviews: 120,
+    image: "https://randomuser.me/api/portraits/men/66.jpg",
+    availability: true,
+  },
+  {
+    name: "Dr. Rohit Shetty",
+    specialty: "Dentist",
+    rating: 4.9,
+    reviews: 120,
+    image: "https://randomuser.me/api/portraits/men/66.jpg",
+    availability: true,
+  },
+  {
+    name: "Dr. Rohit Shetty",
+    specialty: "Dentist",
+    rating: 4.9,
+    reviews: 120,
+    image: "https://randomuser.me/api/portraits/men/66.jpg",
+    availability: true,
+  },
+  {
+    name: "Dr. Rohit Shetty",
+    specialty: "Dentist",
+    rating: 4.9,
+    reviews: 120,
+    image: "https://randomuser.me/api/portraits/men/66.jpg",
+    availability: true,
+  },
+  {
+    name: "Dr. Rohit Shetty",
+    specialty: "Dentist",
+    rating: 4.9,
+    reviews: 120,
+    image: "https://randomuser.me/api/portraits/men/66.jpg",
+    availability: true,
+  },
+  {
+    name: "Dr. Rohit Shetty",
+    specialty: "Dentist",
+    rating: 4.9,
+    reviews: 120,
+    image: "https://randomuser.me/api/portraits/men/66.jpg",
+    availability: true,
+  },
+  {
+    name: "Dr. Rohit Shetty",
+    specialty: "Dentist",
+    rating: 4.9,
+    reviews: 120,
+    image: "https://randomuser.me/api/portraits/men/66.jpg",
+    availability: true,
+  },
+  {
+    name: "Dr. Rohit Shetty",
+    specialty: "Dentist",
+    rating: 4.9,
+    reviews: 120,
+    image: "https://randomuser.me/api/portraits/men/66.jpg",
+    availability: true,
+  },
+  {
+    name: "Dr. Rohit Shetty",
+    specialty: "Dentist",
+    rating: 4.9,
+    reviews: 120,
+    image: "https://randomuser.me/api/portraits/men/66.jpg",
+    availability: true,
+  },
+  {
+    name: "Dr. Rohit Shetty",
+    specialty: "Dentist",
+    rating: 4.9,
+    reviews: 120,
+    image: "https://randomuser.me/api/portraits/men/66.jpg",
+    availability: true,
+  },
+  {
+    name: "Dr. Rohit Shetty",
+    specialty: "Dentist",
+    rating: 4.9,
+    reviews: 120,
+    image: "https://randomuser.me/api/portraits/men/66.jpg",
+    availability: true,
+  },
+  {
+    name: "Dr. Rohit Shetty",
+    specialty: "Dentist",
+    rating: 4.9,
+    reviews: 120,
+    image: "https://randomuser.me/api/portraits/men/66.jpg",
+    availability: true,
+  },
+  {
+    name: "Dr. Rohit Shetty",
+    specialty: "Dentist",
+    rating: 4.9,
+    reviews: 120,
+    image: "https://randomuser.me/api/portraits/men/66.jpg",
+    availability: true,
+  },
+  {
+    name: "Dr. Rohit Shetty",
+    specialty: "Dentist",
+    rating: 4.9,
+    reviews: 120,
+    image: "https://randomuser.me/api/portraits/men/66.jpg",
+    availability: true,
+  },
+  {
+    name: "Dr. Rohit Shetty",
+    specialty: "Dentist",
+    rating: 4.9,
+    reviews: 120,
+    image: "https://randomuser.me/api/portraits/men/66.jpg",
+    availability: true,
+  },
+  {
+    name: "Dr. Rohit Shetty",
+    specialty: "Dentist",
+    rating: 4.9,
+    reviews: 120,
+    image: "https://randomuser.me/api/portraits/men/66.jpg",
+    availability: true,
+  },
 ];
 
 // dummy category data
@@ -105,82 +254,106 @@ const doctorCategories = [
   "Oncologist",
 ];
 
+const DoctorsperPage = 9;
+
 const Doctors = () => {
-  // using this speciality variable we will filter doctors - react router work
-  // const {speciality} = useParams();  
-  const [speciality, setSpeciality] = useState(null); // this is for temporary ,we will be using query params here 
+  const [specialty, setSpecialty] = useState("All");
   const [filterDoctors, setFilterDoctors] = useState(doctors);
-  const [seeMore, toggleseeMore] = useState(false)
+  const [seeMore, toggleseeMore] = useState(false);
+  const [currentPage , setcurrentPage] = useState(1);
+  const [start , setStart] = useState((currentPage-1)*DoctorsperPage);
+  const [end , setEnd] = useState(DoctorsperPage);
+
+  const NoofDoctors = filterDoctors.length;
+  const NoofPages = Math.ceil(NoofDoctors / DoctorsperPage);
+
+
 
   const applyFilter = (category) => {
-    if(category === "All"){
+    setSpecialty(category)
+    if (category === "All") {
       setFilterDoctors(doctors);
-      return;
+    }else{
+      setFilterDoctors(doctors.filter((doctor) => doctor.specialty == category));
     }
-    setFilterDoctors(doctors.filter((doctor) => doctor.specialty==category));
+    handlePageChange(1);
+  }
+
+  const handlePageChange = (page)=>{
+    setcurrentPage(page);
+    setStart(DoctorsperPage*(page-1));
+    setEnd(page*DoctorsperPage);
   }
 
   return (
-    <section className="bg-white m-auto md:w-[78vw] flex gap-x-5 pt-24 pb-10">
+    <section className="bg-white flex flex-col items-center pb-5">
       {/* Filter */}
-      <section className="sticky top-15 max-h-max p-5 transition-all bg-[#1E1E2F] rounded-xl">
-        <span className="text-white">Browse through the doctors specialist.</span>
+      <div className="m-auto md:w-[78vw] flex gap-x-5 pt-24 pb-10">
+        <section className="sticky top-24 max-h-max p-5 transition-all bg-[#1E1E2F] rounded-xl">
+          <span className="text-white">Browse through the doctors specialist.</span>
 
-        <div className={`text-[#1E1E2F] ${seeMore ? "max-h-[80vh] overflow-y-scroll" : "max-h-[30vh] overflow-hidden"}`}>
-          {doctorCategories.map((category, index) => (
-            <button
-              key={index}
-              onClick={() => applyFilter(category)}
-              className={`block h-[40px] w-[95vw] sm:w-[230px] border pl-5 mb-3 rounded-md hover:bg-[#F2F5FF] text-start ${speciality === category ? 'bg-[#F2F5FF]' : 'bg-white'}`}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
-        <button onClick={() => toggleseeMore(prev => !prev)} className="cursor-pointer text-white pt-2">{seeMore ? "See Less" : "See More"}</button>
-      </section>
-
-      <div className="flex flex-wrap gap-5 justify-center px-5 ">
-        {filterDoctors ? (
-          filterDoctors.map((doctor, index) => (
-            <Link>
-              <div
+          <div className={`text-[#1E1E2F] ${seeMore ? "max-h-[80vh] overflow-y-scroll" : "max-h-[30vh] overflow-hidden"}`}>
+            {doctorCategories.map((category, index) => (
+              <button
                 key={index}
-                className="max-w-sm bg-white border border-gray-primary rounded-lg shadow-sm text-black hover:-translate-y-[7px] transition-all duration-300"
+                onClick={() => applyFilter(category)}
+                className={`block h-[40px] w-[95vw] sm:w-[230px] border pl-5 mb-3 rounded-md hover:bg-[#F2F5FF] text-start ${specialty === category ? "text-[#1E1E2F]" : "text-white"} hover:text-[#1E1E2F] ${specialty === category ? "bg-white " : ""}`}
               >
-                <img
-                  className="rounded-t-lg w-full h-[260px] object-cover border-b-1"
-                  src={doctor.image}
-                  alt={doctor.name}
-                />
-                <div className="p-5 pl-4 pb-1">
-                  <p
-                    className={`
-                    ${doctor.availability ? "text-green-400" : "text-red-400"}
-                    text-sm
-                    `}
-                  >
-                    {doctor.availability ? "Available" : "Not Available"}
-                  </p>
+                {category}
+              </button>
+            ))}
+          </div>
+          <button onClick={() => toggleseeMore(prev => !prev)} className="cursor-pointer text-white pt-2">{seeMore ? "See Less" : "See More"}</button>
+        </section>
 
-                  <a href="#">
+        <div className="flex flex-wrap gap-5 justify-center px-5 ">
+          {filterDoctors ? (
+            filterDoctors.slice(start , end).map((doctor, index) => (
+              <Link to={`/appointment?doctorId=${index}`}>
+                <div
+                  key={index}
+                  className="max-w-sm bg-white border border-gray-primary rounded-lg shadow-sm text-black hover:-translate-y-[7px] transition-all duration-300"
+                >
+                  <img
+                    className="rounded-t-lg w-full h-[260px] object-cover border-b-1"
+                    src={doctor.image}
+                    alt={doctor.name}
+                  />
+                  <div className="p-5 pl-4 pb-1">
+                    <p
+                      className={`
+                      ${doctor.availability ? "text-green-400" : "text-red-400"}
+                      text-sm
+                      `}
+                    >
+                      {doctor.availability ? "Available" : "Not Available"}
+                    </p>
+
                     <h5 className="mt-1 text-xl font-medium tracking-tight text-gray-900 ">
                       {doctor.name}
                     </h5>
-                  </a>
-                  <p className="mb-1 font-normal text-gray-700 dark:text-gray-400">
-                    {doctor.specialty}
-                  </p>
+                    <p className="mb-1 font-normal text-gray-700 dark:text-gray-400">
+                      {doctor.specialty}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </Link>
-          ))
-        )
-          : (
-            <p className="text-white">No Doctors</p>
-          )}
+              </Link>
+            ))
+          )
+            : (
+              <p className="text-white">No Doctors</p>
+            )}
+        </div>
       </div>
-      {/* </section> */}
+
+      {/* Pagination Component */}
+      <div className="flex items-center gap-2">
+        <button onClick={()=>handlePageChange(currentPage-1)} disabled={currentPage === 1} className="flex items-center gap-2 border-1 p-2 rounded-xl cursor-pointer bg-[#5C67F2] text-white"><FaArrowLeft /><span>Previous</span></button>
+        {
+          Array(NoofPages).keys().map((ind) => <button onClick={()=>handlePageChange(ind+1)} key={ind} className={`border-1 rounded-md p-2 cursor-pointer ${currentPage===ind+1 ? "bg-[#5C67F2] text-white" : ""}`}>{ind+1}</button>)
+        }
+        <button onClick={()=>handlePageChange(currentPage+1)} disabled={currentPage === NoofPages} className="flex items-center border-1 p-2 rounded-xl cursor-pointer bg-[#5C67F2] text-white"><span>Next</span><FaArrowRight /></button>
+      </div>
     </section>
   );
 };
