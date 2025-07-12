@@ -6,6 +6,7 @@ import {
   updateProfile,
   bookAppointment,
   listAppointments,
+  cancelAppointment,
 } from "../controllers/user.controller.js";
 import {
   verifyJWT,
@@ -35,5 +36,7 @@ userRouter.post(
 );
 
 userRouter.get("/list-appointments", verifyJWT, listAppointments);
+
+userRouter.post('/cancel-appointment', verifyJWT, cancelAppointment);
 
 export default userRouter;
