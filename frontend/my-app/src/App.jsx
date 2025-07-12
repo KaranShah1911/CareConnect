@@ -12,11 +12,16 @@ import Login from "./pages/Login"
 import Signup from "./pages/Signup"
 import AuthSwitch from "./pages/AuthSwitch"
 import MyAppointments from "./components/MyAppointment"
+import DoctorDashboard from "./pages/DoctorDashboard"
+import DoctorPanel from "./pages/DoctorPanel"
+import DoctorAppointments from "./pages/DoctorAppointments"
+import DoctorProfile from "./pages/DoctorProfile"
 
 
 function App() {
   return (
     <>
+      
       <Navbar />
       {/* <AuthSwitch/> */}
       <div className="pt-30">
@@ -29,9 +34,15 @@ function App() {
         <Route path="/login" element={<Login/>}></Route>
         <Route path="/signup" element={<Signup/>}></Route>
         <Route path="/my-appointment" element={<MyAppointments/>}></Route>
+        {/* doctor dashboard is the entry to doctor panel */}
+        <Route path="/doctor-dashboard" element={<DoctorDashboard/>}> </Route> 
+        <Route path="/doctor-appointments" element={<DoctorAppointments/>}> </Route>
+        <Route path="/doctor-profile" element={<DoctorProfile/>}> </Route>
       </Routes>
       </div>
-      <Footer />
+      
+      {/* for doctor and admin panel - footer is not there */}
+      <Footer /> 
 
     </>
   )
