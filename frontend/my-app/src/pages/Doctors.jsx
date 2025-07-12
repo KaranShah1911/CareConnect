@@ -288,7 +288,7 @@ const Doctors = () => {
   return (
     <section className="bg-white flex flex-col items-center pb-5">
       {/* Filter */}
-      <div className="m-auto md:w-[78vw] flex gap-x-5 pt-24 pb-10">
+      <div className="m-auto md:w-[78vw] flex gap-x-5 pb-10">
         <section className="sticky top-24 max-h-max p-5 transition-all bg-white rounded-xl shadow-sm border border-gray-200">
   <span className="text-gray-800 font-medium text-sm">
     Browse through the doctor's specialty:

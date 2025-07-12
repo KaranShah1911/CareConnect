@@ -17,8 +17,9 @@ import MyAppointments from "./components/MyAppointment"
 function App() {
   return (
     <>
-      {/* <Navbar /> */}
-      <AuthSwitch/>
+      <Navbar />
+      {/* <AuthSwitch/> */}
+      <div className="pt-30">
       <Routes>
         <Route path="/" element={<HomePage />}></Route>
         <Route path="/all-doctors" element={<Doctors />}></Route>
@@ -29,6 +30,7 @@ function App() {
         <Route path="/signup" element={<Signup/>}></Route>
         <Route path="/my-appointment" element={<MyAppointments/>}></Route>
       </Routes>
+      </div>
       <Footer />
 
     </>

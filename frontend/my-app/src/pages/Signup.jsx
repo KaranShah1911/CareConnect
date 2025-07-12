@@ -19,7 +19,7 @@ const Signup = () => {
     };
 
     return (
-        <div className="w-screen h-screen flex flex-col justify-center items-center px-4 bg-white gap-10">
+        <div className="w-screen h-[80vh] flex flex-col justify-center items-center px-4 bg-white gap-10">
             <h1 className="text-3xl text-[#1E1E2F] text-center">
                 Join <span className="text-indigo-400">CareConnect</span> and connect with trusted Doctors
             </h1>

@@ -65,7 +65,7 @@ const HomePage = () => {
     return (
         <div className="bg-white text-[#1F2937] font-sans">
             {/* Hero Section */}
-            <section className="bg-[#F2F5FF] flex gap-5 items-center pt-24">
+            <section className="bg-[#F2F5FF] flex gap-5 items-center">
                 {/* <div className="max-w-7xl mx-auto flex flex-col-reverse md:flex-row items-center gap-10"> */}
                 {/* Left: Media Slider */}
                 <div className="w-full md:w-1/2">

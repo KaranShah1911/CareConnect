@@ -5,7 +5,7 @@ import "../styles/Navbar.css"
 export default function Navbar() {
   const navigate = useNavigate();
   return (
-    <header className="fixed top-0 left-[50%] -translate-x-[50%] rounded-full w-[80%] bg-white shadow-md z-50">
+    <header className="fixed top-2 left-[50%] -translate-x-[50%] rounded-full w-[80%] bg-white shadow-md z-50">
       <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
         {/* Logo and Brand */}
         <div onClick={() => navigate('/')} className="flex items-center gap-2">
