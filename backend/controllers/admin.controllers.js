@@ -4,6 +4,9 @@ import Doctor from "../models/doctor.models.js";
 import { ApiError } from "../utility/ApiError.js";
 import { ApiResponse } from "../utility/ApiResponse.js";
 import jwt from "jsonwebtoken";
+import appointmentModel from "../models/appointment.models.js";
+import User from "../models/user.models.js";
+import "dotenv/config";
 
 const addDoctor = async (req, res) => {
   try {
@@ -128,4 +131,74 @@ const allDoctors = async (req, res) => {
   }
 }
 
-export { addDoctor, handleAdminLogin, allDoctors };
+// API to get all appointment list
+const appointmentsAdmin = async (req, res) => {
+  try {
+
+    const appointments = await appointmentModel.find({});
+    res.json({ success: true, appointments });
+    
+  } catch (error) {
+      return res
+      .status(error.statusCode || 500)
+      .json(new ApiResponse(error.statusCode || 500, error.message)); 
+  }
+}
+
+// API for appointment cancellation
+const appointmentCancel = async (req, res) => {
+  try {
+    const { appointmentId } = req.body;
+
+    const appointmentData = await appointmentModel.findById(appointmentId);
+
+    await appointmentModel.findByIdAndUpdate(appointmentData, {
+      cancelled: true,
+    });
+
+    // releasing doctor's slot
+    const { docId, slotDate, slotTime } = appointmentData;
+
+    const doctorData = await Doctor.findById(docId);
+
+    let slots_booked = doctorData.slots_booked;
+
+    slots_booked[slotDate] = slots_booked[slotDate].filter(
+      (e) => e !== slotTime
+    );
+
+    await Doctor.findByIdAndUpdate(docId, { slots_booked });
+
+    res.json({ success: true, message: "Appointment Cancelled" });
+  } catch (error) {
+    return res
+      .status(error.statusCode || 500)
+      .json(new ApiResponse(error.statusCode || 500, error.message));
+  }
+};
+
+// API to get dashboard data for the admin
+const adminDashBoard = async (req, res) => {
+  try {
+
+    const doctors = await Doctor.find({});
+    const users = await User.find({});
+    const appointments = await appointmentModel.find({});
+
+    const dashData = {
+      doctors: doctors.length,
+      appointments: appointments.length,
+      patiens: users.length,
+      latestAppointments: appointments.reverse().slice(0, 5),
+    }
+
+    res.json({ success: true, dashData });
+    
+  } catch (error) {
+    return res
+      .status(error.statusCode || 500)
+      .json(new ApiResponse(error.statusCode || 500, error.message));
+  }
+}
+
+export { addDoctor, handleAdminLogin, allDoctors, appointmentsAdmin, appointmentCancel, adminDashBoard };

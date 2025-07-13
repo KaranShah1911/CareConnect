@@ -7,6 +7,7 @@ import {
   bookAppointment,
   listAppointments,
   cancelAppointment,
+  // paymentRazorpay,
 } from "../controllers/user.controller.js";
 import {
   verifyJWT,
@@ -38,5 +39,8 @@ userRouter.post(
 userRouter.get("/list-appointments", verifyJWT, listAppointments);
 
 userRouter.post('/cancel-appointment', verifyJWT, cancelAppointment);
+
+// userRouter.post('/payment-razorpay', verifyJWT, paymentRazorpay);
+// userRouter.post('verify-razorpay', verifyJWT, verifyRazorpay);
 
 export default userRouter;

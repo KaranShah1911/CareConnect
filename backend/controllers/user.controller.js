@@ -1,6 +1,7 @@
 import validator from "validator";
 import bcrypt from "bcrypt";
 import User from "../models/user.models.js";
+import "dotenv/config";
 import jwt from "jsonwebtoken";
 import { ApiError } from "../utility/ApiError.js";
 import { ApiResponse } from "../utility/ApiResponse.js";
@@ -8,7 +9,7 @@ import uploadOnCloudinary from "../config/cloudinary.js";
 import appointmentModel from "../models/appointment.models.js";
 import Doctor from "../models/doctor.models.js";
 import mongoose from "mongoose";
-import razorpay from "razorpay"
+import razorpay from "razorpay";
 
 // API to register user
 const registerUser = async (req, res) => {
@@ -219,17 +220,18 @@ const listAppointments = async (req, res) => {
 // API to cancel appointment
 const cancelAppointment = async (req, res) => {
   try {
-
     const { userId, appointmentId } = req.body;
 
     const appointmentData = await appointmentModel.findById(appointmentId);
 
     // verify the user
-    if(appointmentData.userId !== userId) {
+    if (appointmentData.userId !== userId) {
       return res.json({ success: false, message: "Unauthorised Action" });
     }
 
-    await appointmentModel.findByIdAndUpdate(appointmentData, { cancelled: true });
+    await appointmentModel.findByIdAndUpdate(appointmentData, {
+      cancelled: true,
+    });
 
     // releasing doctor's slot
     const { docId, slotDate, slotTime } = appointmentData;
@@ -238,10 +240,12 @@ const cancelAppointment = async (req, res) => {
 
     let slots_booked = doctorData.slots_booked;
 
-    slots_booked[slotDate] = slots_booked[slotDate].filter(e => e !== slotTime);
+    slots_booked[slotDate] = slots_booked[slotDate].filter(
+      (e) => e !== slotTime
+    );
 
     await Doctor.findByIdAndUpdate(docId, { slots_booked });
-    
+
     res.json({ success: true, message: "Appointment Cancelled" });
   } catch (error) {
     return res
@@ -250,14 +254,67 @@ const cancelAppointment = async (req, res) => {
   }
 };
 
-const razorpayInstance = new razorpay({
+// const razorpayInstance = new razorpay({
+//   key_id: "",
+//   key_secret: "",
+// });
+
+// // API to make the payments
+// const paymentRazorpay = async (req, res) => {
+//   try {
+//     const { appointmentId } = req.body;
+//     const appointmentData = await appointmentModel.findById(appointmentId);
+
+//     if (!appointmentData || appointmentData.cancelled) {
+//       return res.json({
+//         success: false,
+//         message: "Appointment cancelled or not found",
+//       });
+//     }
+
+//     // Creating options of Payment
+//     const options = {
+//       amount: appointmentData.amount * 100,
+//       currency: process.env.CURRENCY,
+//       receipt: appointmentId,
+//     };
+
+//     // Creation of order
+//     const order = await razorpayInstance.order.create(options);
+
+//     res.json({ success: true, order });
+//   } catch (error) {
+//     return res
+//       .status(error.statusCode || 500)
+//       .json(new ApiResponse(error.statusCode || 500, error.message));
+//   }
   
-})
+//   // API to verify payment
+//   const verifyRazorpay = async (req, res) => {
 
-// API to make the payments
-const paymentRazorpay = async (req, res) => {
+//     try {
 
-}
+//       const { razorpay_order_id } = req.body;
+//       const orderInfo = await razorpayInstance.orders.fetch(razorpay_order_id);
+
+//       if(orderInfo.status === 'paid')
+//       {
+//         await appointmentModel.findByIdAndUpdate(orderInfo.receipt, { payment: true });
+//         res.json({ success: true, message: "Payment Successfull" });
+//       }
+
+//       else
+//       {
+//         res.json({ success: false, message: "Payment Failed" });
+//       }
+      
+//     } catch (error) {
+//       return res
+//       .status(error.statusCode || 500)
+//       .json(new ApiResponse(error.statusCode || 500, error.message));
+//     }
+//   }
+// };
 
 export {
   registerUser,
@@ -266,5 +323,6 @@ export {
   updateProfile,
   bookAppointment,
   listAppointments,
-  cancelAppointment
+  cancelAppointment,
+  // paymentRazorpay,
 };

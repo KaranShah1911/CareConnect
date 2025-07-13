@@ -3,6 +3,9 @@ import {
   addDoctor,
   handleAdminLogin,
   allDoctors,
+  appointmentsAdmin,
+  appointmentCancel,
+  adminDashBoard,
 } from "../controllers/admin.controllers.js";
 import { upload } from "../middlewares/multer.js";
 import { body } from "express-validator";
@@ -32,4 +35,7 @@ router.post(
   changeAvailibility
 );
 
+router.get('/appointments', checkForAuthorization(["ADMIN"]), appointmentsAdmin)
+router.post('/cancel-appointment', checkForAuthorization(["ADMIN"]), appointmentCancel)
+router.get('/dashboard', checkForAuthorization(["ADMIN"]), adminDashBoard)
 export default router;
