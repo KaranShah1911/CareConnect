@@ -2,6 +2,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 
 const DoctorPanel = () => {
+  const primary = "#5C67F2";
   return (
     <div className="flex gap-5">
       <div
@@ -14,8 +15,8 @@ const DoctorPanel = () => {
             className={({ isActive }) =>
               `pl-8 pr-20 py-4 hover:bg-[#f2f5ff] transition duration-200 ${
                 isActive
-                  ? "bg-[#e7ecfc] text-black font-semibold"
-                  : "text-gray-700"
+                  ? "bg-[#e7ecfc] text-[#5C67F2] font-semibold"
+                  : "text-[#616bef]"
               }`
             }
           >
@@ -27,8 +28,8 @@ const DoctorPanel = () => {
             className={({ isActive }) =>
               `pl-8 pr-20 py-4 hover:bg-[#f2f5ff] transition duration-200 ${
                 isActive
-                  ? "bg-[#e7ecfc] text-black font-semibold"
-                  : "text-gray-700"
+                  ? "bg-[#e7ecfc] text-[#5C67F2] font-semibold"
+                  : "text-[#616bef]"
               }`
             }
           >
@@ -40,8 +41,8 @@ const DoctorPanel = () => {
             className={({ isActive }) =>
               `pl-8 pr-20 py-4 hover:bg-[#f2f5ff] transition duration-200 ${
                 isActive
-                  ? "bg-[#e7ecfc] text-black font-semibold"
-                  : "text-gray-700"
+                  ? "bg-[#e7ecfc] text-[#5C67F2] font-semibold"
+                  : "text-[#616bef]"
               }`
             }
           >

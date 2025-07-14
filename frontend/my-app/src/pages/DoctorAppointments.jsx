@@ -168,7 +168,7 @@ const DoctorAppointments = () => {
       <DoctorPanel />
 
       <div>
-        <div className="text-2xl font-semibold mb-8">All Appointments</div>
+        <div className="text-2xl font-semibold mb-8 text-[#5C67F2]">All Appointments</div>
 
         <div className="">
           {/* Appointment List Header */}
@@ -185,7 +185,7 @@ const DoctorAppointments = () => {
                 <li>Age</li>
                 <li>Date & Time</li>
                 <li>Fees</li>
-                <li>Action</li>
+                <li className="text-center">Action</li>
               </ul>
               {/* appointment list */}
               <div className="">
@@ -206,7 +206,7 @@ const DoctorAppointments = () => {
                         <li>{appointment.dateTime}</li>
                         <li>{appointment.fee}</li>
                         <li>
-                          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center text-center">
                             <div className="text-md font-semibold">
                               {appointment.status === "Completed" && (
                                 <span className="text-green-500">
