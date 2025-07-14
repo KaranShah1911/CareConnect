@@ -23,7 +23,7 @@ doctorRouter.post("/cancel-appointment", verifyJWT, appointmentCancel);
 
 doctorRouter.get("/dashboard", verifyJWT, doctorDashboard);
 
-doctorRouter.get("profile", verifyJWT, doctorProfile);
+doctorRouter.get("/profile", verifyJWT, doctorProfile);
 doctorRouter.post("/update-profile", verifyJWT, updateDoctorProfile);
 
 export default doctorRouter;

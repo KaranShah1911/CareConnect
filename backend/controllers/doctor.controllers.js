@@ -23,9 +23,9 @@ const changeAvailibility = async (req, res) => {
   }
 };
 
-const doctorList = async (req, res) => {
+const doctorList = async (req, res) => { 
   try {
-    const doctors = await doctorModel.find({}).select(["-password", "-email"]);
+    const doctors = await doctorModel.find({});
 
     res.json({ success: true, doctors });
   } catch (error) {
@@ -53,7 +53,7 @@ const loginDoctor = async (req, res) => {
 
       res.json({ success: true, token });
     } else {
-      res.json({ success: false, message: "Invalid Credentials" });
+      res.json({ success: false, message: "Invalid Credentials from here" });
     }
   } catch (error) {
     return res
@@ -65,8 +65,8 @@ const loginDoctor = async (req, res) => {
 // API to get doctor appointments for doctor panel
 const appointmentsDoctor = async (req, res) => {
   try {
-    const { docId } = req.body;
-    const appointments = await appointmentModel.find({ docId });
+    const { doctorId } = req.body;
+    const appointments = await appointmentModel.find({ doctorId });
 
     res.json({ success: true, appointments });
   } catch (error) {
@@ -79,11 +79,11 @@ const appointmentsDoctor = async (req, res) => {
 // API to mark appointment completed for doctor panel
 const appointmentComplete = async (req, res) => {
   try {
-    const { docId, appointmentId } = req.body;
+    const { doctorId, appointmentId } = req.body;
 
     const appointmentData = await appointmentModel.findById(appointmentId);
 
-    if (appointmentData && appointmentData.docId == docId) {
+    if (appointmentData && appointmentData.doctorId == doctorId) {
       await appointmentModel.findByIdAndUpdate(appointmentId, {
         isCompleted: true,
       });
@@ -102,12 +102,11 @@ const appointmentComplete = async (req, res) => {
 // API to cancel apppointment for doctor panel
 const appointmentCancel = async (req, res) => {
   try {
-    const { docId, appointmentId } = req.body;
+    const { doctorId, appointmentId } = req.body;
 
-    console.log(docId, appointmentId);
     const appointmentData = await appointmentModel.findById(appointmentId);
 
-    if (appointmentData && appointmentData.doctorId == docId) {
+    if (appointmentData && appointmentData.doctorId == doctorId) {
       await appointmentModel.findByIdAndUpdate(appointmentId, {
         cancelled: true,
       });
@@ -126,9 +125,9 @@ const appointmentCancel = async (req, res) => {
 // API to get dashboard data for doctor panel
 const doctorDashboard = async (req, res) => {
   try {
-    const { docId } = req.body;
+    const { doctorId } = req.body;
 
-    const appointments = await appointmentModel.find({ docId });
+    const appointments = await appointmentModel.find({ doctorId });
 
     let earnings = 0;
 

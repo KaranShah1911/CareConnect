@@ -145,9 +145,9 @@ const updateProfile = async (req, res) => {
 // Done Some Changes in Book Appointment : ( Like didnt added userData and DocData coz it was irrelevant)
 const bookAppointment = async (req, res) => {
   try {
-    const { userId, docId, slotDate, slotTime } = req.body;
+    const { userId, doctorId, slotDate, slotTime } = req.body;
 
-    const docData = await Doctor.findById(docId).select("-password");
+    const docData = await Doctor.findById(doctorId).select("-password");
 
     if (!docData) throw new ApiError(404, "Doctor not found");
 
@@ -166,11 +166,11 @@ const bookAppointment = async (req, res) => {
 
     delete docData.slots_booked;
 
-    console.log(docId);
+    console.log(doctorId);
 
     const appointment = new appointmentModel({
       userId,
-      doctorId: docId,
+      doctorId: doctorId,
       slotDate,
       slotTime,
       amount: docData.fees,
@@ -178,7 +178,7 @@ const bookAppointment = async (req, res) => {
 
     await appointment.save();
 
-    await Doctor.findByIdAndUpdate(docId, { slots_booked });
+    await Doctor.findByIdAndUpdate(doctorId, { slots_booked });
     return res.json({ success: true, message: "Appointment Booked" });
   } catch (error) {
     return res
