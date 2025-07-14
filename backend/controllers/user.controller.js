@@ -225,7 +225,7 @@ const cancelAppointment = async (req, res) => {
     const appointmentData = await appointmentModel.findById(appointmentId);
 
     // verify the user
-    if (appointmentData.userId !== userId) {
+    if (appointmentData.userId.toString() !== userId) {
       return res.json({ success: false, message: "Unauthorised Action" });
     }
 
@@ -234,9 +234,9 @@ const cancelAppointment = async (req, res) => {
     });
 
     // releasing doctor's slot
-    const { docId, slotDate, slotTime } = appointmentData;
+    const { doctorId, slotDate, slotTime } = appointmentData;
 
-    const doctorData = await Doctor.findById(docId);
+    const doctorData = await Doctor.findById(doctorId);
 
     let slots_booked = doctorData.slots_booked;
 
@@ -244,7 +244,7 @@ const cancelAppointment = async (req, res) => {
       (e) => e !== slotTime
     );
 
-    await Doctor.findByIdAndUpdate(docId, { slots_booked });
+    await Doctor.findByIdAndUpdate(doctorId, { slots_booked });
 
     res.json({ success: true, message: "Appointment Cancelled" });
   } catch (error) {
@@ -288,7 +288,7 @@ const cancelAppointment = async (req, res) => {
 //       .status(error.statusCode || 500)
 //       .json(new ApiResponse(error.statusCode || 500, error.message));
 //   }
-  
+
 //   // API to verify payment
 //   const verifyRazorpay = async (req, res) => {
 
@@ -307,7 +307,7 @@ const cancelAppointment = async (req, res) => {
 //       {
 //         res.json({ success: false, message: "Payment Failed" });
 //       }
-      
+
 //     } catch (error) {
 //       return res
 //       .status(error.statusCode || 500)

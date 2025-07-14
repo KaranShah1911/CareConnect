@@ -14,8 +14,8 @@ const verifyJWT = async (req, res, next) => {
 
     if (!userData) throw new ApiError(401, "Token Expired or Invalid");
 
-    req.userId = userData.id;
-    if (req.body) req.body.userId = userData.id;
+    if (!req.body) req.body = {};
+    req.body.userId = userData.id;
 
     next();
   } catch (error) {
