@@ -1,6 +1,6 @@
 import React from "react";
 import MediaSlider from "../components/MediaSlider";
-import { useRef } from "react";
+import { Link } from "react-router-dom";
 
 const doctors = [
   {
@@ -63,18 +63,13 @@ const testimonials = [
 
 const HomePage = () => {
 
-  const sectorRef = useRef(null);
-  const scrollToSector = () => {
-    sectorRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
   return (
     <div className="bg-white text-[#1F2937] font-sans">
       {/* Hero Section */}
       <section className="bg-[#F2F5FF] flex gap-5 items-center">
         {/* <div className="max-w-7xl mx-auto flex flex-col-reverse md:flex-row items-center gap-10"> */}
         {/* Left: Media Slider */}
-        <div className="w-full md:w-1/2">
+        <div className="w-full md:w-1/2 pt-25">
           <MediaSlider />
           {/* Replace with your slider component or images */}
           {/* <img src="https://randomuser.me/api/portraits/men/46.jpg" alt="Doctor Preview" className="rounded-xl shadow-lg" /> */}
@@ -90,12 +85,12 @@ const HomePage = () => {
             appointments with ease — anytime, anywhere.
           </p>
           <div className="mt-8">
-            <button
-              onClick={scrollToSector}
+            <Link
+              to="/all-doctors"
               className="bg-[#5C67F2] text-white px-6 py-3 rounded-xl shadow-lg hover:bg-indigo-600 transition"
             >
               Book Your Appointment
-            </button>
+            </Link>
           </div>
         </div>
         {/* </div> */}
@@ -136,7 +131,7 @@ const HomePage = () => {
       <p className="w-[80%] h-[2px] rounded-full bg-[#5C67F2] mx-auto"></p>
 
       {/* Categories we serve */}
-      <section ref={sectorRef} className="py-20 px-6 bg-white text-center" id="sectors">
+      <section className="py-20 px-6 bg-white text-center" id="sectors">
         <h2 className="text-3xl sm:text-4xl font-bold text-[#5C67F2] mb-4">
           Sectors We Serve
         </h2>

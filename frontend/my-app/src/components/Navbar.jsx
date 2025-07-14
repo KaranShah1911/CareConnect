@@ -1,11 +1,13 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import "../styles/Navbar.css"
+import { useStore } from '../utils/user';
 
 export default function Navbar() {
   const navigate = useNavigate();
+  const isLoggedin = useStore((state)=>state.isLoggedin);
   return (
-    <header className="fixed top-2 left-[50%] -translate-x-[50%] rounded-full w-[80%] bg-white shadow-md z-50">
+    <header className="fixed left-[50%] -translate-x-[50%] rounded-full w-[80%] bg-white shadow-md z-2">
       <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
         {/* Logo and Brand */}
         <div onClick={() => navigate('/')} className="flex items-center gap-2">
@@ -23,12 +25,9 @@ export default function Navbar() {
 
         {/* Auth Buttons */}
         <div className="flex gap-4">
-          <button onClick={()=>navigate("/login")} className="px-4 py-2 text-[#5C67F2] border border-[#5C67F2] rounded-lg hover:bg-[#5C67F2] cursor-pointer hover:text-white transition">
+          {!isLoggedin ? <button onClick={()=>navigate("/auth/login")} className="px-4 py-2 text-[#5C67F2] border border-[#5C67F2] rounded-lg hover:bg-[#5C67F2] cursor-pointer hover:text-white transition">
             Login
-          </button>
-          <button onClick={()=>navigate("/signup")} className="px-4 py-2 bg-[#5C67F2] text-white rounded-lg hover:bg-indigo-600 cursor-pointer transition">
-            Sign Up
-          </button>
+          </button> : <span>User is logged in</span>}
         </div>
       </div>
     </header>

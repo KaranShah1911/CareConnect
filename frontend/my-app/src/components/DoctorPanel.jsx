@@ -11,7 +11,7 @@ const DoctorPanel = () => {
       >
         <nav className="flex flex-col divide-y divide-gray-200">
           <NavLink
-            to="/doctor-dashboard"
+            to="/doctor"
             className={({ isActive }) =>
               `pl-8 pr-20 py-4 hover:bg-[#f2f5ff] transition duration-200 ${
                 isActive
@@ -24,7 +24,7 @@ const DoctorPanel = () => {
           </NavLink>
 
           <NavLink
-            to="/doctor-appointments"
+            to="/doctor/appointments"
             className={({ isActive }) =>
               `pl-8 pr-20 py-4 hover:bg-[#f2f5ff] transition duration-200 ${
                 isActive
@@ -37,7 +37,7 @@ const DoctorPanel = () => {
           </NavLink>
 
           <NavLink
-            to="/doctor-profile"
+            to="/doctor/profile"
             className={({ isActive }) =>
               `pl-8 pr-20 py-4 hover:bg-[#f2f5ff] transition duration-200 ${
                 isActive

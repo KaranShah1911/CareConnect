@@ -40,7 +40,7 @@ const allAppointments = [
 ];
 
 const MyAppointments = () => {
-    const [appointments, setAppointments] = useState(allAppointments.slice(3))
+    const [appointments, setAppointments] = useState(allAppointments)
     const handleCancel = (id) => {
         setAppointments( (prev) =>             
                 prev.map( (appointment) => 
@@ -49,22 +49,20 @@ const MyAppointments = () => {
         );
     }
   return (
-    <div className="mb-20 pt-30 w-[80vw] m-auto">
+    <div className="mb-20 pt-30 p-5 m-auto">
       {/* Page Header */}
-      <div className="bg-white border-b border-gray-200 ">
-        <div className="max-w-5xl mx-auto px-6 py-8">
-          <h1 className="text-3xl font-semibold text-gray-800">
+      <div className="bg-white border-b border-gray-200 p-2">
+          <h1 className="text-3xl font-semibold text-indigo-700">
             My Appointments
           </h1>
-        </div>
       </div>
 
       {/* Appointments List */}
-      <div className="max-w-5xl mx-auto px-6 py-10 grid gap-8">
+      <div className="mx-auto px-6 py-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
         {appointments.map((appointment) => (
           <div
             key={appointment.id}
-            className="bg-white rounded-xl shadow hover:shadow-md transition-all p-6"
+            className="bg-white rounded-xl shadow hover:shadow-md transition-all p-6 col-span-1"
           >
             <div className="flex flex-col md:flex-row gap-6">
               {/* Doctor Image */}

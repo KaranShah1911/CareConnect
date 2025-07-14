@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import DoctorPanel from "./DoctorPanel";
+import DoctorPanel from "../components/DoctorPanel";
 import { FaEdit, FaSave, FaTimes } from "react-icons/fa";
+import { useStore } from "../utils/store";
 
 const DoctorInfo = () => {
   const [editMode, setEditMode] = useState(false);
+  const sidebar = useStore((state)=>state.sidebar);
 
   const [form, setForm] = useState({
     image: null,
@@ -42,9 +44,7 @@ const DoctorInfo = () => {
   };
 
   return (
-    <div className="flex gap-5 p-5 pt-0 h-[calc(100vh-120px)]">
-      <DoctorPanel />
-
+    <div className={`flex gap-5 p-5 pt-30 min-h-screen ${sidebar ? "pl-50" : "pl-15"} transition-all duration-300`}>
       <div className="w-[60vw] p-6 bg-white shadow-md rounded-lg">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-indigo-700">Doctor Profile</h2>

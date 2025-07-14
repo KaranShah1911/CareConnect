@@ -1,8 +1,11 @@
 import { React, useState } from "react";
-import DoctorPanel from "./DoctorPanel";
+import { CheckCircle, XCircle } from "lucide-react";
+import { FaArrowRight } from "react-icons/fa";
+import { FaArrowLeft } from "react-icons/fa6";
+import { useStore } from "../utils/store";
 
 // dummy appointments data
-const detailedAppointments = [
+const appointments = [
   {
     id: 0,
     name: "Avinash Kr",
@@ -147,140 +150,149 @@ const detailedAppointments = [
 
 
 const DoctorAppointments = () => {
-  const [appointments, setAppointments] = useState(detailedAppointments);
-  const handleStatusChange = (index, newStatus) => {
-    const globalIndex = firstIndex + index;
-    const updated = [...appointments];
-    updated[globalIndex].status = newStatus;
-    setAppointments(updated);
+  // const [appointments, setAppointments] = useState([]);
+  const [filteredAppointments, setFilteredAppointments] = useState(appointments);
+  const [filter, setFilter] = useState({
+    patient: "",
+    status: "all"
+  });
+  const sidebar = useStore((state) => state.sidebar);
+
+  const handleStatusChange = (id, newStatus) => {
+    //backend call to update status
+    try{
+      appointments.forEach((app) => { if (app.id === id) app.status = newStatus });
+      setFilteredAppointments((prev) => prev.map((app)=>{
+        if (app.id === id) return {...app, status: newStatus};
+        return app;
+      }));
+    }catch(err){
+      console.log(err);
+    }
+
   };
 
   // pagination logic
-  const perPage = 5;
-  const totalPages = Math.ceil(appointments.length / perPage);
+  const perPage = 8;
+  const totalPages = Math.ceil(filteredAppointments.length / perPage);
   const [currentPage, setCurrentPage] = useState(1);
-  const lastIndex = currentPage * perPage;
-  const firstIndex = lastIndex - perPage;
-  const currentAppointments = appointments.slice(firstIndex, lastIndex);
+  const [start, setStart] = useState(0);
+  const [end, setEnd] = useState(perPage);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    setStart(perPage * (page - 1));
+    setEnd(page * perPage);
+  }
+
+  const filterByPatient = (e) => {
+    const name = e.target.value
+    setFilter((prev) => { return { ...prev, [e.target.name]: name } })
+    setFilteredAppointments(appointments.filter((app) => app.name.toLowerCase().includes(name) && (filter.status === "all" || app.status.toLowerCase() === filter.status)));
+  }
+  const filterByStatus = (e) => {
+    const status = e.target.value;
+    setFilter((prev) => { return { ...prev, [e.target.name]: status } })
+    setFilteredAppointments(appointments.filter((app) => app.name.toLowerCase().includes(filter.patient) && (status === "all" || app.status.toLowerCase() === status)));
+  }
 
   return (
-    <div className="flex gap-5 p-5 pt-0">
-      <DoctorPanel />
-
-      <div>
-        <div className="text-2xl font-semibold mb-8 text-[#5C67F2]">All Appointments</div>
-
-        <div className="">
-          {/* Appointment List Header */}
-
-          <div className="flex flex-col justify-between border p-5 rounded-md shadow-md gap-x-2">
-            <div className="h-[57vh]">
-              <ul
-                className="grid grid-cols-[40px_1.5fr_1fr_60px_1.5fr_60px_1fr] 
-              px-4 py-2 border-b font-semibold text-gray-700 text-sm w-[66vw]"
-              >
-                <li>#</li>
-                <li>Patient</li>
-                <li>Payment</li>
-                <li>Age</li>
-                <li>Date & Time</li>
-                <li>Fees</li>
-                <li className="text-center">Action</li>
-              </ul>
-              {/* appointment list */}
-              <div className="">
-                {currentAppointments.length > 0
-                  ? currentAppointments.map((appointment, index) => (
-                      <ul
-                        key={appointment.id}
-                        className="py-4 grid grid-cols-[40px_1.5fr_1fr_60px_1.5fr_60px_1fr] 
-                  px-4 border-b font-medium text-gray-700 text-sm w-[66vw] items-center"
-                      >
-                        <li>{appointment.id}</li>
-                        <li className="flex items-center">
-                          <img src={appointment.image} alt="patient.img" className="w-10 h-10 rounded-full object-cover mr-2"/>
-                          {appointment.name}
-                        </li>
-                        <li>{appointment.payment}</li>
-                        <li>{appointment.age}</li>
-                        <li>{appointment.dateTime}</li>
-                        <li>{appointment.fee}</li>
-                        <li>
-                          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center text-center">
-                            <div className="text-md font-semibold">
-                              {appointment.status === "Completed" && (
-                                <span className="text-green-500">
-                                  Completed
-                                </span>
-                              )}
-                              {appointment.status === "Cancelled" && (
-                                <span className="text-red-400">Cancelled</span>
-                              )}
-                            </div>
-
-                            {appointment.status === "Pending" && (
-                              <div className="flex gap-3 text-left">
-                                <button
-                                  title="Mark as Completed"
-                                  onClick={() =>
-                                    handleStatusChange(index, "Completed")
-                                  }
-                                  className="text-green-600 hover:scale-110 transition"
-                                >
-                                  <img
-                                    src="https://cdn-icons-png.flaticon.com/128/66/66936.png"
-                                    alt="markcompleted.img"
-                                    className="h-6"
-                                  />
-                                </button>
-                                <button
-                                  title="Cancel Appointment"
-                                  onClick={() =>
-                                    handleStatusChange(index, "Cancelled")
-                                  }
-                                  className="text-red-500 hover:scale-110 transition"
-                                >
-                                  <img
-                                    src="https://cdn-icons-png.flaticon.com/128/4347/4347434.png"
-                                    alt="cancel.img"
-                                    className="h-7"
-                                  />
-                                </button>
-                              </div>
-                            )}
-                          </div>
-                        </li>
-                      </ul>
-                    ))
-                  : "red"}
-              </div>
-            </div>
-
-            {/* Pagination */}
-            <div className="flex justify-end items-center gap-4 mt-4">
-              <button
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-                className="px-3 py-1 bg-gray-100 rounded disabled:opacity-50"
-              >
-                ⬅
-              </button>
-              <span className="text-sm text-gray-600">
-                Page {currentPage} of {totalPages}
-              </span>
-              <button
-                onClick={() =>
-                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                }
-                disabled={currentPage === totalPages}
-                className="px-3 py-1 bg-gray-100 rounded disabled:opacity-50"
-              >
-                ➡
-              </button>
-            </div>
+    <div className={`flex flex-col min-h-screen gap-2 p-5 pt-30 ${sidebar ? "pl-50" : "pl-15"}`}>
+      <div className="flex justify-between items-center gap-5">
+        <h1 className="text-2xl font-semibold mb-8 text-[#5C67F2]">All Appointments</h1>
+        {/* Filtering */}
+        <div className="flex gap-5">
+          <div id="filter-1" className="flex items-center gap-2">
+            <label className="text-sm font-semibold text-gray-600">Filter by status:</label>
+            <select
+              name="status"
+              value={filter.status}
+              onChange={filterByStatus}
+              className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            >
+              <option value="all">All</option>
+              <option value="pending">Pending</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
           </div>
-
+          <input type="text" name="patient" onChange={filterByPatient} className="border-1 rounded-md max-h-max p-2 focus:ring-2 focus:ring-violet-700 focus-within:none" placeholder="Search Patient" />
         </div>
+        {/* Appointment List Header */}
+      </div>
+      <table className="w-full text-sm text-gray-700">
+        <thead className="bg-gray-100 font-semibold">
+          <tr className="text-left">
+            <th className="px-4 py-2">#</th>
+            <th className="px-4 py-2">Patient</th>
+            <th className="px-4 py-2">Payment</th>
+            <th className="px-4 py-2">Age</th>
+            <th className="px-4 py-2">Date & Time</th>
+            <th className="px-4 py-2">Fees</th>
+            <th className="px-4 py-2 text-center">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredAppointments.length > 0 ? (
+            filteredAppointments.slice(start, end).map((appointment) => (
+              <tr key={appointment.id} className="border-b">
+                <td className="px-4 py-4">{appointment.id}</td>
+                <td className="px-4 py-4 flex items-center">
+                  <img
+                    src={appointment.image}
+                    alt="patient.img"
+                    className="w-10 h-10 rounded-full object-cover mr-2"
+                  />
+                  {appointment.name}
+                </td>
+                <td className="px-4 py-4">{appointment.payment}</td>
+                <td className="px-4 py-4">{appointment.age}</td>
+                <td className="px-4 py-4">{appointment.dateTime}</td>
+                <td className="px-4 py-4">{appointment.fee}</td>
+                <td className="px-4 py-4">
+                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center text-center">
+                    <div className="text-md font-semibold">
+                      {appointment.status === "Completed" && (
+                        <span className="text-green-500">Completed</span>
+                      )}
+                      {appointment.status === "Cancelled" && (
+                        <span className="text-red-400">Cancelled</span>
+                      )}
+                    </div>
+
+                    {appointment.status === "Pending" && (
+                      <div className="flex gap-3 text-lg">
+                        <CheckCircle
+                          onClick={() => handleStatusChange(appointment.id, "Completed")}
+                          className="text-green-600 hover:scale-110 transition size-7"
+                        />
+                        <XCircle
+                          onClick={() => handleStatusChange(appointment.id, "Cancelled")}
+                          className="text-red-500 hover:scale-110 transition size-7"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="7" className="px-4 py-4 text-center text-red-500">
+                No appointments found.
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+
+      {/* Pagination Component */}
+      <div className="flex items-center gap-2 mt-5">
+        <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} className="flex items-center gap-2 border-1 p-2 rounded-xl cursor-pointer bg-[#5C67F2] text-white"><FaArrowLeft /><span>Previous</span></button>
+        {
+          Array(totalPages).keys().map((ind) => <button onClick={() => handlePageChange(ind + 1)} key={ind} className={`border-1 rounded-md p-2 cursor-pointer ${currentPage === ind + 1 ? "bg-[#5C67F2] text-white" : ""}`}>{ind + 1}</button>)
+        }
+        <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} className="flex items-center border-1 p-2 rounded-xl cursor-pointer bg-[#5C67F2] text-white"><span>Next</span><FaArrowRight /></button>
       </div>
     </div>
   );

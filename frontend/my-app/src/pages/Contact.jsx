@@ -2,7 +2,7 @@ import React from 'react'
 
 const Contact = () => {
   return (
-    <div className='sm:w-[80vw] m-auto mb-24'>
+    <div className='sm:w-[80vw] m-auto mb-24 pt-25'>
       <div className='font-semibold text-center text-4xl mb-10'>CONTACT US</div>
       <div className='flex justify-center gap-10'>
         <img src="https://www.suburbanortho.com/wp-content/uploads/2023/09/contact-us-img.webp" 
