@@ -24,10 +24,13 @@ import AuthLayout from "./layouts/Authlayout"
 import MainLayout from "./layouts/Mainlayout"
 import AdminLayout from "./layouts/AdminLayout"
 import DoctorLayout from "./layouts/DoctorLayout"
+import { useStore } from "zustand"
+import AdminDoctorLogin from "./pages/AdminDoctorLogin"
 
 
 
 function App() {
+
   return (
     <>
       <Routes>
@@ -54,6 +57,7 @@ function App() {
           <Route index element={<DoctorDashboard />}/>
           <Route path="/doctor/appointments" element={<DoctorAppointments />}> </Route>
           <Route path="/doctor/profile" element={<DoctorProfile />}> </Route>
+          <Route path="/doctor/login" element={<AdminDoctorLogin loginIdentity="Doctor"/>} /> 
         </Route>
 
         {/* Admin Layout */}
@@ -61,6 +65,7 @@ function App() {
           <Route index element={<AdminDashboard />}/>
           <Route path="/admin/add-doctor" element={<AddDoctor />}></Route>
           <Route path="/admin/doctors" element={<AllDoctors />}></Route>
+          <Route path="/admin/login" element={<AdminDoctorLogin loginIdentity="Admin"/>} />
         </Route>
       </Routes>
       {/* for doctor and admin panel - footer is not there */}
