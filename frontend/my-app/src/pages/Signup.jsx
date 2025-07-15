@@ -20,10 +20,9 @@ const Signup = () => {
 
     return (
         <div className="w-screen min-h-screen flex flex-col justify-center items-center px-4 bg-white gap-10">
-            <h1 className="text-3xl text-[#1E1E2F] text-center">
+            <h1 className="text-2xl md:text-3xl text-[#1E1E2F] text-center">
                 Join <span className="text-indigo-400">CareConnect</span> and connect with trusted Doctors
             </h1>
-
             {/* Google Button */}
             <button
                 type="button"

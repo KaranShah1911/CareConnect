@@ -4,10 +4,9 @@ import { DoctorSideBar } from '../constants/constant'
 import { Outlet } from 'react-router-dom'
 
 const DoctorLayout = () => {
-    
     return (
         <>  
-            <SideBar content={DoctorSideBar}/>
+            <SideBar content={DoctorSideBar} role={"doctor"}/>
             {/* <DoctorNavbar /> */}
             {/* <DoctorSidebar /> */}
             <Outlet />

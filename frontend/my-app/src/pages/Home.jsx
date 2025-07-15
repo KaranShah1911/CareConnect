@@ -1,6 +1,6 @@
 import React from "react";
 import MediaSlider from "../components/MediaSlider";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const doctors = [
   {
@@ -62,38 +62,29 @@ const testimonials = [
 ];
 
 const HomePage = () => {
+  const navigate = useNavigate();
 
   return (
     <div className="bg-white text-[#1F2937] font-sans">
       {/* Hero Section */}
-      <section className="bg-[#F2F5FF] flex gap-5 items-center">
-        {/* <div className="max-w-7xl mx-auto flex flex-col-reverse md:flex-row items-center gap-10"> */}
+      <section className="bg-[#F2F5FF] flex flex-col md:flex-row gap-5 py-5 md:py-0 items-center">
         {/* Left: Media Slider */}
         <div className="w-full md:w-1/2 pt-25">
           <MediaSlider />
-          {/* Replace with your slider component or images */}
-          {/* <img src="https://randomuser.me/api/portraits/men/46.jpg" alt="Doctor Preview" className="rounded-xl shadow-lg" /> */}
         </div>
-
         {/* Right: Text Content */}
-        <div className="w-full md:w-1/2 text-center md:text-left">
-          <h1 className="text-4xl sm:text-5xl font-bold text-[#5C67F2] mb-4">
+        <div className="w-full md:w-1/2 flex flex-col gap-2 mt-2 md:mt-5 max-md:items-center">
+          <h1 className="text-3xl sm:text-5xl font-bold text-[#5C67F2] mb-4 text-center md:text-left">
             Connect with Trusted Doctors, Instantly
           </h1>
-          <p className="text-lg text-[#6B7280] max-w-xl">
+          <p className="text-lg text-[#6B7280] max-w-xl max-md:text-center">
             CareConnect helps you find the right specialists and book
             appointments with ease — anytime, anywhere.
           </p>
-          <div className="mt-8">
-            <Link
-              to="/all-doctors"
-              className="bg-[#5C67F2] text-white px-6 py-3 rounded-xl shadow-lg hover:bg-indigo-600 transition"
-            >
+          <button onClick={()=>navigate("/all-doctors")} className="bg-[#5C67F2] text-white px-6 py-3 rounded-xl shadow-lg hover:bg-indigo-600 transition max-w-max">
               Book Your Appointment
-            </Link>
-          </div>
+          </button>
         </div>
-        {/* </div> */}
       </section>
 
       {/* Features Section */}

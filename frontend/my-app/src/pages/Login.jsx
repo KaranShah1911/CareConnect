@@ -20,7 +20,7 @@ const Login = () => {
   };
 
   return (
-    <div className="w-screen min-h-screen flex flex-col justify-center items-center px-4 bg-white gap-10 pt-10">
+    <div className="w-screen min-h-screen flex flex-col justify-center items-center px-4 bg-white gap-10 pt-20 md:pt-10">
       <h1 className="text-3xl text-[#1E1E2F] text-center">
         Log in to your existing profile
       </h1>

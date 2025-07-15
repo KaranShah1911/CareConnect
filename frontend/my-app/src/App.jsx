@@ -1,5 +1,5 @@
-import React from "react"
-import { Route, Routes } from "react-router-dom"
+import React, { useState, useEffect } from "react"
+import { Route, Routes, Navigate } from "react-router-dom"
 
 import HomePage from "./pages/Home"
 import Doctors from "./pages/Doctors"
@@ -12,7 +12,6 @@ import MyAppointments from "./pages/MyAppointment"
 import UserProfile from "./pages/UserProfile"
 
 import DoctorDashboard from "./pages/DoctorDashboard"
-import DoctorPanel from "./components/DoctorPanel"
 import DoctorAppointments from "./pages/DoctorAppointments"
 import DoctorProfile from "./pages/DoctorProfile"
 
@@ -24,17 +23,18 @@ import AuthLayout from "./layouts/Authlayout"
 import MainLayout from "./layouts/Mainlayout"
 import AdminLayout from "./layouts/AdminLayout"
 import DoctorLayout from "./layouts/DoctorLayout"
-import { useStore } from "zustand"
+import { useDoctorStore , useAdminStore } from './utils/store'
+
 import AdminDoctorLogin from "./pages/AdminDoctorLogin"
 
 
 
 function App() {
-
+  const doctor = useDoctorStore((state)=>state.doctor);
+  const admin = useAdminStore((state)=>state.admin);
   return (
     <>
       <Routes>
-
         {/* User Layout */}
         <Route path="/" element={<MainLayout />}>
           <Route index element={<HomePage />}></Route>
@@ -53,20 +53,20 @@ function App() {
         </Route>
 
         {/* Doctor Layout */}
-        <Route path="/doctor" element={<DoctorLayout />}>
-          <Route index element={<DoctorDashboard />}/>
-          <Route path="/doctor/appointments" element={<DoctorAppointments />}> </Route>
-          <Route path="/doctor/profile" element={<DoctorProfile />}> </Route>
-          <Route path="/doctor/login" element={<AdminDoctorLogin loginIdentity="Doctor"/>} /> 
+        <Route path="/doctor" element={doctor ? <DoctorLayout /> : <Navigate to="/login" />}>
+          <Route index element={<DoctorDashboard />} />
+          <Route path="appointments" element={<DoctorAppointments />}> </Route>
+          <Route path="profile" element={<DoctorProfile />}> </Route>
         </Route>
 
         {/* Admin Layout */}
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<AdminDashboard />}/>
-          <Route path="/admin/add-doctor" element={<AddDoctor />}></Route>
-          <Route path="/admin/doctors" element={<AllDoctors />}></Route>
-          <Route path="/admin/login" element={<AdminDoctorLogin loginIdentity="Admin"/>} />
+        <Route path="/admin" element={admin ? <AdminLayout /> : <Navigate to="/login"/>}>
+          <Route index element={<AdminDashboard />} />
+          <Route path="add-doctor" element={<AddDoctor />}></Route>
+          <Route path="doctors" element={<AllDoctors />}></Route>
         </Route>
+
+        <Route path="/login" element={<AdminDoctorLogin />}></Route>
       </Routes>
       {/* for doctor and admin panel - footer is not there */}
 

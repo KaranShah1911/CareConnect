@@ -16,3 +16,31 @@ export const useStore = create(
         }
     )
 );
+
+export const useAdminStore = create((set) => ({
+    admin: JSON.parse(localStorage.getItem("admin")) || null,
+
+  login: (adminData) => {
+    localStorage.setItem("admin", JSON.stringify(adminData));
+    set({ admin: adminData });
+  },
+
+  logout: () => {
+    localStorage.removeItem("admin");
+    set({ admin: null });
+  },
+}));
+
+export const useDoctorStore = create((set) => ({
+  doctor: JSON.parse(localStorage.getItem("doctor")) || null,
+
+  login: (doctorData) => {
+    localStorage.setItem("doctor", JSON.stringify(doctorData));
+    set({ doctor: doctorData });
+  },
+
+  logout: () => {
+    localStorage.removeItem("doctor");
+    set({ doctor: null });
+  },
+}));

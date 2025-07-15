@@ -3,12 +3,30 @@ import { RxDashboard } from "react-icons/rx";
 import { FaWpforms } from "react-icons/fa";
 import { IoPeople } from "react-icons/io5";
 import { FaAngleRight, FaAngleLeft } from "react-icons/fa";
-import { Link } from 'react-router-dom';
-import { useStore } from '../utils/store';
+import { Link , useNavigate} from 'react-router-dom';
+import { useStore , useDoctorStore , useAdminStore } from '../utils/store';
 
-const SideBar = ({content}) => {
+const SideBar = ({content , role}) => {
+    const navigate = useNavigate();
     const sidebar = useStore((state) => state.sidebar);
     const toggleSidebar = useStore((state) => state.toggleSidebar);
+    const {logout : Doctorlogout} = useDoctorStore();
+    const {logout : Adminlogout} = useAdminStore();
+
+    const handleLogOut = ()=>{
+        try{
+            if(role === "admin"){
+                Adminlogout();
+                navigate("/login");
+            }else if(role === "doctor"){
+                Doctorlogout();
+                navigate("/login");
+            }
+
+        }catch(err){
+            console.error(err)
+        }
+    }
     return (<>
         {/* Navbar */}
         <nav className='fixed w-full h-[80px] border-b border-indigo-600 shadow-sm bg-white'>
@@ -19,7 +37,7 @@ const SideBar = ({content}) => {
                     <span className='text-xl'>CareConnect</span>
                 </div>
                 {/* Logout */}
-                <button className='text-xl bg-indigo-500 p-3 text-white rounded-xl'>Log Out</button>
+                <button onClick={()=>handleLogOut()} className='text-xl bg-indigo-500 p-3 text-white rounded-xl'>Log Out</button>
             </div>
         </nav>
 

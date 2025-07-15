@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const Loader = () => {
   return (
     <StyledWrapper>
-      <div className="dot-spinner absolute left-1/2 -translate-x-1/2">
+      <div className="dot-spinner absolute left-[50vw] -translate-x-1/2">
         <div className="dot-spinner__dot" />
         <div className="dot-spinner__dot" />
         <div className="dot-spinner__dot" />

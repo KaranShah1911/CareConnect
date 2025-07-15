@@ -6,7 +6,7 @@ import { Outlet } from 'react-router-dom'
 const AdminLayout = () => {
     return (
         <>
-            <SideBar content={AdminSideBar} />
+            <SideBar content={AdminSideBar} role={"admin"} />
             <Outlet />
         </>
     )

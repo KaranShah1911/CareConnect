@@ -168,10 +168,9 @@ const AdminDashboard = () => {
                             </div>
                         ))}
                     </div>
-                    <div>
+                    <div className="">
                         <div className="flex justify-between items-center p-2">
                             <h2 className="text-2xl font-semibold mb-4 text-indigo-700">Appointments</h2>
-
                             <div className="flex items-center gap-3">
                                 <input type="text" name="doctor" onChange={handleSearchByDoctor} className="border-1 rounded-md max-h-max p-2 focus:ring-2 focus:ring-violet-700 focus-within:none" placeholder="Search Doctor" />
 

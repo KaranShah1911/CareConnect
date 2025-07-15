@@ -160,13 +160,13 @@ const DoctorAppointments = () => {
 
   const handleStatusChange = (id, newStatus) => {
     //backend call to update status
-    try{
+    try {
       appointments.forEach((app) => { if (app.id === id) app.status = newStatus });
-      setFilteredAppointments((prev) => prev.map((app)=>{
-        if (app.id === id) return {...app, status: newStatus};
+      setFilteredAppointments((prev) => prev.map((app) => {
+        if (app.id === id) return { ...app, status: newStatus };
         return app;
       }));
-    }catch(err){
+    } catch (err) {
       console.log(err);
     }
 
@@ -186,7 +186,7 @@ const DoctorAppointments = () => {
   }
 
   const filterByPatient = (e) => {
-    const name = e.target.value
+    const name = e.target.value.toLowerCase()
     setFilter((prev) => { return { ...prev, [e.target.name]: name } })
     setFilteredAppointments(appointments.filter((app) => app.name.toLowerCase().includes(name) && (filter.status === "all" || app.status.toLowerCase() === filter.status)));
   }
@@ -197,103 +197,144 @@ const DoctorAppointments = () => {
   }
 
   return (
-    <div className={`flex flex-col min-h-screen gap-2 p-5 pt-30 ${sidebar ? "pl-50" : "pl-15"}`}>
-      <div className="flex justify-between items-center gap-5">
-        <h1 className="text-2xl font-semibold mb-8 text-[#5C67F2]">All Appointments</h1>
-        {/* Filtering */}
-        <div className="flex gap-5">
-          <div id="filter-1" className="flex items-center gap-2">
-            <label className="text-sm font-semibold text-gray-600">Filter by status:</label>
-            <select
-              name="status"
-              value={filter.status}
-              onChange={filterByStatus}
-              className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-            >
-              <option value="all">All</option>
-              <option value="pending">Pending</option>
-              <option value="completed">Completed</option>
-              <option value="cancelled">Cancelled</option>
-            </select>
+    <div className={`flex flex-col min-h-screen gap-2 p-5 pt-30 ${sidebar ? "pl-50" : "pl-15"} transition-all duration-300`}>
+      <div className="flex flex-col gap-5">
+        {/* Header + Filters */}
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+          <h1 className="text-2xl font-semibold text-[#5C67F2]">All Appointments</h1>
+
+          {/* Filters */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 w-full sm:w-auto">
+            {/* Status Filter */}
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <label className="text-sm font-semibold text-gray-600 whitespace-nowrap">
+                Filter by status:
+              </label>
+              <select
+                name="status"
+                value={filter.status}
+                onChange={filterByStatus}
+                className="w-full sm:w-auto border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              >
+                <option value="all">All</option>
+                <option value="pending">Pending</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </div>
+
+            {/* Patient Search */}
+            <input
+              type="text"
+              name="patient"
+              onChange={filterByPatient}
+              className="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-violet-700 w-full sm:w-auto"
+              placeholder="Search Patient"
+            />
           </div>
-          <input type="text" name="patient" onChange={filterByPatient} className="border-1 rounded-md max-h-max p-2 focus:ring-2 focus:ring-violet-700 focus-within:none" placeholder="Search Patient" />
         </div>
-        {/* Appointment List Header */}
-      </div>
-      <table className="w-full text-sm text-gray-700">
-        <thead className="bg-gray-100 font-semibold">
-          <tr className="text-left">
-            <th className="px-4 py-2">#</th>
-            <th className="px-4 py-2">Patient</th>
-            <th className="px-4 py-2">Payment</th>
-            <th className="px-4 py-2">Age</th>
-            <th className="px-4 py-2">Date & Time</th>
-            <th className="px-4 py-2">Fees</th>
-            <th className="px-4 py-2 text-center">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredAppointments.length > 0 ? (
-            filteredAppointments.slice(start, end).map((appointment) => (
-              <tr key={appointment.id} className="border-b">
-                <td className="px-4 py-4">{appointment.id}</td>
-                <td className="px-4 py-4 flex items-center">
-                  <img
-                    src={appointment.image}
-                    alt="patient.img"
-                    className="w-10 h-10 rounded-full object-cover mr-2"
-                  />
-                  {appointment.name}
-                </td>
-                <td className="px-4 py-4">{appointment.payment}</td>
-                <td className="px-4 py-4">{appointment.age}</td>
-                <td className="px-4 py-4">{appointment.dateTime}</td>
-                <td className="px-4 py-4">{appointment.fee}</td>
-                <td className="px-4 py-4">
-                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center text-center">
-                    <div className="text-md font-semibold">
-                      {appointment.status === "Completed" && (
-                        <span className="text-green-500">Completed</span>
-                      )}
-                      {appointment.status === "Cancelled" && (
-                        <span className="text-red-400">Cancelled</span>
-                      )}
-                    </div>
 
-                    {appointment.status === "Pending" && (
-                      <div className="flex gap-3 text-lg">
-                        <CheckCircle
-                          onClick={() => handleStatusChange(appointment.id, "Completed")}
-                          className="text-green-600 hover:scale-110 transition size-7"
-                        />
-                        <XCircle
-                          onClick={() => handleStatusChange(appointment.id, "Cancelled")}
-                          className="text-red-500 hover:scale-110 transition size-7"
-                        />
-                      </div>
-                    )}
-                  </div>
-                </td>
+        {/* Table */}
+        <div className="overflow-x-auto w-full">
+          <table className="min-w-[720px] w-full text-sm sm:text-base text-gray-700 border-collapse">
+            <thead className="bg-gray-100 font-semibold">
+              <tr className="text-left">
+                <th className="px-4 py-2">#</th>
+                <th className="px-4 py-2">Patient</th>
+                <th className="px-4 py-2">Payment</th>
+                <th className="px-4 py-2">Age</th>
+                <th className="px-4 py-2">Date & Time</th>
+                <th className="px-4 py-2">Fees</th>
+                <th className="px-4 py-2 text-center">Action</th>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="7" className="px-4 py-4 text-center text-red-500">
-                No appointments found.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+            </thead>
+            <tbody>
+              {filteredAppointments.length > 0 ? (
+                filteredAppointments.slice(start, end).map((appointment) => (
+                  <tr key={appointment.id} className="border-b">
+                    <td className="px-4 py-4">{appointment.id}</td>
+                    <td className="px-4 py-4 flex items-center">
+                      <img
+                        src={appointment.image}
+                        alt="patient.img"
+                        className="w-10 h-10 rounded-full object-cover mr-2"
+                      />
+                      {appointment.name}
+                    </td>
+                    <td className="px-4 py-4">{appointment.payment}</td>
+                    <td className="px-4 py-4">{appointment.age}</td>
+                    <td className="px-4 py-4">{appointment.dateTime}</td>
+                    <td className="px-4 py-4">{appointment.fee}</td>
+                    <td className="px-4 py-4">
+                      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center text-center">
+                        <div className="text-md font-semibold">
+                          {appointment.status === "Completed" && (
+                            <span className="text-green-500">Completed</span>
+                          )}
+                          {appointment.status === "Cancelled" && (
+                            <span className="text-red-400">Cancelled</span>
+                          )}
+                        </div>
+                        {appointment.status === "Pending" && (
+                          <div className="flex gap-3 text-lg justify-center">
+                            <CheckCircle
+                              onClick={() => handleStatusChange(appointment.id, "Completed")}
+                              className="text-green-600 hover:scale-110 transition size-6 cursor-pointer"
+                            />
+                            <XCircle
+                              onClick={() => handleStatusChange(appointment.id, "Cancelled")}
+                              className="text-red-500 hover:scale-110 transition size-6 cursor-pointer"
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7" className="px-4 py-4 text-center text-red-500">
+                    No appointments found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
 
-      {/* Pagination Component */}
-      <div className="flex items-center gap-2 mt-5">
-        <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} className="flex items-center gap-2 border-1 p-2 rounded-xl cursor-pointer bg-[#5C67F2] text-white"><FaArrowLeft /><span>Previous</span></button>
-        {
-          Array(totalPages).keys().map((ind) => <button onClick={() => handlePageChange(ind + 1)} key={ind} className={`border-1 rounded-md p-2 cursor-pointer ${currentPage === ind + 1 ? "bg-[#5C67F2] text-white" : ""}`}>{ind + 1}</button>)
-        }
-        <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} className="flex items-center border-1 p-2 rounded-xl cursor-pointer bg-[#5C67F2] text-white"><span>Next</span><FaArrowRight /></button>
+        {/* Pagination */}
+        <div className="flex flex-wrap justify-center sm:justify-start items-center gap-2 mt-5">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="flex items-center gap-2 border p-2 rounded-xl bg-[#5C67F2] text-white disabled:opacity-50"
+          >
+            <FaArrowLeft />
+            <span>Previous</span>
+          </button>
+
+          {Array.from({ length: totalPages }).map((_, ind) => (
+            <button
+              key={ind}
+              onClick={() => handlePageChange(ind + 1)}
+              className={`border p-2 rounded-md ${currentPage === ind + 1 ? "bg-[#5C67F2] text-white" : ""
+                }`}
+            >
+              {ind + 1}
+            </button>
+          ))}
+
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="flex items-center gap-2 border p-2 rounded-xl bg-[#5C67F2] text-white disabled:opacity-50"
+          >
+            <span>Next</span>
+            <FaArrowRight />
+          </button>
+        </div>
       </div>
+
     </div>
   );
 };

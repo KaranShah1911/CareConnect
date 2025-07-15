@@ -295,87 +295,112 @@ const Doctors = () => {
   }
 
   return (
-    <section className="bg-white min-h-screen flex flex-col items-center pb-5 pt-25">
-      {/* Filter */}
-      <div className=" md:w-[78vw] flex justify-center items-start gap-x-5 pb-10">
-        {loading ? <Loader/> : <><section className="sticky top-24 max-h-max p-5 transition-all bg-white rounded-xl shadow-sm border border-gray-200">
-          <span className="text-gray-800 font-medium text-sm">
-            Browse through the doctor's specialty:
-          </span>
+    <section className="bg-white min-h-screen flex flex-col items-center pb-5 pt-24">
+      {/* Main Container */}
+      <div className="md:w-[78vw] w-full flex flex-col md:flex-row justify-center items-start gap-x-5 px-4">
 
-          <div className={`mt-4 ${seeMore ? "max-h-[80vh] overflow-y-scroll" : "max-h-[30vh] overflow-hidden"}`}>
-            {doctorCategories.map((category, index) => (
-              <button
+        {/* Mobile Select Filter */}
+        {!loading && (
+          <div className="w-full block md:hidden mb-5">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Filter by Specialty
+            </label>
+            <select
+              value={specialty}
+              onChange={(e) => applyFilter(e.target.value)}
+              className="w-full border border-gray-300 rounded-md py-2 px-3 text-sm text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            >
+              <option value="All">All Specialties</option>
+              {doctorCategories.map((category, index) => (
+                <option key={index} value={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {/* Filter Sidebar */}
+        {!loading && (
+          <section className="hidden md:block sticky top-24 max-h-max p-5 transition-all bg-white rounded-xl shadow-sm border border-gray-200">
+            <span className="text-gray-800 font-medium text-sm">
+              Browse through the doctor's specialty:
+            </span>
+            <div
+              className={`mt-4 ${seeMore
+                  ? "max-h-[80vh] overflow-y-scroll"
+                  : "max-h-[30vh] overflow-hidden"
+                }`}
+            >
+              {doctorCategories.map((category, index) => (
+                <button
+                  key={index}
+                  onClick={() => applyFilter(category)}
+                  className={`block h-[40px] w-[230px] border pl-4 pr-2 mb-3 rounded-md text-start text-sm transition-all ${specialty === category
+                      ? "bg-indigo-100 border-indigo-500 text-indigo-700 font-medium"
+                      : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                    }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={() => toggleseeMore((prev) => !prev)}
+              className="text-sm text-blue-600 mt-2 hover:underline"
+            >
+              {seeMore ? "See Less" : "See More"}
+            </button>
+          </section>
+        )}
+
+        {/* Doctor Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 w-full mt-2">
+          {loading ? (
+            <Loader />
+          ) : filterDoctors?.length > 0 ? (
+            filterDoctors.slice(start, end).map((doctor, index) => (
+              <Link
                 key={index}
-                onClick={() => applyFilter(category)}
-                className={`block h-[40px] w-[95vw] sm:w-[230px] border pl-4 pr-2 mb-3 rounded-md text-start text-sm transition-all
-          ${specialty === category
-                    ? "bg-indigo-100 border-indigo-500 text-indigo-700 font-medium"
-                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
-                  }`}
+                to={`/appointment?doctorId=${index}`}
+                className="max-w-sm bg-white border border-gray-primary rounded-lg shadow-sm text-black hover:-translate-y-[7px] transition-all duration-300"
               >
-                {category}
-              </button>
-            ))}
-          </div>
-          <button
-            onClick={() => toggleseeMore((prev) => !prev)}
-            className="text-sm text-blue-600 mt-2 hover:underline"
-          >
-            {seeMore ? "See Less" : "See More"}
-          </button>
-        </section>
-
-          {/* Doctor List */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 px-5 ">
-            {filterDoctors ? (
-              filterDoctors.slice(start, end).map((doctor, index) => (
-                <Link to={`/appointment?doctorId=${index}`}>
-                  <div
-                    key={index}
-                    className="max-w-sm bg-white border border-gray-primary rounded-lg shadow-sm text-black hover:-translate-y-[7px] transition-all duration-300"
+                <img
+                  className="rounded-t-lg w-full h-[260px] object-full border-b-1"
+                  src={doctor.image}
+                  alt={doctor.name}
+                />
+                <div className="p-5 pl-4 pb-1">
+                  <p
+                    className={`${doctor.availability ? "text-green-400" : "text-red-400"
+                      } text-sm`}
                   >
-                    <img
-                      className="rounded-t-lg w-full h-[260px] object-cover border-b-1"
-                      src={doctor.image}
-                      alt={doctor.name}
-                    />
-                    <div className="p-5 pl-4 pb-1">
-                      <p
-                        className={`
-                      ${doctor.availability ? "text-green-400" : "text-red-400"}
-                      text-sm
-                      `}
-                      >
-                        {doctor.availability ? "Available" : "Not Available"}
-                      </p>
-
-                      <h5 className="mt-1 text-xl font-medium tracking-tight text-gray-900 ">
-                        {doctor.name}
-                      </h5>
-                      <p className="mb-1 font-normal text-gray-700 dark:text-gray-400">
-                        {doctor.specialty}
-                      </p>
-                    </div>
-                  </div>
-                </Link>
-              ))
-            )
-              : (
-                <p className="text-indigo-800 mt-25">No Doctors</p>
-              )}
-          </div>
-          </>}
+                    {doctor.availability ? "Available" : "Not Available"}
+                  </p>
+                  <h5 className="mt-1 text-xl font-medium tracking-tight text-gray-900">
+                    {doctor.name}
+                  </h5>
+                  <p className="mb-1 font-normal text-gray-700">
+                    {doctor.specialty}
+                  </p>
+                </div>
+              </Link>
+            ))
+          ) : (
+            <p className="text-indigo-800 mt-5">No Doctors Found</p>
+          )}
         </div>
-          {/* Pagination Component */}
-          <div className="flex items-center gap-2">
-            <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} className="flex items-center gap-2 border-1 p-2 rounded-xl cursor-pointer bg-[#5C67F2] text-white"><FaArrowLeft /><span>Previous</span></button>
-            {
-              Array(NoofPages).keys().map((ind) => <button onClick={() => handlePageChange(ind + 1)} key={ind} className={`border-1 rounded-md p-2 cursor-pointer ${currentPage === ind + 1 ? "bg-[#5C67F2] text-white" : ""}`}>{ind + 1}</button>)
-            }
-            <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === NoofPages} className="flex items-center border-1 p-2 rounded-xl cursor-pointer bg-[#5C67F2] text-white"><span>Next</span><FaArrowRight /></button>
-          </div>
-      
+      </div>
+
+      {/* Pagination Component */}
+      <div className="flex items-center gap-2 mt-5">
+        <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} className="flex items-center gap-2 border-1 p-2 rounded-xl cursor-pointer bg-[#5C67F2] text-white disabled:opacity-50"><FaArrowLeft /><span>Previous</span></button>
+        {
+          Array(NoofPages).keys().map((ind) => <button onClick={() => handlePageChange(ind + 1)} key={ind} className={`border-1 rounded-md p-2 cursor-pointer ${currentPage === ind + 1 ? "bg-[#5C67F2] text-white" : ""}`}>{ind + 1}</button>)
+        }
+        <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === NoofPages} className="flex items-center border-1 p-2 rounded-xl cursor-pointer bg-[#5C67F2] text-white disabled:opacity-50"><span>Next</span><FaArrowRight /></button>
+      </div>
+
     </section>
   );
 };
