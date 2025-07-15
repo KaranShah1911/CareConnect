@@ -64,7 +64,7 @@ const loginUser = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.json({ success: false, message: "User does not exist" });
+      throw new ApiError(404, "User not exist");
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
@@ -74,6 +74,10 @@ const loginUser = async (req, res) => {
         { id: user._id, role: "USER" },
         process.env.JWT_SECRET
       );
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: true
+      });
       res.json({ success: true, token });
     } else {
       res.json({ success: false, message: "Invalid Credentials" });
@@ -88,7 +92,7 @@ const loginUser = async (req, res) => {
 // API to get user profile data
 const getProfile = async (req, res) => {
   try {
-    const userId = req.userId;
+    const {userId} = req.body;
 
     if (!userId)
       throw new ApiError(400, "User Id is required. Token not decoding Id");
@@ -151,7 +155,7 @@ const bookAppointment = async (req, res) => {
 
     if (!docData) throw new ApiError(404, "Doctor not found");
 
-    if (!docData.available) throw new ApiError(400, "Doctor not available");
+    if (!docData.available) return res.json({ success: false, message: "Doctor not available" });
 
     let slots_booked = docData.slots_booked;
 
@@ -165,8 +169,7 @@ const bookAppointment = async (req, res) => {
     }
 
     delete docData.slots_booked;
-
-    console.log(doctorId);
+    // console.log(doctorId);
 
     const appointment = new appointmentModel({
       userId,
@@ -208,6 +211,10 @@ const listAppointments = async (req, res) => {
           as: "docData",
         },
       },
+      {
+        $unwind: "$docData" // this makes docData a plain object instead of an array
+      }
+
     ]);
     return res.status(200).json(new ApiResponse(200, "Success", appointments));
   } catch (error) {
