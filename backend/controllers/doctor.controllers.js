@@ -53,7 +53,7 @@ const loginDoctor = async (req, res) => {
 
       res.json({ success: true, token });
     } else {
-      res.json({ success: false, message: "Invalid Credentials from here" });
+      res.json({ success: false, message: "Invalid Credentials" });
     }
   } catch (error) {
     return res
