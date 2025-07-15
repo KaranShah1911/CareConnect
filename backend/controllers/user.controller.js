@@ -78,7 +78,14 @@ const loginUser = async (req, res) => {
         httpOnly: true,
         secure: true
       });
-      res.json({ success: true, token });
+
+      const userImage = user.image;
+
+      res.json({
+        success: true,
+        token,
+        userImage, // includes image URL
+      });
     } else {
       res.json({ success: false, message: "Invalid Credentials" });
     }
@@ -115,29 +122,24 @@ const updateProfile = async (req, res) => {
     if (!userId)
       throw new ApiError(400, "User Id is required. Token not decoding Id");
 
-    if (!name || !phone || !address || !dob || !gender)
-      throw new ApiError(400, "All fields are required");
+    if (!name && !phone && !address && !dob && !gender && !imageFile)
+      throw new ApiError(400, "At least one field must be provided");
 
+    const updateFields = {};
+    if (name) updateFields.name = name;
+    if (phone) updateFields.phone = phone;
+    if (address) updateFields.address = JSON.parse(address);
+    if (dob) updateFields.dob = dob;
+    if (gender) updateFields.gender = gender;
     if (imageFile) {
-      // console.log("Uploading with image");
       const image = await uploadOnCloudinary(imageFile.path);
-      const imageUrl = image.url;
-      await User.findByIdAndUpdate(userId, { image: imageUrl });
+      updateFields.image = image.url;
     }
 
-    await User.findByIdAndUpdate(
-      userId,
-      {
-        name,
-        phone,
-        address: JSON.parse(address),
-        dob,
-        gender,
-      },
-      { new: true }
-    );
-
-    return res.status(200).json({ success: true, message: "Profile updated" });
+    const updatedUser = await User.findByIdAndUpdate(userId, updateFields, {
+          new: true,
+        });
+    return res.status(200).json({ success: true, image: updatedUser.image ,message: "Profile updated" });
   } catch (error) {
     return res
       .status(error.statusCode || 500)

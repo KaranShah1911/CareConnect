@@ -53,6 +53,10 @@ const doctorSchema = new mongoose.Schema(
       default: Date.now,
       required: true,
     },
+    clinic_phno: {
+      type: String,
+      required: true,
+    },
   },
   { minimize: false, timestamps: true }
 );

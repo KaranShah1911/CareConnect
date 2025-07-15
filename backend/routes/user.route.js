@@ -22,7 +22,7 @@ userRouter.post("/login", loginUser);
 
 userRouter.get("/get-profile", verifyJWT, getProfile);
 
-userRouter.post(
+userRouter.patch(
   "/update-profile",
   upload.single("image"),
   verifyJWT,
