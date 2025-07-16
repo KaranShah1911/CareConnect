@@ -98,7 +98,7 @@ const handleAdminLogin = async (req, res) => {
       res.cookie("token", token, {
         httpOnly: true,
         secure: true,
-        sameSite: "none",
+        // sameSite: "none",
       });
 
       return res.status(200).json({
@@ -119,31 +119,27 @@ const handleAdminLogin = async (req, res) => {
 // API to get all doctors list for the admin panel
 const allDoctors = async (req, res) => {
   try {
+    const doctors = await Doctor.find({}).select("-password");
 
-    const doctors = await Doctor.find({}).select('-password')
-
-    res.json({ success: true, doctors })
-    
+    res.json({ success: true, doctors });
   } catch (error) {
     return res
       .status(error.statusCode || 500)
       .json(new ApiResponse(error.statusCode || 500, error.message));
   }
-}
+};
 
 // API to get all appointment list
 const appointmentsAdmin = async (req, res) => {
   try {
-
     const appointments = await appointmentModel.find({});
     res.json({ success: true, appointments });
-    
   } catch (error) {
-      return res
+    return res
       .status(error.statusCode || 500)
-      .json(new ApiResponse(error.statusCode || 500, error.message)); 
+      .json(new ApiResponse(error.statusCode || 500, error.message));
   }
-}
+};
 
 // API for appointment cancellation
 const appointmentCancel = async (req, res) => {
@@ -180,7 +176,6 @@ const appointmentCancel = async (req, res) => {
 // API to get dashboard data for the admin
 const adminDashBoard = async (req, res) => {
   try {
-
     const doctors = await Doctor.find({});
     const users = await User.find({});
     const appointments = await appointmentModel.find({});
@@ -190,15 +185,21 @@ const adminDashBoard = async (req, res) => {
       appointments: appointments.length,
       patiens: users.length,
       latestAppointments: appointments.reverse().slice(0, 5),
-    }
+    };
 
     res.json({ success: true, dashData });
-    
   } catch (error) {
     return res
       .status(error.statusCode || 500)
       .json(new ApiResponse(error.statusCode || 500, error.message));
   }
-}
+};
 
-export { addDoctor, handleAdminLogin, allDoctors, appointmentsAdmin, appointmentCancel, adminDashBoard };
+export {
+  addDoctor,
+  handleAdminLogin,
+  allDoctors,
+  appointmentsAdmin,
+  appointmentCancel,
+  adminDashBoard,
+};

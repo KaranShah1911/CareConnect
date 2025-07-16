@@ -9,7 +9,7 @@ import {
 } from "../controllers/admin.controllers.js";
 import { upload } from "../middlewares/multer.js";
 import { body } from "express-validator";
-import { checkForAuthorization } from "../middlewares/auth.middleware.js";
+import { checkForAuthorization, verifyJWT } from "../middlewares/auth.middleware.js";
 import { changeAvailibility } from "../controllers/doctor.controllers.js";
 
 const router = Router();
@@ -37,5 +37,5 @@ router.post(
 
 router.get('/appointments', checkForAuthorization(["ADMIN"]), appointmentsAdmin)
 router.post('/cancel-appointment', checkForAuthorization(["ADMIN"]), appointmentCancel)
-router.get('/dashboard', checkForAuthorization(["ADMIN"]), adminDashBoard)
+router.get('/dashboard', checkForAuthorization(["ADMIN"]),verifyJWT, adminDashBoard)
 export default router;
