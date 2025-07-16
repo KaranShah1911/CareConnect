@@ -1,289 +1,302 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
 import { FaArrowLeft } from "react-icons/fa6";
+import axios from "axios";
 import Loader from "../components/Loader";
+import {toast} from "react-toastify";
 
 // dummy doctors data
-const doctors = [
-  {
-    name: "Dr. Anjali Sharma",
-    specialty: "Cardiologist",
-    rating: 4.9,
-    reviews: 124,
-    image: "https://randomuser.me/api/portraits/women/44.jpg",
-    availability: true,
-  },
-  {
-    name: "Dr. Rahul Verma",
-    specialty: "Dermatologist",
-    rating: 4.8,
-    reviews: 98,
-    image: "https://randomuser.me/api/portraits/men/46.jpg",
-    availability: false,
-  },
-  {
-    name: "Dr. Meera Nair",
-    specialty: "Neurologist",
-    rating: 4.7,
-    reviews: 89,
-    image: "https://randomuser.me/api/portraits/women/48.jpg",
-    availability: true,
-  },
-  {
-    name: "Dr. Arjun Singh",
-    specialty: "Neurologist",
-    rating: 4.9,
-    reviews: 110,
-    image: "https://randomuser.me/api/portraits/men/40.jpg",
-    availability: false,
-  },
-  {
-    name: "Dr. Kavita Joshi",
-    specialty: "Cardiologist",
-    rating: 4.6,
-    reviews: 95,
-    image: "https://randomuser.me/api/portraits/women/50.jpg",
-    availability: true,
-  },
-  {
-    name: "Dr. Suresh Iyer",
-    specialty: "Gynecologist",
-    rating: 4.8,
-    reviews: 105,
-    image: "https://randomuser.me/api/portraits/men/52.jpg",
-    availability: true,
-  },
-  {
-    name: "Dr. Priya Reddy",
-    specialty: "Cardiologist",
-    rating: 4.7,
-    reviews: 87,
-    image: "https://randomuser.me/api/portraits/women/52.jpg",
-    availability: false,
-  },
-  {
-    name: "Dr. Sneha Kulkarni",
-    specialty: "General Physician",
-    rating: 4.6,
-    reviews: 90,
-    image: "https://randomuser.me/api/portraits/women/54.jpg",
-    availability: false,
-  },
-  {
-    name: "Dr. Rohan Mehta",
-    specialty: "Cardiologist",
-    rating: 4.8,
-    reviews: 102,
-    image: "https://randomuser.me/api/portraits/men/56.jpg",
-    availability: true,
-  },
-  {
-    name: "Dr. Neeraj Saxena",
-    specialty: "Oncologist",
-    rating: 4.9,
-    reviews: 130,
-    image: "https://randomuser.me/api/portraits/men/58.jpg",
-    availability: false,
-  },
-  {
-    name: "Dr. Rohit Shetty",
-    specialty: "Dentist",
-    rating: 4.9,
-    reviews: 120,
-    image: "https://randomuser.me/api/portraits/men/66.jpg",
-    availability: true,
-  },
-  {
-    name: "Dr. Rohit Shetty",
-    specialty: "Dentist",
-    rating: 4.9,
-    reviews: 120,
-    image: "https://randomuser.me/api/portraits/men/66.jpg",
-    availability: true,
-  },
-  {
-    name: "Dr. Rohit Shetty",
-    specialty: "Dentist",
-    rating: 4.9,
-    reviews: 120,
-    image: "https://randomuser.me/api/portraits/men/66.jpg",
-    availability: true,
-  },
-  {
-    name: "Dr. Rohit Shetty",
-    specialty: "Dentist",
-    rating: 4.9,
-    reviews: 120,
-    image: "https://randomuser.me/api/portraits/men/66.jpg",
-    availability: true,
-  },
-  {
-    name: "Dr. Rohit Shetty",
-    specialty: "Dentist",
-    rating: 4.9,
-    reviews: 120,
-    image: "https://randomuser.me/api/portraits/men/66.jpg",
-    availability: true,
-  },
-  {
-    name: "Dr. Rohit Shetty",
-    specialty: "Dentist",
-    rating: 4.9,
-    reviews: 120,
-    image: "https://randomuser.me/api/portraits/men/66.jpg",
-    availability: true,
-  },
-  {
-    name: "Dr. Rohit Shetty",
-    specialty: "Dentist",
-    rating: 4.9,
-    reviews: 120,
-    image: "https://randomuser.me/api/portraits/men/66.jpg",
-    availability: true,
-  },
-  {
-    name: "Dr. Rohit Shetty",
-    specialty: "Dentist",
-    rating: 4.9,
-    reviews: 120,
-    image: "https://randomuser.me/api/portraits/men/66.jpg",
-    availability: true,
-  },
-  {
-    name: "Dr. Rohit Shetty",
-    specialty: "Dentist",
-    rating: 4.9,
-    reviews: 120,
-    image: "https://randomuser.me/api/portraits/men/66.jpg",
-    availability: true,
-  },
-  {
-    name: "Dr. Rohit Shetty",
-    specialty: "Dentist",
-    rating: 4.9,
-    reviews: 120,
-    image: "https://randomuser.me/api/portraits/men/66.jpg",
-    availability: true,
-  },
-  {
-    name: "Dr. Rohit Shetty",
-    specialty: "Dentist",
-    rating: 4.9,
-    reviews: 120,
-    image: "https://randomuser.me/api/portraits/men/66.jpg",
-    availability: true,
-  },
-  {
-    name: "Dr. Rohit Shetty",
-    specialty: "Dentist",
-    rating: 4.9,
-    reviews: 120,
-    image: "https://randomuser.me/api/portraits/men/66.jpg",
-    availability: true,
-  },
-  {
-    name: "Dr. Rohit Shetty",
-    specialty: "Dentist",
-    rating: 4.9,
-    reviews: 120,
-    image: "https://randomuser.me/api/portraits/men/66.jpg",
-    availability: true,
-  },
-  {
-    name: "Dr. Rohit Shetty",
-    specialty: "Dentist",
-    rating: 4.9,
-    reviews: 120,
-    image: "https://randomuser.me/api/portraits/men/66.jpg",
-    availability: true,
-  },
-  {
-    name: "Dr. Rohit Shetty",
-    specialty: "Dentist",
-    rating: 4.9,
-    reviews: 120,
-    image: "https://randomuser.me/api/portraits/men/66.jpg",
-    availability: true,
-  },
-  {
-    name: "Dr. Rohit Shetty",
-    specialty: "Dentist",
-    rating: 4.9,
-    reviews: 120,
-    image: "https://randomuser.me/api/portraits/men/66.jpg",
-    availability: true,
-  },
-  {
-    name: "Dr. Rohit Shetty",
-    specialty: "Dentist",
-    rating: 4.9,
-    reviews: 120,
-    image: "https://randomuser.me/api/portraits/men/66.jpg",
-    availability: true,
-  },
-  {
-    name: "Dr. Rohit Shetty",
-    specialty: "Dentist",
-    rating: 4.9,
-    reviews: 120,
-    image: "https://randomuser.me/api/portraits/men/66.jpg",
-    availability: true,
-  },
-  {
-    name: "Dr. Rohit Shetty",
-    specialty: "Dentist",
-    rating: 4.9,
-    reviews: 120,
-    image: "https://randomuser.me/api/portraits/men/66.jpg",
-    availability: true,
-  },
-];
+// const doctors = [
+//   {
+//     name: "Dr. Anjali Sharma",
+//     specialty: "Cardiologist",
+//     rating: 4.9,
+//     reviews: 124,
+//     image: "https://randomuser.me/api/portraits/women/44.jpg",
+//     availability: true,
+//   },
+//   {
+//     name: "Dr. Rahul Verma",
+//     specialty: "Dermatologist",
+//     rating: 4.8,
+//     reviews: 98,
+//     image: "https://randomuser.me/api/portraits/men/46.jpg",
+//     availability: false,
+//   },
+//   {
+//     name: "Dr. Meera Nair",
+//     specialty: "Neurologist",
+//     rating: 4.7,
+//     reviews: 89,
+//     image: "https://randomuser.me/api/portraits/women/48.jpg",
+//     availability: true,
+//   },
+//   {
+//     name: "Dr. Arjun Singh",
+//     specialty: "Neurologist",
+//     rating: 4.9,
+//     reviews: 110,
+//     image: "https://randomuser.me/api/portraits/men/40.jpg",
+//     availability: false,
+//   },
+//   {
+//     name: "Dr. Kavita Joshi",
+//     specialty: "Cardiologist",
+//     rating: 4.6,
+//     reviews: 95,
+//     image: "https://randomuser.me/api/portraits/women/50.jpg",
+//     availability: true,
+//   },
+//   {
+//     name: "Dr. Suresh Iyer",
+//     specialty: "Gynecologist",
+//     rating: 4.8,
+//     reviews: 105,
+//     image: "https://randomuser.me/api/portraits/men/52.jpg",
+//     availability: true,
+//   },
+//   {
+//     name: "Dr. Priya Reddy",
+//     specialty: "Cardiologist",
+//     rating: 4.7,
+//     reviews: 87,
+//     image: "https://randomuser.me/api/portraits/women/52.jpg",
+//     availability: false,
+//   },
+//   {
+//     name: "Dr. Sneha Kulkarni",
+//     specialty: "General Physician",
+//     rating: 4.6,
+//     reviews: 90,
+//     image: "https://randomuser.me/api/portraits/women/54.jpg",
+//     availability: false,
+//   },
+//   {
+//     name: "Dr. Rohan Mehta",
+//     specialty: "Cardiologist",
+//     rating: 4.8,
+//     reviews: 102,
+//     image: "https://randomuser.me/api/portraits/men/56.jpg",
+//     availability: true,
+//   },
+//   {
+//     name: "Dr. Neeraj Saxena",
+//     specialty: "Oncologist",
+//     rating: 4.9,
+//     reviews: 130,
+//     image: "https://randomuser.me/api/portraits/men/58.jpg",
+//     availability: false,
+//   },
+//   {
+//     name: "Dr. Rohit Shetty",
+//     specialty: "Dentist",
+//     rating: 4.9,
+//     reviews: 120,
+//     image: "https://randomuser.me/api/portraits/men/66.jpg",
+//     availability: true,
+//   },
+//   {
+//     name: "Dr. Rohit Shetty",
+//     specialty: "Dentist",
+//     rating: 4.9,
+//     reviews: 120,
+//     image: "https://randomuser.me/api/portraits/men/66.jpg",
+//     availability: true,
+//   },
+//   {
+//     name: "Dr. Rohit Shetty",
+//     specialty: "Dentist",
+//     rating: 4.9,
+//     reviews: 120,
+//     image: "https://randomuser.me/api/portraits/men/66.jpg",
+//     availability: true,
+//   },
+//   {
+//     name: "Dr. Rohit Shetty",
+//     specialty: "Dentist",
+//     rating: 4.9,
+//     reviews: 120,
+//     image: "https://randomuser.me/api/portraits/men/66.jpg",
+//     availability: true,
+//   },
+//   {
+//     name: "Dr. Rohit Shetty",
+//     specialty: "Dentist",
+//     rating: 4.9,
+//     reviews: 120,
+//     image: "https://randomuser.me/api/portraits/men/66.jpg",
+//     availability: true,
+//   },
+//   {
+//     name: "Dr. Rohit Shetty",
+//     specialty: "Dentist",
+//     rating: 4.9,
+//     reviews: 120,
+//     image: "https://randomuser.me/api/portraits/men/66.jpg",
+//     availability: true,
+//   },
+//   {
+//     name: "Dr. Rohit Shetty",
+//     specialty: "Dentist",
+//     rating: 4.9,
+//     reviews: 120,
+//     image: "https://randomuser.me/api/portraits/men/66.jpg",
+//     availability: true,
+//   },
+//   {
+//     name: "Dr. Rohit Shetty",
+//     specialty: "Dentist",
+//     rating: 4.9,
+//     reviews: 120,
+//     image: "https://randomuser.me/api/portraits/men/66.jpg",
+//     availability: true,
+//   },
+//   {
+//     name: "Dr. Rohit Shetty",
+//     specialty: "Dentist",
+//     rating: 4.9,
+//     reviews: 120,
+//     image: "https://randomuser.me/api/portraits/men/66.jpg",
+//     availability: true,
+//   },
+//   {
+//     name: "Dr. Rohit Shetty",
+//     specialty: "Dentist",
+//     rating: 4.9,
+//     reviews: 120,
+//     image: "https://randomuser.me/api/portraits/men/66.jpg",
+//     availability: true,
+//   },
+//   {
+//     name: "Dr. Rohit Shetty",
+//     specialty: "Dentist",
+//     rating: 4.9,
+//     reviews: 120,
+//     image: "https://randomuser.me/api/portraits/men/66.jpg",
+//     availability: true,
+//   },
+//   {
+//     name: "Dr. Rohit Shetty",
+//     specialty: "Dentist",
+//     rating: 4.9,
+//     reviews: 120,
+//     image: "https://randomuser.me/api/portraits/men/66.jpg",
+//     availability: true,
+//   },
+//   {
+//     name: "Dr. Rohit Shetty",
+//     specialty: "Dentist",
+//     rating: 4.9,
+//     reviews: 120,
+//     image: "https://randomuser.me/api/portraits/men/66.jpg",
+//     availability: true,
+//   },
+//   {
+//     name: "Dr. Rohit Shetty",
+//     specialty: "Dentist",
+//     rating: 4.9,
+//     reviews: 120,
+//     image: "https://randomuser.me/api/portraits/men/66.jpg",
+//     availability: true,
+//   },
+//   {
+//     name: "Dr. Rohit Shetty",
+//     specialty: "Dentist",
+//     rating: 4.9,
+//     reviews: 120,
+//     image: "https://randomuser.me/api/portraits/men/66.jpg",
+//     availability: true,
+//   },
+//   {
+//     name: "Dr. Rohit Shetty",
+//     specialty: "Dentist",
+//     rating: 4.9,
+//     reviews: 120,
+//     image: "https://randomuser.me/api/portraits/men/66.jpg",
+//     availability: true,
+//   },
+//   {
+//     name: "Dr. Rohit Shetty",
+//     specialty: "Dentist",
+//     rating: 4.9,
+//     reviews: 120,
+//     image: "https://randomuser.me/api/portraits/men/66.jpg",
+//     availability: true,
+//   },
+//   {
+//     name: "Dr. Rohit Shetty",
+//     specialty: "Dentist",
+//     rating: 4.9,
+//     reviews: 120,
+//     image: "https://randomuser.me/api/portraits/men/66.jpg",
+//     availability: true,
+//   },
+//   {
+//     name: "Dr. Rohit Shetty",
+//     specialty: "Dentist",
+//     rating: 4.9,
+//     reviews: 120,
+//     image: "https://randomuser.me/api/portraits/men/66.jpg",
+//     availability: true,
+//   },
+// ];
 
 // dummy category data
-const doctorCategories = [
-  "All",
-  "Cardiologist",
-  "Dermatologist",
-  "Neurologist",
-  "Gynecologist",
-  "General Physician",
-  "Dentist",
-  "Oncologist",
-];
+// const doctorCategories = [
+//   "All",
+//   "Cardiologist",
+//   "Dermatologist",
+//   "Neurologist",
+//   "Gynecologist",
+//   "General Physician",
+//   "Dentist",
+//   "Oncologist",
+// ];
 
 const DoctorsperPage = 9;
 
 const Doctors = () => {
-  const [specialty, setSpecialty] = useState("All");
+  const navigate = useNavigate()
+  const [doctors , setDoctors] = useState([]);
   const [filterDoctors, setFilterDoctors] = useState([]);
+  const [categories , setCategories] = useState([]);
+  
+  const [specialty, setSpecialty] = useState("All");
   const [seeMore, toggleseeMore] = useState(false);
+
   const [loading, setLoading] = useState(true);
+
   const [currentPage, setcurrentPage] = useState(1);
   const [start, setStart] = useState((currentPage - 1) * DoctorsperPage);
   const [end, setEnd] = useState(DoctorsperPage);
 
+  useEffect(() => {
+    try {
+      axios.get("http://localhost:3000/api/doctor/list")
+        .then((response) => {
+          // console.log(response.data.doctors);
+          const responsedoctors = response.data.doctors;
+          setCategories(["All" , ...new Set(responsedoctors.map((doctor) => doctor.specialization))]);
+          setDoctors(responsedoctors)
+          setFilterDoctors(responsedoctors)
+          setLoading(false);
+        })
+        .catch((error) => console.log(error))
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
+  
   const NoofDoctors = filterDoctors.length;
   const NoofPages = Math.ceil(NoofDoctors / DoctorsperPage);
-
-  useEffect(() => {
-    console.log("Fetching Doctors....");
-
-    // Api call...
-    setTimeout(() => {
-      setLoading(false);
-      setFilterDoctors(doctors);
-      console.log("Doctors fetched...");
-    }, 2000)
-  }, []);
-
-
+  
   const applyFilter = (category) => {
     setSpecialty(category)
     if (category === "All") {
       setFilterDoctors(doctors);
     } else {
-      setFilterDoctors(doctors.filter((doctor) => doctor.specialty == category));
+      setFilterDoctors(doctors.filter((doctor) => doctor.specialization == category));
     }
     handlePageChange(1);
   }
@@ -311,7 +324,7 @@ const Doctors = () => {
               className="w-full border border-gray-300 rounded-md py-2 px-3 text-sm text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
             >
               <option value="All">All Specialties</option>
-              {doctorCategories.map((category, index) => (
+              {categories && categories.map((category, index) => (
                 <option key={index} value={category}>
                   {category}
                 </option>
@@ -328,17 +341,17 @@ const Doctors = () => {
             </span>
             <div
               className={`mt-4 ${seeMore
-                  ? "max-h-[80vh] overflow-y-scroll"
-                  : "max-h-[30vh] overflow-hidden"
+                ? "max-h-[80vh] overflow-y-scroll"
+                : "max-h-[30vh] overflow-hidden"
                 }`}
             >
-              {doctorCategories.map((category, index) => (
+              {categories.map((category, index) => (
                 <button
                   key={index}
                   onClick={() => applyFilter(category)}
                   className={`block h-[40px] w-[230px] border pl-4 pr-2 mb-3 rounded-md text-start text-sm transition-all ${specialty === category
-                      ? "bg-indigo-100 border-indigo-500 text-indigo-700 font-medium"
-                      : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                    ? "bg-indigo-100 border-indigo-500 text-indigo-700 font-medium"
+                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
                     }`}
                 >
                   {category}
@@ -360,9 +373,16 @@ const Doctors = () => {
             <Loader />
           ) : filterDoctors?.length > 0 ? (
             filterDoctors.slice(start, end).map((doctor, index) => (
-              <Link
+              <button
                 key={index}
-                to={`/appointment?doctorId=${index}`}
+                onClick = {()=>{
+                  if(doctor.available === false){
+                    toast.error("Doctor is not available currently..");
+                    return;
+                  }
+                  navigate(`/appointment?doctorId=${doctor._id}` , {state : {doctor}})
+                }}
+                to={`/appointment?doctorId=${doctor._id}`}
                 className="max-w-sm bg-white border border-gray-primary rounded-lg shadow-sm text-black hover:-translate-y-[7px] transition-all duration-300"
               >
                 <img
@@ -372,19 +392,19 @@ const Doctors = () => {
                 />
                 <div className="p-5 pl-4 pb-1">
                   <p
-                    className={`${doctor.availability ? "text-green-400" : "text-red-400"
+                    className={`${doctor.available ? "text-green-400" : "text-red-400"
                       } text-sm`}
                   >
-                    {doctor.availability ? "Available" : "Not Available"}
+                    {doctor.available ? "Available" : "Not Available"}
                   </p>
                   <h5 className="mt-1 text-xl font-medium tracking-tight text-gray-900">
                     {doctor.name}
                   </h5>
                   <p className="mb-1 font-normal text-gray-700">
-                    {doctor.specialty}
+                    {doctor.specialization}
                   </p>
                 </div>
-              </Link>
+              </button>
             ))
           ) : (
             <p className="text-indigo-800 mt-5">No Doctors Found</p>

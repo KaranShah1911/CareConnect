@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 const allAppointments = [
   {
@@ -40,14 +41,35 @@ const allAppointments = [
 ];
 
 const MyAppointments = () => {
-    const [appointments, setAppointments] = useState(allAppointments)
-    const handleCancel = (id) => {
-        setAppointments( (prev) =>             
-                prev.map( (appointment) => 
-                appointment.id === id ? {...appointment , appointmentCancelled : true} : appointment
-            )
-        );
+    const [appointments, setAppointments] = useState([])
+    const handleCancel = (appointmentId) => {
+        try{
+          axios.post("http://localhost:3000/api/user/cancel-appointment" , {appointmentId} , {
+            withCredentials : true
+          })
+          .then(res => {
+            setAppointments(appointments.map(app => {
+              if(app._id === appointmentId) app.cancelled = true;
+              return app;
+            }));
+            alert("Appointment cancelled");
+          })
+
+        }catch(err){
+          console.log(err);
+        }
     }
+    useEffect(()=>{
+      axios.get("http://localhost:3000/api/user/list-appointments" , {
+        withCredentials : true
+      })
+      .then(res => {
+        setAppointments(res.data.data);
+        console.log(res.data.data);
+      })
+      .catch(err => console.error(err));
+
+    } , []);
   return (
     <div className="mb-20 pt-30 p-5 m-auto">
       {/* Page Header */}
@@ -59,17 +81,17 @@ const MyAppointments = () => {
 
       {/* Appointments List */}
       <div className="mx-auto px-6 py-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-        {appointments.map((appointment) => (
+        {appointments && appointments.map((appointment) => (
           <div
-            key={appointment.id}
+            key={appointment._id}
             className="bg-white rounded-xl shadow hover:shadow-md transition-all p-6 col-span-1"
           >
             <div className="flex flex-col md:flex-row gap-6">
               {/* Doctor Image */}
               <div className="flex-shrink-0">
                 <img
-                  src={appointment.image}
-                  alt={appointment.doctorName}
+                  src={appointment.docData.image}
+                  alt={appointment.docData.name}
                   className="w-28 h-28 object-cover rounded-full border-4 border-white shadow"
                 />
               </div>
@@ -78,10 +100,10 @@ const MyAppointments = () => {
               <div className="flex-1">
                 <div className="mb-2">
                   <h2 className="text-xl font-semibold text-gray-800">
-                    {appointment.doctorName}
+                    {appointment.docData.name}
                   </h2>
                   <p className="text-sm text-gray-500 uppercase tracking-wider">
-                    {appointment.specialty}
+                    {appointment.docData.specialization}
                   </p>
                 </div>
 
@@ -91,14 +113,14 @@ const MyAppointments = () => {
                       Date & Time
                     </p>
                     <p className="text-gray-800 font-medium">
-                      {appointment.dateTime}
+                      {appointment.slotDate +" "+ appointment.slotTime}
                     </p>
                   </div>
                   <div>
                     <p className="text-gray-400 font-medium uppercase text-xs">
                       Address
                     </p>
-                    <p className="text-gray-800">{appointment.address}</p>
+                    <p className="text-gray-800">{JSON.parse(appointment.docData.address)["line1"]}</p>
                   </div>
                 </div>
               </div>
@@ -106,15 +128,15 @@ const MyAppointments = () => {
 
             {/* Action Buttons */}
             <div className="mt-6 flex flex-col sm:flex-row justify-end gap-3">
-              <button className={`py-2 px-6 rounded-md text-sm font-medium hover:bg-blue-700 hover:text-white transition border border-gray-300 cursor-pointer ${appointment.appointmentCancelled ? "hidden" : "block"}`}>
+              <button className={`py-2 px-6 rounded-md text-sm font-medium hover:bg-blue-700 hover:text-white transition border border-gray-300 cursor-pointer ${appointment.cancelled ? "hidden" : "block"}`}>
                 Pay Online
               </button>
               <button 
-              onClick={() => handleCancel(appointment.id)}
-              disabled={appointment.appointmentCancelled}
-              className={`border text-gray-700 py-2 px-6 rounded-md text-sm font-medium  transition ${appointment.appointmentCancelled ? "text-red-600 cursor-not-allowed" : "border-gray-300 hover:bg-red-600 hover:border-0 cursor-pointer" }`}>
+              onClick={() => handleCancel(appointment._id)}
+              disabled={appointment.cancelled}
+              className={`border text-gray-700 py-2 px-6 rounded-md text-sm font-medium  transition ${appointment.cancelled ? "text-red-600 cursor-not-allowed" : "border-gray-300 hover:bg-red-600 hover:border-0 cursor-pointer" }`}>
 
-                {appointment.appointmentCancelled ? "Appointment cancelled" : "Cancel appointment"}
+                {appointment.cancelled ? "Appointment cancelled" : "Cancel appointment"}
               </button>
             </div>
           </div>
