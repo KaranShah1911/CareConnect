@@ -32,12 +32,16 @@ const userSchema = new mongoose.Schema(
     },
     dob: {
       type: String,
-      default: "NOT SELECTED",
+      default: "Not Provided",
     },
     phone: {
       type: String,
       default: "NOT PROVIDED",
     },
+    age : {
+      type: String,
+      default: "Not Provided"
+    }
   },
   { minimize: false, timestamps: true }
 );

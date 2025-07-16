@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 3000;
 // middlewares :
 app.use(cors({
   origin: 'http://localhost:5173',  // The frontend URL that is allowed to make requests
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],  // Allowed HTTP methods
+  methods: ['GET', 'POST', 'PUT', 'DELETE' , 'PATCH'],  // Allowed HTTP methods
   credentials: true  // Allow credentials (cookies, etc.)
 }));
 app.use(express.json());
