@@ -43,7 +43,8 @@ const loginDoctor = async (req, res) => {
     const doctor = await doctorModel.findOne({ email });
 
     if (!doctor) {
-      return res.json({ success: false, message: "Invalid Credentials" });
+      throw new ApiError(404, "Invalid Credentials");
+      // return res.json({ success: false, message: "Invalid Credentials" });
     }
 
     const isMatch = await bcrypt.compare(password, doctor.password);
@@ -53,7 +54,8 @@ const loginDoctor = async (req, res) => {
 
       res.json({ success: true, token });
     } else {
-      res.json({ success: false, message: "Invalid Credentials" });
+      throw new ApiError(404, "Invalid Credentials");
+      // res.json({ success: false, message: "Invalid Credentials" });
     }
   } catch (error) {
     return res
