@@ -44,7 +44,6 @@ const loginDoctor = async (req, res) => {
 
     if (!doctor) {
       throw new ApiError(404, "Invalid Credentials");
-      // return res.json({ success: false, message: "Invalid Credentials" });
     }
 
     const isMatch = await bcrypt.compare(password, doctor.password);
@@ -55,7 +54,6 @@ const loginDoctor = async (req, res) => {
       res.json({ success: true, token });
     } else {
       throw new ApiError(404, "Invalid Credentials");
-      // res.json({ success: false, message: "Invalid Credentials" });
     }
   } catch (error) {
     return res

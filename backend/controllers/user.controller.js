@@ -48,6 +48,11 @@ const registerUser = async (req, res) => {
       process.env.JWT_SECRET
     );
 
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true
+    });
+
     res.json({ success: true, token });
   } catch (error) {
     return res
@@ -99,12 +104,12 @@ const loginUser = async (req, res) => {
 // API to get user profile data
 const getProfile = async (req, res) => {
   try {
-    const {userId} = req.body;
+    const { userId } = req.body;
 
     if (!userId)
       throw new ApiError(400, "User Id is required. Token not decoding Id");
 
-    const userData = await User.findById(userId).select("-password");
+    const userData = await User.findById(userId).select(["address", "image", "name", "email", "phone", "age", "gender", "dob"]);
 
     res.json({ success: true, userData });
   } catch (error) {
@@ -116,30 +121,26 @@ const getProfile = async (req, res) => {
 
 const updateProfile = async (req, res) => {
   try {
-    const { userId, name, phone, address, dob, gender } = req.body;
-    const imageFile = req.file;
+    const data = req.body;
+    let { userId, ...newData } = data;
+    const imageFile = req.file?.path;
 
     if (!userId)
       throw new ApiError(400, "User Id is required. Token not decoding Id");
 
-    if (!name && !phone && !address && !dob && !gender && !imageFile)
-      throw new ApiError(400, "At least one field must be provided");
+    const address = JSON.parse(newData.address);
+    newData.address = address;
 
-    const updateFields = {};
-    if (name) updateFields.name = name;
-    if (phone) updateFields.phone = phone;
-    if (address) updateFields.address = JSON.parse(address);
-    if (dob) updateFields.dob = dob;
-    if (gender) updateFields.gender = gender;
     if (imageFile) {
-      const image = await uploadOnCloudinary(imageFile.path);
-      updateFields.image = image.url;
+      const image = await uploadOnCloudinary(imageFile);
+      newData.image = image.url;
     }
 
-    const updatedUser = await User.findByIdAndUpdate(userId, updateFields, {
-          new: true,
-        });
-    return res.status(200).json({ success: true, image: updatedUser.image ,message: "Profile updated" });
+    const updatedUser = await User.findByIdAndUpdate(userId, newData, {
+      new: true,
+    }).select(["address", "image", "name", "email", "phone", "age", "gender", "dob"]);
+    
+    return res.status(200).json({ success: true, updatedUser, message: "Profile updated" });
   } catch (error) {
     return res
       .status(error.statusCode || 500)
