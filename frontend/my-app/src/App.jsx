@@ -27,11 +27,13 @@ import { useDoctorStore , useAdminStore } from './utils/store'
 
 import AdminDoctorLogin from "./pages/AdminDoctorLogin"
 
-
+import { ToastContainer } from "react-toastify";
+import { useUserStore } from "./utils/user"
 
 function App() {
   const doctor = useDoctorStore((state)=>state.doctor);
   const admin = useAdminStore((state)=>state.admin);
+  const {isLoggedin} = useUserStore()
   return (
     <>
       <Routes>
@@ -42,12 +44,12 @@ function App() {
           <Route path="contact" element={<Contact />}></Route>
           <Route path="about" element={<About />}></Route>
           <Route path="appointment" element={<AppointmentPage />}></Route>
-          <Route path="my-appointment" element={<MyAppointments />}></Route>
-          <Route path="profile" element={<UserProfile />}></Route>
+          <Route path="my-appointment" element={isLoggedin ? <MyAppointments /> : <Navigate to="/auth/login"/>}></Route>
+          <Route path="profile" element={isLoggedin ? <UserProfile /> : <Navigate to="/auth/login"/>}></Route>
         </Route>
 
         {/* Auth Layout */}
-        <Route path="/auth" element={<AuthLayout />}>
+        <Route path="/auth" element={isLoggedin ? <Navigate to="/"/> : <AuthLayout />}>
           <Route path="login" element={<Login />}></Route>
           <Route path="signup" element={<Signup />}></Route>
         </Route>
@@ -69,7 +71,7 @@ function App() {
         <Route path="/login" element={<AdminDoctorLogin />}></Route>
       </Routes>
       {/* for doctor and admin panel - footer is not there */}
-
+      <ToastContainer position="top-left" autoClose={1500}/>
     </>
   )
 }

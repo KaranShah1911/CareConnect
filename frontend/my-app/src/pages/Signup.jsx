@@ -1,49 +1,85 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { FaGoogle } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useUserStore } from "../utils/user";
 
 const Signup = () => {
-    const [data, setData] = useState({ email: "", password: "" });
-    const [termsAcepted , settermsAccepted] = useState(false);
+  const navigate = useNavigate();
+  const [data, setData] = useState({ email: "", password: "", name: "" });
+  const [termsAcepted, settermsAccepted] = useState(false);
+  const { login } = useUserStore()
 
-    const handleChange = (e) =>
-        setData({ ...data, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setData({ ...data, [e.target.name]: e.target.value });
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if(!termsAcepted){
-            alert("accept terms");
-            return;
-        }
-        console.log("Login with:", data);
-        // Add login logic here
-    };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!termsAcepted) {
+      toast.error("Accept terms");
+      return;
+    }
+    if (data.password.length < 8) {
+      toast.warn("password length must be atleast 8 characters");
+      return;
+    }
+    console.log("Sign up with:", data);
+    try {
+      axios.post("http://localhost:3000/api/user/register", data, {
+        withCredentials: true
+      })
+        .then(res => {
+          const image = res.data.image
+          login(image);
+          toast.success("User account created");
+          navigate("/profile");
+        })
+        .catch(error => {
+          console.log(error.response);
+          toast.error(error.response.data.message);
+        })
+        .finally(() => {
+          setData({
+            name: "",
+            password: "",
+            email: ""
+          });
+        })
+    } catch (error) {
+      console.error(error);
+    }
+    // Add login logic here
 
-    return (
-        <div className="w-screen min-h-screen flex flex-col justify-center items-center px-4 bg-white gap-10">
-            <h1 className="text-2xl md:text-3xl text-[#1E1E2F] text-center">
-                Join <span className="text-indigo-400">CareConnect</span> and connect with trusted Doctors
-            </h1>
-            {/* Google Button */}
-            <button
-                type="button"
-                onClick={() => console.log("Google login")}
-                className="flex items-center justify-center gap-3 text-[#1E1E2F] text-lg bg-violet-50 border border-violet-300 px-6 py-3 rounded-lg hover:bg-violet-50 transition w-full max-w-sm"
-            >
-                <FaGoogle className="text-red-500" />
-                Continue with Google
-            </button>
 
-            {/* Divider */}
-            <div className="flex items-center gap-3 text-gray-400 text-sm w-full max-w-sm">
-                <div className="h-px bg-gray-300 flex-1" />
-                OR
-                <div className="h-px bg-gray-300 flex-1" />
-            </div>
+  };
 
-            {/* Sign up Form */}
-            <form
+  return (
+    <div className="w-screen min-h-screen flex flex-col justify-center items-center px-4 bg-white gap-10 pt-20 md:pt-20">
+      <h1 className="text-2xl md:text-3xl text-[#1E1E2F] text-center">
+        Join <span className="text-indigo-400">CareConnect</span> and connect with trusted Doctors
+      </h1>
+      {/* Google Button */}
+      <button
+        type="button"
+        onClick={() => console.log("Google login")}
+        className="flex items-center justify-center gap-3 text-[#1E1E2F] text-lg bg-violet-50 border border-violet-300 px-6 py-3 rounded-lg hover:bg-violet-50 transition w-full max-w-sm"
+      >
+        <FaGoogle className="text-red-500" />
+        Continue with Google
+      </button>
+
+      {/* Divider */}
+      <div className="flex items-center gap-3 text-gray-400 text-sm w-full max-w-sm">
+        <div className="h-px bg-gray-300 flex-1" />
+        OR
+        <div className="h-px bg-gray-300 flex-1" />
+      </div>
+
+      {/* Sign up Form */}
+      <form
         onSubmit={handleSubmit}
-        className="space-y-4 w-full max-w-sm flex flex-col gap-4"
+        className="space-y-4 w-full max-w-sm flex flex-col gap-2"
       >
         <div className="flex flex-col ">
           <label className="text-sm mb-1 text-indigo-700">Email</label>
@@ -73,7 +109,7 @@ const Signup = () => {
         </div>
 
         <div className="flex flex-col">
-          <label className="text-sm mb-1 text-indigo-700">Password</label>
+          <label className="text-sm mb-1 text-indigo-700">Name</label>
           <div className="flex items-center border rounded-lg px-3">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -101,9 +137,40 @@ const Signup = () => {
               className="h-12 w-full px-3 outline-none"
             />
           </div>
+        </div>
+
+        <div className="flex flex-col">
+          <label className="text-sm mb-1 text-indigo-700">Name</label>
+          <div className="flex items-center border rounded-lg px-3">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              fill="none"
+              viewBox="0 0 512 512"
+            >
+              <path
+                fill="#432dd7"
+                d="M336 512H48c-26.453 0-48-21.523-48-48V240c0-26.477 21.547-48 48-48h288c26.453 0 48 21.523 48 48v224c0 26.477-21.547 48-48 48zM48 224c-8.813 0-16 7.168-16 16v224c0 8.832 7.187 16 16 16h288c8.813 0 16-7.168 16-16V240c0-8.832-7.187-16-16-16z"
+              />
+              <path
+                fill="currentColor"
+                d="M304 224c-8.832 0-16-7.168-16-16v-80c0-52.93-43.07-96-96-96S96 75.07 96 128v80c0 8.832-7.168 16-16 16s-16-7.168-16-16v-80c0-70.594 57.406-128 128-128s128 57.406 128 128v80c0 8.832-7.168 16-16 16z"
+              />
+            </svg>
+            <input
+              type="text"
+              name="name"
+              placeholder="Enter your name"
+              value={data.name}
+              onChange={handleChange}
+              required
+              className="h-12 w-full px-3 outline-none"
+            />
+          </div>
           <div className="flex justify-between items-center text-sm mt-1">
             <label className="flex items-center gap-2">
-              <input type="checkbox" onChange={(e)=>settermsAccepted(e.target.checked)} className="accent-violet-500" />Accept the<a href="/term-and-conditions" className="text-indigo-500">Terms and Conditions</a>
+              <input type="checkbox" onChange={(e) => settermsAccepted(e.target.checked)} className="accent-violet-500" />Accept the<a href="/term-and-conditions" className="text-indigo-500">Terms and Conditions</a>
             </label>
           </div>
         </div>
@@ -115,8 +182,8 @@ const Signup = () => {
           Sign Up
         </button>
       </form>
-        </div>
-    );
+    </div>
+  );
 };
 
 export default Signup;

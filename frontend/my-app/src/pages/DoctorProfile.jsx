@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import DoctorPanel from "../components/DoctorPanel";
+import React, { useEffect, useState } from "react";
 import { FaEdit, FaSave, FaTimes } from "react-icons/fa";
+import axios from "axios";
 import { useStore } from "../utils/store";
 
 const DoctorInfo = () => {
@@ -31,6 +31,10 @@ const DoctorInfo = () => {
       setForm({ ...form, [name]: value });
     }
   };
+
+  useEffect(()=>{
+
+  },[])
 
   const handleSave = () => {
     console.log("Saving doctor info:", form);

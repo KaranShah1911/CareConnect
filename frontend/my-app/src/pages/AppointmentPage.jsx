@@ -1,6 +1,9 @@
 import React, { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { FaMapMarkerAlt, FaStar, FaPhoneAlt, FaClock } from "react-icons/fa";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useUserStore } from "../utils/user";
 
 const getNextDays = (count = 12) => {
   const days = [];
@@ -13,75 +16,105 @@ const getNextDays = (count = 12) => {
   return days;
 };
 
-  // Sample doctor data (replace with API)
-  const doctor = {
-    name: "Dr. Priya Sharma",
+// Sample doctor data (replace with API)
+// const doctor = {
+//   name: "Dr. Priya Sharma",
+//   specialty: "Dermatologist",
+//   bio: "Board-certified dermatologist with over 8 years of experience in skin care and cosmetic treatment.",
+//   rating: 4.8,
+//   clinicLocation: "HealthySkin Clinic, Bandra, Mumbai",
+//   contact: "+91 9876543210",
+//   timings: "Mon - Sat: 10:00 AM to 5:00 PM",
+//   image: "https://randomuser.me/api/portraits/women/44.jpg",
+// };
+
+const appointmentDates = getNextDays(12);
+const timeSlots = ["10:00 AM", "11:00 AM", "12:30 PM", "3:00 PM", "4:30 PM"];
+
+const reviews = [
+  {
+    name: "Riya Mehta",
+    comment:
+      "Very professional and helpful. My skin has improved a lot. Clinic is clean and friendly.",
+  },
+  {
+    name: "Neha Jain",
+    comment:
+      "Dr. Priya explains things in detail. Never rushes you. Highly recommended.",
+  },
+  {
+    name: "Ankit Verma",
+    comment: "Great experience! The staff was helpful and attentive.",
+  },
+];
+
+const similarDoctors = [
+  {
+    name: "Dr. Rahul Verma",
     specialty: "Dermatologist",
-    bio: "Board-certified dermatologist with over 8 years of experience in skin care and cosmetic treatment.",
-    rating: 4.8,
-    clinicLocation: "HealthySkin Clinic, Bandra, Mumbai",
-    contact: "+91 9876543210",
-    timings: "Mon - Sat: 10:00 AM to 5:00 PM",
     image: "https://randomuser.me/api/portraits/women/44.jpg",
-  };
-
-  const appointmentDates = getNextDays(12);
-  const timeSlots = ["10:00 AM", "11:00 AM", "12:30 PM", "3:00 PM", "4:30 PM"];
-
-  const reviews = [
-    {
-      name: "Riya Mehta",
-      comment:
-        "Very professional and helpful. My skin has improved a lot. Clinic is clean and friendly.",
-    },
-    {
-      name: "Neha Jain",
-      comment:
-        "Dr. Priya explains things in detail. Never rushes you. Highly recommended.",
-    },
-    {
-      name: "Ankit Verma",
-      comment: "Great experience! The staff was helpful and attentive.",
-    },
-  ];
-
-  const similarDoctors = [
-    {
-      name: "Dr. Rahul Verma",
-      specialty: "Dermatologist",
-      image: "https://randomuser.me/api/portraits/women/44.jpg",
-    },
-    {
-      name: "Dr. Neha Kapoor",
-      specialty: "Dermatologist",
-      image: "https://randomuser.me/api/portraits/women/44.jpg",
-    },
-    {
-      name: "Dr. Anjali Rao",
-      specialty: "Dermatologist",
-      image: "https://randomuser.me/api/portraits/women/44.jpg",
-    },
-  ];
+  },
+  {
+    name: "Dr. Neha Kapoor",
+    specialty: "Dermatologist",
+    image: "https://randomuser.me/api/portraits/women/44.jpg",
+  },
+  {
+    name: "Dr. Anjali Rao",
+    specialty: "Dermatologist",
+    image: "https://randomuser.me/api/portraits/women/44.jpg",
+  },
+];
 
 const AppointmentPage = () => {
-  const [searchParams] = useSearchParams();
-  const doctorId = searchParams.get("doctorId");
+  const navigate = useNavigate();
+  const location = useLocation();
+  const doctor = location.state?.doctor;
+  const {isLoggedin} = useUserStore()
 
-  const [appointment , setappointmentdate] = useState({
-    date : "",
-    time : ""
+  const [appointment, setappointmentdate] = useState({
+    date: "",
+    time: ""
   });
 
-  const handleAppointment = (date , time)=>{
+  const handleAppointment = (date, time) => {
     setappointmentdate({
-      date : date,
-      time : time
+      date: date,
+      time: time
     });
   }
 
-  const handleBooking = ()=>{
-    alert(`Date : ${appointment.date} , Time : ${appointment.time}`);
-    return;
+  const handleBooking = () => {
+    if(!isLoggedin){
+      toast.error("Please login first to book appointment..");
+      return;
+    }
+    if (!appointment.date || !appointment.time) {
+      toast.error("Please Select valid date and time....")
+      return;
+    }
+
+    try {
+      axios.post("http://localhost:3000/api/user/book-appointment", { doctorId: doctor._id, slotTime: appointment.time, slotDate: appointment.date }, {
+        withCredentials: true
+      })
+        .then((response) => {
+          doctor.slots_booked[appointment.date] = [appointment.time];
+          toast.success("Appointment booked successfully");
+          navigate("/my-appointment")
+        })
+        .catch((error) => console.log(error))
+        .finally(()=>{
+          setappointmentdate({
+            date : "",
+            time : ""
+          });
+        });
+
+    } catch (err) {
+      console.error(err)
+    }
+
   }
 
   return (
@@ -97,11 +130,11 @@ const AppointmentPage = () => {
         <div className="bg-white rounded-xl shadow-lg p-6 flex-1 border hover:bg-gray-50">
           <h2 className="text-3xl font-bold text-gray-800">{doctor.name}</h2>
           <p className="text-indigo-600 font-medium mt-1">{doctor.specialty}</p>
-          <p className="text-sm text-gray-600 mt-2">{doctor.bio}</p>
+          <p className="text-sm text-gray-600 mt-2">{doctor.about}</p>
 
           <div className="flex items-center gap-2 mt-3 text-yellow-500">
             <FaStar />
-            <span>{doctor.rating} / 5</span>
+            <span>4.5 / 5</span>
           </div>
 
           <div className="mt-4 space-y-2 text-gray-700 text-sm">
@@ -132,8 +165,9 @@ const AppointmentPage = () => {
                 {timeSlots.map((time, i) => (
                   <button
                     key={i}
-                    className={`px-3 py-1 rounded-lg text-sm  ${appointment.date === date && appointment.time === time ? "bg-indigo-700 text-indigo-100" : "bg-indigo-100 text-indigo-700 hover:bg-indigo-200"}`}
-                    onClick={()=>handleAppointment(date , time)}
+                    disabled={doctor.slots_booked[date]?.includes(time)}
+                    className={`px-3 py-1 rounded-lg text-sm disabled:bg-red-200 disabled:text-red-800  ${appointment.date === date && appointment.time === time ? "bg-indigo-700 text-indigo-100" : "bg-indigo-100 text-indigo-700 hover:bg-indigo-200"}`}
+                    onClick={() => handleAppointment(date, time)}
                   >
                     {time}
                   </button>
@@ -144,7 +178,7 @@ const AppointmentPage = () => {
         </div>
 
         <div className="mt-6">
-          <button className="px-6 py-3 bg-[#5C67F2] text-white rounded-xl hover:bg-indigo-600 transition" onClick={()=>handleBooking()}>
+          <button className="px-6 py-3 bg-[#5C67F2] text-white rounded-xl hover:bg-indigo-600 transition" onClick={() => handleBooking()}>
             Book Now
           </button>
         </div>

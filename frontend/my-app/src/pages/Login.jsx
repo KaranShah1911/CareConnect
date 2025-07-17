@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { FaGoogle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { useStore } from "../utils/user";
+import axios from "axios";
+import { useUserStore } from "../utils/user";
+import {toast} from "react-toastify";
 
 const Login = () => {
   const [data, setData] = useState({ email: "", password: "" });
-  const login = useStore((state)=>state.login);
+  const {login} = useUserStore();
   const navigate = useNavigate();
 
   const handleChange = (e) =>
@@ -14,8 +16,25 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Login with:", data);
-    login();
-    navigate("/")
+    try {
+      axios.post("http://localhost:3000/api/user/login", data, {
+        withCredentials: true
+      })
+        .then(response => {
+          const image = response.data.userImage;
+          toast.success("User login success");
+          login(image);
+          navigate("/")
+        })
+        .catch(error => {
+          console.log(error.response);
+          toast.error(error.response.data.message);
+    });
+
+    } catch (err) {
+      console.log(err);
+    }
+
     // Add login logic here
   };
 
@@ -118,7 +137,7 @@ const Login = () => {
           Log In
         </button>
 
-        <button onClick={()=>navigate("/auth/signup")} className="text-center text-sm text-gray-500">
+        <button onClick={() => navigate("/auth/signup")} className="text-center text-sm text-gray-500">
           Don’t have an account? <span className="text-violet-600 underline cursor-pointer">Sign Up</span>
         </button>
       </form>

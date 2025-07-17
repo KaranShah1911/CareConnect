@@ -6,13 +6,13 @@ import { FiLogOut } from "react-icons/fi";
 import { RiCalendarScheduleLine } from "react-icons/ri";
 import { CgProfile } from "react-icons/cg";
 import { RiArrowDropDownLine, RiArrowDropUpLine } from "react-icons/ri";
-import { useStore } from '../utils/user';
+import { useUserStore } from '../utils/user';
 
 export default function Navbar() {
   const navigate = useNavigate();
   const [menu, openMenu] = useState(false);
   const [dropdown, showDropdown] = useState(false);
-  const { isLoggedin, logout } = useStore()
+  const { isLoggedin, logout, image } = useUserStore()
 
   const handeLogout = (e) => {
     openMenu(prev=>!prev);
@@ -58,7 +58,7 @@ export default function Navbar() {
               <div className="max-md:hidden md:relative">
                 {/* Profile Image */}
                 <img
-                  src="https://randomuser.me/api/portraits/men/32.jpg"
+                  src={image}
                   alt="Profile"
                   className="w-12 h-12 rounded-full border-2 border-[#5C67F2] cursor-pointer"
                   onClick={() => showDropdown(prev => !prev)}
@@ -105,7 +105,7 @@ export default function Navbar() {
             {/* User Profile */}
             <div className='flex justify-between w-full items-center'>
               <img
-                src="https://randomuser.me/api/portraits/men/32.jpg"
+                src={image}
                 alt="Profile"
                 className="w-12 h-12 rounded-full border-2 border-[#5C67F2] cursor-pointer inline"
                 onClick={() => showDropdown(prev => !prev)}
