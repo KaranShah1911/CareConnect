@@ -74,7 +74,7 @@ const appointmentsDoctor = async (req, res) => {
     const doctorId  = req.body.userId;
     const appointments = await appointmentModel.find({ doctorId }).populate({
       path:'userId',
-      select : 'name image',
+      select : 'name image age',
     });
 
     res.json({ success: true, appointments });
@@ -88,7 +88,8 @@ const appointmentsDoctor = async (req, res) => {
 // API to mark appointment completed for doctor panel
 const appointmentComplete = async (req, res) => {
   try {
-    const { doctorId, appointmentId } = req.body;
+    const { appointmentId } = req.body;
+    const doctorId = req.body.userId;
 
     const appointmentData = await appointmentModel.findById(appointmentId);
 
@@ -99,7 +100,7 @@ const appointmentComplete = async (req, res) => {
 
       return res.json({ success: true, message: "Appointment Completed" });
     } else {
-      return res.json({ success: false, message: "Mark Failed" });
+      return res.status(400).json({ success: false, message: "Mark Failed" });
     }
   } catch (error) {
     return res
@@ -111,7 +112,8 @@ const appointmentComplete = async (req, res) => {
 // API to cancel apppointment for doctor panel
 const appointmentCancel = async (req, res) => {
   try {
-    const { doctorId, appointmentId } = req.body;
+    const { appointmentId } = req.body;
+    const doctorId = req.body.userId;
 
     const appointmentData = await appointmentModel.findById(appointmentId);
 
@@ -122,7 +124,7 @@ const appointmentCancel = async (req, res) => {
 
       return res.json({ success: true, message: "Appointment Cancelled" });
     } else {
-      return res.json({ success: false, message: "Cancellation Failed" });
+      return res.status(400).json({ success: false, message: "Cancellation Failed" });
     }
   } catch (error) {
     return res
