@@ -72,7 +72,10 @@ const loginDoctor = async (req, res) => {
 const appointmentsDoctor = async (req, res) => {
   try {
     const doctorId  = req.body.userId;
-    const appointments = await appointmentModel.find({ doctorId }).populate("userId").select(["image" , "name"]);
+    const appointments = await appointmentModel.find({ doctorId }).populate({
+      path:'userId',
+      select : 'name image',
+    });
 
     res.json({ success: true, appointments });
   } catch (error) {
