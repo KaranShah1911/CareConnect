@@ -23,7 +23,7 @@ const changeAvailibility = async (req, res) => {
   }
 };
 
-const doctorList = async (req, res) => { 
+const doctorList = async (req, res) => {
   try {
     const doctors = await doctorModel.find({}).select(["-password", "-email"]);
 
@@ -131,8 +131,7 @@ const appointmentCancel = async (req, res) => {
 // API to get dashboard data for doctor panel
 const doctorDashboard = async (req, res) => {
   try {
-    const { doctorId } = req.body;
-
+    const doctorId = req.body.userId;
     const appointments = await appointmentModel.find({ doctorId });
 
     let earnings = 0;
@@ -169,8 +168,8 @@ const doctorDashboard = async (req, res) => {
 // API to get doctor profile for doctor panel
 const doctorProfile = async (req, res) => {
   try {
-    const docId  = req.body.userId;
-    const profileData = await doctorModel.findById(docId).select("-password");
+    const doctorId = req.body.userId;
+    const profileData = await doctorModel.findById(doctorId).select("-password");
 
     res.json({ success: true, profileData });
   } catch (error) {
@@ -184,7 +183,7 @@ const doctorProfile = async (req, res) => {
 const updateDoctorProfile = async (req, res) => {
   try {
     const { fees, address, available } = req.body;
-    const docId  = req.body.userId;
+    const docId = req.body.userId;
     await doctorModel.findByIdAndUpdate(docId, { fees, address, available });
 
     res.json({ success: true, message: "Profile Updated" });
