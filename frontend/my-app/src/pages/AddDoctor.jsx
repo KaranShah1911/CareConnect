@@ -7,7 +7,7 @@ const AddDoctor = () => {
     const [form, setForm] = useState({
         name: "",
         email: "",
-        clinic: null,
+        clinic_phno: null,
         specialization: "",
         degree: "",
         password: "",
@@ -29,30 +29,30 @@ const AddDoctor = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if(form.clinic?.length < 8 || form.clinic?.length > 10 || form.clinic?.length==9){
-            toast.error("Enter valid clinic number....");
+        if(form.clinic_phno?.length < 8 || form.clinic_phno?.length > 10 || form.clinic_phno?.length==9){
+            toast.error("Enter valid clinic_phno number....");
             return;
         }
         // make the api call to pass data
-        const formData = new formData();
-        formData.append("name", form.name);
-        formData.append("email", form.email);
-        formData.append("clinic", form.clinic);
-        formData.append("specialization", form.specialization);
-        formData.append("degree", form.degree);
-        formData.append("password", form.password);
-        formData.append("address", form.address);
-        formData.append("experience", form.experience);
-        formData.append("fees", form.fees);
-        formData.append("about", form.about);
+        const formdata = new FormData();
+        formdata.append("name", form.name);
+        formdata.append("email", form.email);
+        formdata.append("clinic_phno", form.clinic_phno);
+        formdata.append("specialization", form.specialization);
+        formdata.append("degree", form.degree);
+        formdata.append("password", form.password);
+        formdata.append("address", form.address);
+        formdata.append("experience", form.experience);
+        formdata.append("fees", form.fees);
+        formdata.append("about", form.about);
         
-        if(form.image instanceof file){
-            formData.append("image", form.image);
+        if(form.image instanceof File){
+            formdata.append("image", form.image);
         }
 
-        console.log("Adding doctor" , formData);
+        console.log("Adding doctor" , formdata);
         try {
-            axios.post("http://localhost:3000/api/admin/add-doctor" , formData , {
+            axios.post("http://localhost:3000/api/admin/add-doctor" , formdata , {
                 withCredentials : true
             })
             .then(res => {
@@ -78,7 +78,7 @@ const AddDoctor = () => {
             fees: "",
             about: "",
             address: "",
-            clinic: "",
+            clinic_phno: "",
             degree: "",
             image: null
         });
@@ -141,14 +141,14 @@ const AddDoctor = () => {
                 </div>
 
                 <div>
-                    <label className="block font-medium text-violet-700 mb-1">Clinic/Phone Number</label>
+                    <label className="block font-medium text-violet-700 mb-1">clinic_phno/Phone Number</label>
                     <input
-                        name="clinic"
-                        value={form.clinic}
+                        name="clinic_phno"
+                        value={form.clinic_phno}
                         onChange={handleChange}
                         type="tel"
                         className="w-full border p-2 rounded-lg focus:ring-2 focus:ring-violet-500"
-                        placeholder="8-digit clinic number"
+                        placeholder="8-digit clinic_phno number"
                         required
                     />
                 </div>
@@ -211,7 +211,7 @@ const AddDoctor = () => {
                         value={form.address}
                         onChange={handleChange}
                         className="w-full border p-2 rounded-lg focus:ring-2 focus:ring-violet-500"
-                        placeholder="Full clinic or hospital address"
+                        placeholder="Full clinic_phno or hospital address"
                         required
                     ></textarea>
                 </div>

@@ -1,24 +1,61 @@
 import React, { useEffect, useState } from "react";
+import DoctorPanel from "../components/DoctorPanel";
 import { FaEdit, FaSave, FaTimes } from "react-icons/fa";
-import axios from "axios";
 import { useStore } from "../utils/store";
+import axios from "axios";
+import { toast } from "react-toastify";
 
+// issue - some issue with image - after saving.
 const DoctorInfo = () => {
   const [editMode, setEditMode] = useState(false);
-  const sidebar = useStore((state)=>state.sidebar);
+  const sidebar = useStore((state) => state.sidebar);
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const [form, setForm] = useState({
     image: null,
-    name: "Dr. Sneha Patil",
+    name: "NA",
     degree: "MBBS, MD",
-    speciality: "Dermatologist",
-    experience: "8",
-    about:
-      "Dedicated dermatologist with 8+ years of experience in treating skin and hair disorders.",
-    fees: "500",
-    address: "Vasant Vihar Clinic, Mumbai",
-    available: true,
+    specialization: "NA",
+    experience: "NA",
+    about: "NA",
+    fees: "NA",
+    address: {
+      line1: "NA",
+      line2: "NA",
+    },
+    availability: true,
   });
+
+  // fetch profile data
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/doctor/profile`, {
+          withCredentials: true,
+        });
+        console.log("profile successfull", response.data);
+        const data = await response.data.profileData;
+        const parsedAddress =
+          typeof data.address === "string"
+            ? JSON.parse(data.address)
+            : data.address;
+
+        setForm({
+          ...form,
+          ...data,
+          address: {
+            line1: parsedAddress?.line1 || "",
+            line2: parsedAddress?.line2 || "",
+          },
+        });
+        console.log("form data", form);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, type, files, checked } = e.target;
@@ -32,14 +69,48 @@ const DoctorInfo = () => {
     }
   };
 
-  useEffect(()=>{
-
-  },[])
-
-  const handleSave = () => {
+  const handleSave = async () => {
     console.log("Saving doctor info:", form);
     setEditMode(false);
     // Save to backend if needed
+    const formData = new FormData();
+    formData.append("name", form.name);
+    formData.append("degree", "MBBS, MD");
+    formData.append("specialization", form.specialization);
+    formData.append("experience", form.experience);
+    formData.append("about", form.about);
+    formData.append("fees", form.fees);
+    formData.append("availability", form.availability);
+
+
+    // Address is an object, so either flatten it or stringify it
+    formData.append("address", JSON.stringify(form.address));
+
+    // Only append the file if a new one is selected
+    if (form.image instanceof File) {
+      formData.append("image", form.image);
+    }
+    // else formData.append("image", "/default-user.png")
+    try {
+      // setLoading(true);
+      axios
+        .post("http://localhost:3000/api/doctor/update-profile", formData, {
+          withCredentials: true,
+        })
+        .then((res) => {
+          // setForm(res.data.updatedUser);
+          // setOriginalData(res.data.updatedUser); 
+          // setImage for doctor
+          toast.success("User profile updated..");
+        })
+        .catch((err) => {
+          toast.error("Error updating profile...");
+          // setForm(originalData);
+          console.error(err);
+        });
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const handleCancel = () => {
@@ -48,7 +119,11 @@ const DoctorInfo = () => {
   };
 
   return (
-    <div className={`flex gap-5 p-5 pt-30 min-h-screen ${sidebar ? "pl-50" : "pl-15"} transition-all duration-300`}>
+    <div
+      className={`flex gap-5 p-5 pt-30 min-h-screen ${
+        sidebar ? "pl-50" : "pl-15"
+      } transition-all duration-300`}
+    >
       <div className="w-[60vw] p-6 bg-white shadow-md rounded-lg">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-indigo-700">Doctor Profile</h2>
@@ -90,7 +165,11 @@ const DoctorInfo = () => {
                 />
                 {form.image && (
                   <img
-                    src={URL.createObjectURL(form.image)}
+                    src={
+                      typeof form.image === "string"
+                        ? form.image
+                        : URL.createObjectURL(form.image)
+                    }
                     className="w-16 h-16 rounded-full object-cover border"
                     alt="preview"
                   />
@@ -98,11 +177,7 @@ const DoctorInfo = () => {
               </>
             ) : (
               <img
-                src={
-                  form.image
-                    ? URL.createObjectURL(form.image)
-                    : "/default-user.png"
-                }
+                src={form.image ? form.image : "/default-user.png"}
                 className="w-16 h-16 rounded-full object-cover border"
                 alt="Doctor"
               />
@@ -114,20 +189,19 @@ const DoctorInfo = () => {
             {[
               { label: "name", type: "text" },
               { label: "degree", type: "text" },
-              { label: "speciality", type: "text" },
+              { label: "specialization", type: "text" },
               { label: "experience", type: "number" },
               { label: "fees", type: "number" },
-              { label: "address", type: "text" },
             ].map(({ label, type }) => (
               <div key={label}>
                 <label className="block font-medium text-violet-700 capitalize">
-                  {label.replace("_", " ")}
+                  {label}
                 </label>
                 {editMode ? (
                   <input
                     type={type}
                     name={label}
-                    value={form[label]}
+                    value={form[label] || ""}
                     onChange={handleChange}
                     className="w-full border p-2 rounded-lg focus:ring-2 focus:ring-indigo-300"
                   />
@@ -138,6 +212,56 @@ const DoctorInfo = () => {
                 )}
               </div>
             ))}
+
+            {/* Address Line 1 */}
+            <div>
+              <label className="block font-medium text-violet-700">
+                Address Line 1
+              </label>
+              {editMode ? (
+                <input
+                  type="text"
+                  name="line1"
+                  value={form.address?.line1 || "NA"}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      address: { ...form.address, line1: e.target.value },
+                    })
+                  }
+                  className="w-full border p-2 rounded-lg focus:ring-2 focus:ring-indigo-300"
+                />
+              ) : (
+                <p className="p-2 text-gray-800 bg-gray-50 rounded">
+                  {form.address?.line1}
+                </p>
+              )}
+            </div>
+
+            {/* Address Line 2 */}
+            <div>
+              <label className="block font-medium text-violet-700">
+                Address Line 2
+              </label>
+              {editMode ? (
+                <input
+                  type="text"
+                  name="line2"
+                  value={form.address?.line2 || "NA"}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      address: { ...form.address, line2: e.target.value },
+                    })
+                  }
+                  className="w-full border p-2 rounded-lg focus:ring-2 focus:ring-indigo-300"
+                />
+              ) : (
+                <p className="p-2 text-gray-800 bg-gray-50 rounded">
+                  {form.address?.line2}
+                </p>
+              )}
+            </div>
 
             {/* About Field - Full Width */}
             <div className="sm:col-span-2">
@@ -164,20 +288,20 @@ const DoctorInfo = () => {
               {editMode ? (
                 <input
                   type="checkbox"
-                  name="available"
-                  checked={form.available}
+                  name="availability"
+                  checked={form.availability}
                   onChange={handleChange}
                   className="w-5 h-5"
                 />
               ) : (
                 <span
                   className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    form.available
+                    form.availability
                       ? "bg-green-100 text-green-700"
                       : "bg-red-100 text-red-600"
                   }`}
                 >
-                  {form.available ? "Available" : "Unavailable"}
+                  {form.availability ? "Available" : "Unavailable"}
                 </span>
               )}
             </div>

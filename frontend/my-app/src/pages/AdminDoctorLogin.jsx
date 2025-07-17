@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { useDoctorStore , useAdminStore } from "../utils/store";
+import axios from "axios";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -10,16 +11,27 @@ const LoginPage = () => {
   const {  login : Adminlogin  } = useAdminStore()
   // const {  login : adminLogin } = adminStore();
   const [formData, setFormData] = useState({ email: "", password: "" });
+  const API_URL = import.meta.env.VITE_API_URL;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // TODO: replace with real auth
     try {
       if (role === "doctor") {
+        const response = await axios.post(`${API_URL}/doctor/login`, formData, {
+          withCredentials : true,
+        });
+        console.log("login successfull" , response.data) ; 
         Doctorlogin(formData);
-        navigate("/doctor");
+        localStorage.setItem("docId", JSON.stringify(response.data));
+        navigate('/doctor')    
+
       } else if (role === "admin") {
+        const response = await axios.post(`${API_URL}/admin/login`, formData, {
+          withCredentials : true,
+        });
         Adminlogin(formData);
+        console.log("login successfull" , response.data) ;
         navigate("/admin");
       }
     } catch (err) {
