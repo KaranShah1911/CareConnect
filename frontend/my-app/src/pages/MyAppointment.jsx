@@ -120,7 +120,7 @@ const MyAppointments = () => {
                     <p className="text-gray-400 font-medium uppercase text-xs">
                       Address
                     </p>
-                    <p className="text-gray-800">{JSON.parse(appointment.docData.address)["line1"]}</p>
+                    {/* <p className="text-gray-800">{JSON.parse(appointment.docData.address)["line1"]}</p> */}
                   </div>
                 </div>
               </div>
