@@ -8,7 +8,7 @@ import appointmentModel from "../models/appointment.models.js";
 
 const changeAvailibility = async (req, res) => {
   try {
-    const { docId } = req.body;
+    const docId  = req.body.userId;
 
     const docData = await doctorModel.findById(docId);
     await doctorModel.findByIdAndUpdate(docId, {
