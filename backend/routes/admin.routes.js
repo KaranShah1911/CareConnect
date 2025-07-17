@@ -28,7 +28,7 @@ router.post(
 );
 
 router.post("/login", handleAdminLogin);
-router.post("/all-doctors", checkForAuthorization(["ADMIN"]), allDoctors);
+router.get("/all-doctors", checkForAuthorization(["ADMIN"]), allDoctors);
 router.post(
   "/change-availibility",
   checkForAuthorization(["ADMIN"]),
