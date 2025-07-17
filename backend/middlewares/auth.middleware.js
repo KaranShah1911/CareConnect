@@ -35,7 +35,7 @@ const checkForAuthorization = (roles = []) => {
       const token =
         req.cookies?.token || req.headers["authorization"]?.split(" ")[1];
 
-      if (!token) throw new ApiError(401, "Unauthorized");
+      if (!token) throw new ApiError(401, "Unauthorized yogesh");
 
       const userData = jwt.verify(token, process.env.JWT_SECRET);
 

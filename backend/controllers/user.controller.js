@@ -53,7 +53,12 @@ const registerUser = async (req, res) => {
       secure: true
     });
 
-    res.json({ success: true, token , image : user.image});
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true
+    });
+
+    res.json({ success: true, token, image: user.image });
   } catch (error) {
     return res
       .status(error.statusCode || 500)
@@ -130,6 +135,7 @@ const updateProfile = async (req, res) => {
 
     const address = JSON.parse(newData.address);
     newData.address = address;
+
     if (imageFile) {
       const image = await uploadOnCloudinary(imageFile);
       newData.image = image.url;
@@ -138,7 +144,8 @@ const updateProfile = async (req, res) => {
     const updatedUser = await User.findByIdAndUpdate(userId, newData, {
       new: true,
     }).select(["address", "image", "name", "email", "phone", "age", "gender", "dob"]);
-    return res.status(200).json({ success: true, updatedUser, message: "Profile updated" });
+
+    return res.status(200).json({ success: true, updatedUser : updatedUser , message: "Profile updated" });
   } catch (error) {
     return res
       .status(error.statusCode || 500)

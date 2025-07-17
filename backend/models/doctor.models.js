@@ -40,6 +40,10 @@ const doctorSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    degree:{
+      type : String,
+      required : true
+    },
     address: {
       type: Object,
       required: true,
@@ -51,7 +55,6 @@ const doctorSchema = new mongoose.Schema(
     date: {
       type: Date,
       default: Date.now,
-      required: true,
     },
     clinic_phno: {
       type: String,

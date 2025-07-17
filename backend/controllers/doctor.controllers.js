@@ -43,17 +43,23 @@ const loginDoctor = async (req, res) => {
     const doctor = await doctorModel.findOne({ email });
 
     if (!doctor) {
-      return res.json({ success: false, message: "Invalid Credentials" });
+      throw new ApiError(404, "Invalid Credentials");
     }
 
     const isMatch = await bcrypt.compare(password, doctor.password);
 
     if (isMatch) {
-      const token = jwt.sign({ id: doctor._id }, process.env.JWT_SECRET);
+      const token = jwt.sign({ id: doctor._id, role: "DOCTOR" }, process.env.JWT_SECRET);
 
-      res.json({ success: true, token });
-    } else {
-      res.json({ success: false, message: "Invalid Credentials" });
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+      });
+
+      res.json({ success: true, token, doctorId: doctor._id });
+    }
+    else {
+      throw new ApiError(404, "Invalid Credentials");
     }
   } catch (error) {
     return res
@@ -163,7 +169,7 @@ const doctorDashboard = async (req, res) => {
 // API to get doctor profile for doctor panel
 const doctorProfile = async (req, res) => {
   try {
-    const { docId } = req.body;
+    const docId  = req.body.userId;
     const profileData = await doctorModel.findById(docId).select("-password");
 
     res.json({ success: true, profileData });
@@ -177,8 +183,8 @@ const doctorProfile = async (req, res) => {
 // API to update doctor profile data from doctor panel
 const updateDoctorProfile = async (req, res) => {
   try {
-    const { docId, fees, address, available } = req.body;
-
+    const { fees, address, available } = req.body;
+    const docId  = req.body.userId;
     await doctorModel.findByIdAndUpdate(docId, { fees, address, available });
 
     res.json({ success: true, message: "Profile Updated" });

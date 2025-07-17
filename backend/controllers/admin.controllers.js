@@ -16,30 +16,7 @@ const addDoctor = async (req, res) => {
       throw new ApiError(400, "Incomplete or wrong fields", errors.array());
     }
 
-    const {
-      name,
-      email,
-      password,
-      specialization,
-      experience,
-      fees,
-      about,
-      address,
-    } = req.body;
-
-    // Basic validation
-    if (
-      !name ||
-      !email ||
-      !password ||
-      !specialization ||
-      !experience ||
-      !fees ||
-      !about ||
-      !address
-    ) {
-      throw new ApiError(400, "All fields are required.");
-    }
+    let data = req.body;
 
     // Check for image file
     if (!req.file) {
@@ -52,21 +29,10 @@ const addDoctor = async (req, res) => {
     if (!cloudinaryResult || !cloudinaryResult.url) {
       throw new ApiError(500, "Error uploading image to Cloudinary.");
     }
+    data.image = cloudinaryResult.url;
 
     // Save doctor to DB
-    const doctor = new Doctor({
-      name,
-      email,
-      password,
-      specialization,
-      experience,
-      fees,
-      about,
-      address: JSON.parse(address),
-      image: cloudinaryResult.url,
-      date: Date.now(),
-    });
-
+    const doctor = new Doctor(data);
     await doctor.save();
 
     res
@@ -98,7 +64,7 @@ const handleAdminLogin = async (req, res) => {
       res.cookie("token", token, {
         httpOnly: true,
         secure: true,
-        sameSite: "none",
+        // sameSite: "none",
       });
 
       return res.status(200).json({
@@ -119,31 +85,27 @@ const handleAdminLogin = async (req, res) => {
 // API to get all doctors list for the admin panel
 const allDoctors = async (req, res) => {
   try {
+    const doctors = await Doctor.find({}).select("-password");
 
-    const doctors = await Doctor.find({}).select('-password')
-
-    res.json({ success: true, doctors })
-    
+    res.json({ success: true, doctors });
   } catch (error) {
     return res
       .status(error.statusCode || 500)
       .json(new ApiResponse(error.statusCode || 500, error.message));
   }
-}
+};
 
 // API to get all appointment list
 const appointmentsAdmin = async (req, res) => {
   try {
-
     const appointments = await appointmentModel.find({});
     res.json({ success: true, appointments });
-    
   } catch (error) {
-      return res
+    return res
       .status(error.statusCode || 500)
-      .json(new ApiResponse(error.statusCode || 500, error.message)); 
+      .json(new ApiResponse(error.statusCode || 500, error.message));
   }
-}
+};
 
 // API for appointment cancellation
 const appointmentCancel = async (req, res) => {
@@ -180,7 +142,6 @@ const appointmentCancel = async (req, res) => {
 // API to get dashboard data for the admin
 const adminDashBoard = async (req, res) => {
   try {
-
     const doctors = await Doctor.find({});
     const users = await User.find({});
     const appointments = await appointmentModel.find({});
@@ -190,15 +151,21 @@ const adminDashBoard = async (req, res) => {
       appointments: appointments.length,
       patiens: users.length,
       latestAppointments: appointments.reverse().slice(0, 5),
-    }
+    };
 
     res.json({ success: true, dashData });
-    
   } catch (error) {
     return res
       .status(error.statusCode || 500)
       .json(new ApiResponse(error.statusCode || 500, error.message));
   }
-}
+};
 
-export { addDoctor, handleAdminLogin, allDoctors, appointmentsAdmin, appointmentCancel, adminDashBoard };
+export {
+  addDoctor,
+  handleAdminLogin,
+  allDoctors,
+  appointmentsAdmin,
+  appointmentCancel,
+  adminDashBoard,
+};
