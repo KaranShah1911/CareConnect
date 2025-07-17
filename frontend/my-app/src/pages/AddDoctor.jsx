@@ -1,70 +1,108 @@
 import React, { useState } from "react";
 import { useStore } from "../utils/store";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 const AddDoctor = () => {
     const [form, setForm] = useState({
         name: "",
         email: "",
-        phone: null,
         clinic: null,
-        specialty: "",
+        specialization: "",
         degree: "",
         password: "",
         address: "",
         experience: null,
         fees: null,
-        bio: "",
+        about: "",
+        image: null
     });
-    const sidebar = useStore((state)=>state.sidebar)
+    const sidebar = useStore((state) => state.sidebar)
 
     const handleChange = (e) => {
         setForm((prev) => { return { ...prev, [e.target.name]: e.target.value } });
     };
+    const handlFileChange = (e)=>{
+        const file = e.target.files[0];
+        setForm((prev) => { return { ...prev, [e.target.name]: file } });
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!form.clinic && !form.phone) {
-            alert("Please enter valid phone number or clinic number");
+        if(form.clinic?.length < 8 || form.clinic?.length > 10 || form.clinic?.length==9){
+            toast.error("Enter valid clinic number....");
             return;
         }
-        if (form.clinic && form.clinic.length != 8) {
-            alert("Please enter 8 digit clinic number");
-            return;
-        }
-        if (form.phone && form.phone.length != 10) {
-            alert("Please enter 10 digit phone number");
-            return;
+        // make the api call to pass data
+        const formData = new formData();
+        formData.append("name", form.name);
+        formData.append("email", form.email);
+        formData.append("clinic", form.clinic);
+        formData.append("specialization", form.specialization);
+        formData.append("degree", form.degree);
+        formData.append("password", form.password);
+        formData.append("address", form.address);
+        formData.append("experience", form.experience);
+        formData.append("fees", form.fees);
+        formData.append("about", form.about);
+        
+        if(form.image instanceof file){
+            formData.append("image", form.image);
         }
 
-        // make the api call to pass data
+        console.log("Adding doctor" , formData);
         try {
+            axios.post("http://localhost:3000/api/admin/add-doctor" , formData , {
+                withCredentials : true
+            })
+            .then(res => {
+                console.log(res.data);
+            })
+            .catch(err=>{
+                console.log(err);
+            })
+            .finally(()=>clearForm())
 
         } catch (err) {
             console.log(err);
         }
-
-        clearForm();
     }
 
     const clearForm = () => {
         setForm({
             name: "",
             email: "",
-            phone: null,
-            clinic: null,
-            specialty: "",
-            degree: "",
             password: "",
+            specialization: "",
+            experience: "",
+            fees: "",
+            about: "",
             address: "",
-            experience: null,
-            fees: null,
-            bio: "",
+            clinic: "",
+            degree: "",
+            image: null
         });
     }
     return (
-        <div className={`pt-25 pb-10 max-w-4xl mx-auto transition-all duration-300 ${sidebar ? "pl-10":""}`}>
+        <div className={`pt-25 pb-10 max-w-4xl mx-auto transition-all duration-300 ${sidebar ? "pl-10" : ""}`}>
             <h1 className="text-3xl font-bold text-indigo-700 mb-6">Add Doctor</h1>
             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        name="image"
+                        onChange={handlFileChange}
+                        required
+                        />
+                    {form.image && (
+                        <img
+                            src={typeof form.image === "string" ? form.image : URL.createObjectURL(form.image)}
+                            className="w-16 h-16 rounded-full object-cover border"
+                            alt="preview"
+                        />
+                    )}
+                </div>
                 <div>
                     <label className="block font-medium text-violet-700 mb-1">Doctor Name</label>
                     <input
@@ -78,10 +116,10 @@ const AddDoctor = () => {
                 </div>
 
                 <div>
-                    <label className="block font-medium text-violet-700 mb-1">Speciality</label>
+                    <label className="block font-medium text-violet-700 mb-1">Specialization</label>
                     <input
-                        name="specialty"
-                        value={form.specialty}
+                        name="specialization"
+                        value={form.specialization}
                         onChange={handleChange}
                         className="w-full border p-2 rounded-lg focus:ring-2 focus:ring-violet-500"
                         placeholder="e.g. Cardiologist"
@@ -103,7 +141,7 @@ const AddDoctor = () => {
                 </div>
 
                 <div>
-                    <label className="block font-medium text-violet-700 mb-1">Clinic Number</label>
+                    <label className="block font-medium text-violet-700 mb-1">Clinic/Phone Number</label>
                     <input
                         name="clinic"
                         value={form.clinic}
@@ -111,28 +149,8 @@ const AddDoctor = () => {
                         type="tel"
                         className="w-full border p-2 rounded-lg focus:ring-2 focus:ring-violet-500"
                         placeholder="8-digit clinic number"
-
+                        required
                     />
-                </div>
-
-                <div>
-                    <label className="block font-medium text-violet-700 mb-1">Phone Number</label>
-                    <input
-                        name="phone"
-                        value={form.phone}
-                        onChange={handleChange}
-                        type="tel"
-                        className="w-full border p-2 rounded-lg focus:ring-2 focus:ring-violet-500"
-                        placeholder="10-digit phone number"
-                    />
-                    {/* <PhoneInput
-                        placeholder="Enter phone number"
-                        name="phone"
-                        value={form.phone}
-                        onChange={handlePhoneChange}
-                        defaultCountry="IN"
-                        style={{border : "1px solid" , padding:"5px" }}
-                        /> */}
                 </div>
 
                 <div>
@@ -201,12 +219,11 @@ const AddDoctor = () => {
                 <div className="md:col-span-2">
                     <label className="block font-medium text-violet-700 mb-1">Bio</label>
                     <textarea
-                        name="bio"
-                        value={form.bio}
+                        name="about"
+                        value={form.about}
                         onChange={handleChange}
                         className="w-full border p-2 rounded-lg focus:ring-2 focus:ring-violet-500"
                         placeholder="Brief introduction or profile"
-                        required
                     ></textarea>
                 </div>
 
