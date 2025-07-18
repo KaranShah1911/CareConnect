@@ -51,7 +51,7 @@ const Login = () => {
       <button
         type="button"
         onClick={() => handleGoogleLogin()}
-        className="flex items-center justify-center gap-3 text-[#1E1E2F] text-lg bg-violet-50 border border-violet-300 px-6 py-3 rounded-lg hover:bg-violet-50 transition w-full max-w-sm"
+        className="flex items-center justify-center gap-3 text-[#1E1E2F] text-lg bg-violet-50 border border-violet-300 px-6 py-3 rounded-lg hover:bg-violet-50 transition w-full max-w-sm cursor-pointer"
       >
         <FaGoogle className="text-red-500" />
         Continue with Google
@@ -127,15 +127,15 @@ const Login = () => {
           </div>
           <div className="flex justify-between items-center text-sm mt-1">
             <label className="flex items-center gap-2">
-              <input type="checkbox" className="accent-violet-500" /> Remember me
+              <input type="checkbox" className="accent-violet-500 cursor-pointer" /> Remember me
             </label>
-            <button className="text-violet-600 underline">Forgot password?</button>
+            <button className="text-violet-600 underline cursor-pointer">Forgot password?</button>
           </div>
         </div>
 
         <button
           type="submit"
-          className="bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition"
+          className="bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition cursor-pointer"
         >
           Log In
         </button>

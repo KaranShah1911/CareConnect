@@ -81,7 +81,7 @@ const HomePage = () => {
             CareConnect helps you find the right specialists and book
             appointments with ease — anytime, anywhere.
           </p>
-          <button onClick={()=>navigate("/all-doctors")} className="bg-[#5C67F2] text-white px-6 py-3 rounded-xl shadow-lg hover:bg-indigo-600 transition max-w-max">
+          <button onClick={()=>navigate("/all-doctors")} className="bg-[#5C67F2] text-white px-6 py-3 rounded-xl shadow-lg hover:bg-indigo-600 transition max-w-max cursor-pointer">
               Book Your Appointment
           </button>
         </div>

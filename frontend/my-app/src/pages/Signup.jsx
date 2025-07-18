@@ -64,7 +64,7 @@ const Signup = () => {
       <button
         type="button"
         onClick={() => handleGoogleLogin()}
-        className="flex items-center justify-center gap-3 text-[#1E1E2F] text-lg bg-violet-50 border border-violet-300 px-6 py-3 rounded-lg hover:bg-violet-50 transition w-full max-w-sm"
+        className="flex items-center justify-center gap-3 text-[#1E1E2F] text-lg bg-violet-50 border border-violet-300 px-6 py-3 rounded-lg hover:bg-violet-50 transition w-full max-w-sm cursor-pointer"
       >
         <FaGoogle className="text-red-500" />
         Continue with Google
@@ -171,14 +171,14 @@ const Signup = () => {
           </div>
           <div className="flex justify-between items-center text-sm mt-1">
             <label className="flex items-center gap-2">
-              <input type="checkbox" onChange={(e) => settermsAccepted(e.target.checked)} className="accent-violet-500" />Accept the<a href="/term-and-conditions" className="text-indigo-500">Terms and Conditions</a>
+              <input type="checkbox" onChange={(e) => settermsAccepted(e.target.checked)} className="accent-violet-500 cursor-pointer" />Accept the<a href="/term-and-conditions" className="text-indigo-500">Terms and Conditions</a>
             </label>
           </div>
         </div>
 
         <button
           type="submit"
-          className="bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition"
+          className="bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition cursor-pointer"
         >
           Sign Up
         </button>

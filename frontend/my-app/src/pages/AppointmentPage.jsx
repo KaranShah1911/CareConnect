@@ -178,7 +178,7 @@ const AppointmentPage = () => {
         </div>
 
         <div className="mt-6">
-          <button className="px-6 py-3 bg-[#5C67F2] text-white rounded-xl hover:bg-indigo-600 transition" onClick={() => handleBooking()}>
+          <button className="px-6 py-3 bg-[#5C67F2] text-white rounded-xl hover:bg-indigo-600 transition cursor-pointer" onClick={() => handleBooking()}>
             Book Now
           </button>
         </div>
