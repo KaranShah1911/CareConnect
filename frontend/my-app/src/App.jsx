@@ -26,6 +26,7 @@ import DoctorLayout from "./layouts/DoctorLayout"
 import { useDoctorStore , useAdminStore } from './utils/store'
 
 import AdminDoctorLogin from "./pages/AdminDoctorLogin"
+import GoogleRedirect from "./pages/GoogleRedirect"
 
 import { ToastContainer } from "react-toastify";
 import { useUserStore } from "./utils/user"
@@ -69,6 +70,7 @@ function App() {
         </Route>
 
         <Route path="/login" element={<AdminDoctorLogin />}></Route>
+        <Route path="/google-redirect" element={<GoogleRedirect/>}></Route>
       </Routes>
       {/* for doctor and admin panel - footer is not there */}
       <ToastContainer position="top-left" autoClose={1500}/>

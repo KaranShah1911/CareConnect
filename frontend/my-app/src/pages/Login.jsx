@@ -3,17 +3,18 @@ import { FaGoogle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useUserStore } from "../utils/user";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
+import { GoogleLogin } from "@react-oauth/google";
 
 const Login = () => {
   const [data, setData] = useState({ email: "", password: "" });
-  const {login} = useUserStore();
+  const { login } = useUserStore();
   const navigate = useNavigate();
 
   const handleChange = (e) =>
     setData({ ...data, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
     console.log("Login with:", data);
     try {
@@ -29,14 +30,16 @@ const Login = () => {
         .catch(error => {
           console.log(error.response);
           toast.error(error.response.data.message);
-    });
+        });
 
     } catch (err) {
       console.log(err);
     }
-
-    // Add login logic here
   };
+
+  const handleGoogleLogin = () => {
+    window.location.href = "http://localhost:3000/api/auth/google"
+  }
 
   return (
     <div className="w-screen min-h-screen flex flex-col justify-center items-center px-4 bg-white gap-10 pt-20 md:pt-10">
@@ -47,7 +50,7 @@ const Login = () => {
       {/* Google Button */}
       <button
         type="button"
-        onClick={() => console.log("Google login")}
+        onClick={() => handleGoogleLogin()}
         className="flex items-center justify-center gap-3 text-[#1E1E2F] text-lg bg-violet-50 border border-violet-300 px-6 py-3 rounded-lg hover:bg-violet-50 transition w-full max-w-sm"
       >
         <FaGoogle className="text-red-500" />
@@ -63,7 +66,7 @@ const Login = () => {
 
       {/* Login Form */}
       <form
-        onSubmit={handleSubmit}
+        onSubmit={handleLogin}
         className="space-y-4 w-full max-w-sm flex flex-col gap-4"
       >
         <div className="flex flex-col ">

@@ -61,7 +61,7 @@ const UserProfile = () => {
     formData.append("dob", form.dob);
     formData.append("gender", form.gender);
 
-    // Address is an object, so either flatten it or stringify it
+    // Address is an object, so either flatten it or stringify it 
     formData.append("address", JSON.stringify(form.address));
 
     // Only append the file if a new one is selected

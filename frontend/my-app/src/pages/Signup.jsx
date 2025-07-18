@@ -49,10 +49,11 @@ const Signup = () => {
     } catch (error) {
       console.error(error);
     }
-    // Add login logic here
-
-
   };
+
+  const handleGoogleLogin = () => {
+    window.location.href = "http://localhost:3000/api/auth/google"
+  }
 
   return (
     <div className="w-screen min-h-screen flex flex-col justify-center items-center px-4 bg-white gap-10 pt-20 md:pt-20">
@@ -62,7 +63,7 @@ const Signup = () => {
       {/* Google Button */}
       <button
         type="button"
-        onClick={() => console.log("Google login")}
+        onClick={() => handleGoogleLogin()}
         className="flex items-center justify-center gap-3 text-[#1E1E2F] text-lg bg-violet-50 border border-violet-300 px-6 py-3 rounded-lg hover:bg-violet-50 transition w-full max-w-sm"
       >
         <FaGoogle className="text-red-500" />

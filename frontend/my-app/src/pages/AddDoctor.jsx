@@ -66,6 +66,7 @@ const AddDoctor = () => {
         } catch (err) {
             console.log(err);
         }
+
     }
 
     const clearForm = () => {
