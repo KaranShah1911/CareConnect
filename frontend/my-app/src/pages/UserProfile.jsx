@@ -45,6 +45,7 @@ const UserProfile = () => {
         setForm(data);
       })
       .catch(err => {
+        toast.error(err.response.data.message)
         console.error(err)
       });
   }, []);

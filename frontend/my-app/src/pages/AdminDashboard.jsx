@@ -220,7 +220,7 @@ const AdminDashboard = () => {
         setAppointments(latestAppointments);
         setfilteredAppointments(latestAppointments);
       } catch (err) {
-        toast.error("Error Retrieving Data");
+        toast.error(err.response.data.message);
         console.error(err);
       }
     };
@@ -237,7 +237,7 @@ const AdminDashboard = () => {
     setfilteredAppointments(
       appointments.filter(
         (app) =>
-          app.doctor.name.toLowerCase().includes(name) &&
+          app.doctorId.name.toLowerCase().includes(name) &&
           (filter.status === "all" ||
             app.status === filter.status.toLowerCase())
       )
@@ -253,7 +253,7 @@ const AdminDashboard = () => {
     setfilteredAppointments(
       appointments.filter(
         (app) =>
-          app.doctor.name.toLowerCase().includes(filter.doctor) &&
+          app.doctorId.name.toLowerCase().includes(filter.doctor) &&
           (status === "all" || (status==="completed" ? app.isCompleted : status==="cancelled" ? app.cancelled : (!app.isCompleted && !app.cancelled)))
       )
     );
@@ -343,17 +343,17 @@ const AdminDashboard = () => {
                   <tr key={app._id} className="border-t">
                     <td className="p-3 items-center space-x-4">
                       <img
-                        src={app.img || "/default-user.png"}
+                        src={app.doctorId.image || "/default-user.png"}
                         className="w-10 h-10 rounded-full inline"
                       />
-                      <span>{app.name || "NA"}</span>
+                      <span>{app.doctorId.name || "NA"}</span>
                     </td>
                     <td className="p-3 items-center space-x-4">
                       <img
-                        src={app.img || "/default-user.png"}
+                        src={app.userId.image || "/default-user.png"}
                         className="w-10 h-10 rounded-full inline"
                       />
-                      <span>{app.name || "NA"}</span>
+                      <span>{app.userId.name || "NA"}</span>
                     </td>
                     <td className="p-3">{app.date}</td>
                     <td className="p-3">{getStatusIcon(app.isCompleted, app.cancelled)}</td>
