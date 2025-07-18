@@ -166,38 +166,51 @@ const AdminDashboard = () => {
   const NoofPages = Math.ceil(NoofDoctors / DoctorsperPage);
   const API_URL = import.meta.env.VITE_API_URL;
 
-  const handleCancelAppointment = async (id) => {
+  const handleCancelAppointment = async (appointmentId) => {
     // set the status of the appointment to cancel..
     //backend call to update status
     try {
       const response = await axios.post(
         `${API_URL}/admin/cancel-appointment`,
-        { id },
+        { appointmentId },
         { withCredentials: true }
       );
-      setAppointments(response.data.dashData.latestAppointments);
-      setfilteredAppointments(response.data.dashData.latestAppointments);
-      console.log(filteredAppointments);
-      toast.success("Appointment Cancelled");
-
-      appointments.forEach((app) => {
-        if (app.id === id) app.status = "cancelled";
-      });
-      setfilteredAppointments((prev) =>
+      setAppointments((prev) =>
         prev.map((app) => {
-          if (app.id === id) return { ...app, status: "cancelled" };
+          if (app._id === appointmentId) return { ...app, cancelled: true };
           return app;
         })
       );
+      setfilteredAppointments((prev) =>
+        prev.map((app) => {
+          if (app._id === appointmentId) return { ...app, cancelled: true };
+          return app;
+        })
+      );
+
+      console.log(response.data);
+
+      setAppointments((prev) =>
+        prev.map((app) =>
+          app.id === appointmentId ? { ...app, cancelled: true } : app
+        )
+      );
+      setfilteredAppointments((prev) =>
+        prev.map((app) => {
+          if (app.id === appointmentId) return { ...app, cancelled: true };
+          return app;
+        })
+      );
+
+      toast.success("Appointment Cancelled");
     } catch (err) {
       console.error(err);
-      toast.error("Error! Status not changed");
+      toast.error("Failed to cancel appointment");
     }
   };
 
   // To fetch the appointment data from the API
   useEffect(() => {
-
     const fetchData = async () => {
       try {
         const response = await axios.get(`${API_URL}/admin/dashboard`, {
@@ -228,7 +241,6 @@ const AdminDashboard = () => {
     fetchData();
   }, []);
 
-  // TODO - do this (after backend correction)
   const handleSearchByDoctor = (e) => {
     const name = e.target.value;
     setFilter((prev) => {
@@ -239,12 +251,15 @@ const AdminDashboard = () => {
         (app) =>
           app.doctorId.name.toLowerCase().includes(name) &&
           (filter.status === "all" ||
-            app.status === filter.status.toLowerCase())
+            (filter.status === "completed"
+              ? app.isCompleted
+              : filter.status === "cancelled"
+              ? app.cancelled
+              : !app.isCompleted && !app.cancelled))
       )
     );
   };
 
-  // TODO - handle errors (not working)
   const handleFiltering = (e) => {
     const status = e.target.value;
     setFilter((prev) => {
@@ -254,14 +269,18 @@ const AdminDashboard = () => {
       appointments.filter(
         (app) =>
           app.doctorId.name.toLowerCase().includes(filter.doctor) &&
-          (status === "all" || (status==="completed" ? app.isCompleted : status==="cancelled" ? app.cancelled : (!app.isCompleted && !app.cancelled)))
+          (status === "all" ||
+            (status === "completed"
+              ? app.isCompleted
+              : status === "cancelled"
+              ? app.cancelled
+              : !app.isCompleted && !app.cancelled))
       )
     );
   };
 
   const getStatusIcon = (isCompleted, cancelled) => {
-    if (isCompleted)
-      return <CheckCircle className="text-green-500" />;
+    if (isCompleted) return <CheckCircle className="text-green-500" />;
     if (cancelled) return <XCircle className="text-red-500" />;
     return <Clock className="text-yellow-500" />;
   };
@@ -339,7 +358,7 @@ const AdminDashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredAppointments.slice(start, end).map((app, idx) => (
+                {filteredAppointments.length == 0 ? <tr className="text-xl text-center w-full"><td>No Appointments</td></tr> :  filteredAppointments.slice(start, end).map((app, idx) => (
                   <tr key={app._id} className="border-t">
                     <td className="p-3 items-center space-x-4">
                       <img
@@ -356,7 +375,9 @@ const AdminDashboard = () => {
                       <span>{app.userId.name || "NA"}</span>
                     </td>
                     <td className="p-3">{app.date}</td>
-                    <td className="p-3">{getStatusIcon(app.isCompleted, app.cancelled)}</td>
+                    <td className="p-3">
+                      {getStatusIcon(app.isCompleted, app.cancelled)}
+                    </td>
                     <td className="p-3">
                       {!app.isCompleted && !app.cancelled && (
                         <button
