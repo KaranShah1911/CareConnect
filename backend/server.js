@@ -23,11 +23,17 @@ connectToMongoDB();
 app.use(cookieParser());
 
 // session middleware (required for Passport)
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false
-}));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "mydevsecret",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: false, // set to true in production with HTTPS
+    },
+  })
+);
 
 // initialize passport
 app.use(passport.initialize());

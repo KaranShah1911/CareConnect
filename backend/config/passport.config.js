@@ -18,7 +18,6 @@ passport.use(
         const newUser = await User.create({
           name: profile.displayName,
           email: profile.emails[0].value,
-          // optionally: image: profile.photos[0].value,
         });
 
         return done(null, newUser);
@@ -29,7 +28,7 @@ passport.use(
   )
 );
 
-passport.serializeUser((user, done) => done(null, user.id));
+passport.serializeUser((user, done) => done(null, user._id));
 passport.deserializeUser(async (id, done) => {
   const user = await User.findById(id);
   done(null, user);

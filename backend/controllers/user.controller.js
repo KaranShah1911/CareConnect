@@ -17,17 +17,17 @@ const registerUser = async (req, res) => {
     const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
-      return res.json({ success: false, message: "Missing Details" });
+      return res.status(300).json({ success: false, message: "Missing Details" });
     }
 
     // Validating email
     if (!validator.isEmail(email)) {
-      return res.json({ success: false, message: "Enter a valid email" });
+      return res.status(300).json({ success: false, message: "Enter a valid email" });
     }
 
     // Validating a strong password
     if (password.length < 8) {
-      return res.json({ success: false, message: "Enter a strong password" });
+      return res.status(300).json({ success: false, message: "Enter a strong password" });
     }
 
     // Hashing user password
@@ -53,12 +53,7 @@ const registerUser = async (req, res) => {
       secure: true
     });
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: true
-    });
-
-    res.json({ success: true, token, image: user.image });
+    res.status(202).json({ success: true, token, image: user.image });
   } catch (error) {
     return res
       .status(error.statusCode || 500)
@@ -97,7 +92,7 @@ const loginUser = async (req, res) => {
         userImage, // includes image URL
       });
     } else {
-      res.json({ success: false, message: "Invalid Credentials" });
+      res.status(300).json({ success: false, message: "Invalid Credentials" });
     }
   } catch (error) {
     return res
