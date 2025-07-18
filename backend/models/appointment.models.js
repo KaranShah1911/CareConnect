@@ -7,7 +7,7 @@ const appointmentSchema = new mongoose.Schema({
   },
   doctorId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "doctors",
+    ref: "doctor",
   },
   slotDate: {
     type: String,

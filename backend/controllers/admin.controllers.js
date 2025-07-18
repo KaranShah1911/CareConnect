@@ -144,13 +144,13 @@ const adminDashBoard = async (req, res) => {
   try {
     const doctors = await Doctor.find({});
     const users = await User.find({});
-    const appointments = await appointmentModel.find({});
+    const appointments = await appointmentModel.find({}).populate("userId", "name image").populate("doctorId", "name image");
 
     const dashData = {
       doctors: doctors.length,
       appointments: appointments.length,
       patiens: users.length,
-      latestAppointments: appointments.reverse().slice(0, 5),
+      latestAppointments: appointments.reverse(),
     };
 
     res.json({ success: true, dashData });

@@ -37,5 +37,5 @@ router.post(
 
 router.get('/appointments', checkForAuthorization(["ADMIN"]), appointmentsAdmin)
 router.post('/cancel-appointment', checkForAuthorization(["ADMIN"]), appointmentCancel)
-router.get('/dashboard', checkForAuthorization(["ADMIN"]),verifyJWT, adminDashBoard)
+router.get('/dashboard', checkForAuthorization(["ADMIN"]), verifyJWT, adminDashBoard)
 export default router;
