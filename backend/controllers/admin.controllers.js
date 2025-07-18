@@ -119,9 +119,9 @@ const appointmentCancel = async (req, res) => {
     });
 
     // releasing doctor's slot
-    const { docId, slotDate, slotTime } = appointmentData;
+    const { doctorId, slotDate, slotTime } = appointmentData;
 
-    const doctorData = await Doctor.findById(docId);
+    const doctorData = await Doctor.findById(doctorId);
 
     let slots_booked = doctorData.slots_booked;
 
@@ -129,7 +129,7 @@ const appointmentCancel = async (req, res) => {
       (e) => e !== slotTime
     );
 
-    await Doctor.findByIdAndUpdate(docId, { slots_booked });
+    await Doctor.findByIdAndUpdate(doctorId, { slots_booked });
 
     res.json({ success: true, message: "Appointment Cancelled" });
   } catch (error) {
