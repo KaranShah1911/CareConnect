@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useStore } from "../store/store";
+import { useStore } from "../utils/store";
 import { toast } from "react-toastify";
 import axios from "axios";
 
@@ -11,10 +11,7 @@ const AddDoctor = () => {
         specialization: "",
         degree: "",
         password: "",
-        address: {
-            line1: "",
-            line2: ""
-        },
+        address: "",
         experience: null,
         fees: null,
         about: "",
@@ -23,26 +20,17 @@ const AddDoctor = () => {
     const sidebar = useStore((state) => state.sidebar)
 
     const handleChange = (e) => {
-        const { name, value, type, files } = e.target;
-
-        if (name === "image") {
-            setForm({ ...form, image: files[0] });
-        } else if (type === "checkbox") {
-            setForm({ ...form, [name]: checked });
-        } else if (name === "line1" || name === "line2") {
-            setForm({
-                ...form,
-                address: { ...form.address, [name]: value.toUpperCase() },
-            });
-        } else {
-            setForm({ ...form, [name]: value });
-        }
+        setForm((prev) => { return { ...prev, [e.target.name]: e.target.value } });
     };
+    const handlFileChange = (e)=>{
+        const file = e.target.files[0];
+        setForm((prev) => { return { ...prev, [e.target.name]: file } });
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (form.clinic_phno?.length < 8 || form.clinic_phno?.length > 10 || form.clinic_phno?.length == 9) {
-            toast.error("Enter valid clinic phone number....");
+        if(form.clinic_phno?.length < 8 || form.clinic_phno?.length > 10 || form.clinic_phno?.length==9){
+            toast.error("Enter valid clinic_phno number....");
             return;
         }
         // make the api call to pass data
@@ -53,30 +41,27 @@ const AddDoctor = () => {
         formdata.append("specialization", form.specialization);
         formdata.append("degree", form.degree);
         formdata.append("password", form.password);
-        formdata.append("address", JSON.stringify(form.address));
+        formdata.append("address", form.address);
         formdata.append("experience", form.experience);
         formdata.append("fees", form.fees);
         formdata.append("about", form.about);
-
-        if (form.image instanceof File) {
+        
+        if(form.image instanceof File){
             formdata.append("image", form.image);
         }
 
-        console.log("Adding doctor", formdata);
+        console.log("Adding doctor" , formdata);
         try {
-            const API_URL = import.meta.env.VITE_API_URL
-            axios.post(`${API_URL}/api/admin/add-doctor`, formdata, {
-                withCredentials: true
+            axios.post("http://localhost:3000/api/admin/add-doctor" , formdata , {
+                withCredentials : true
             })
-                .then(res => {
-                    console.log(res.data);
-                    toast.success("Doctor added successfully");
-                })
-                .catch(err => {
-                    console.log(err);
-                    toast.error("Failed to add doctor");
-                })
-                .finally(() => clearForm())
+            .then(res => {
+                console.log(res.data);
+            })
+            .catch(err=>{
+                console.log(err);
+            })
+            .finally(()=>clearForm())
 
         } catch (err) {
             console.log(err);
@@ -93,10 +78,7 @@ const AddDoctor = () => {
             experience: "",
             fees: "",
             about: "",
-            address: {
-                line1 : "",
-                line2 : "",
-            },
+            address: "",
             clinic_phno: "",
             degree: "",
             image: null
@@ -111,9 +93,9 @@ const AddDoctor = () => {
                         type="file"
                         accept="image/*"
                         name="image"
-                        onChange={handleChange}
+                        onChange={handlFileChange}
                         required
-                    />
+                        />
                     {form.image && (
                         <img
                             src={typeof form.image === "string" ? form.image : URL.createObjectURL(form.image)}
@@ -160,7 +142,7 @@ const AddDoctor = () => {
                 </div>
 
                 <div>
-                    <label className="block font-medium text-violet-700 mb-1">Clinic Number/Phone Number</label>
+                    <label className="block font-medium text-violet-700 mb-1">clinic_phno/Phone Number</label>
                     <input
                         name="clinic_phno"
                         value={form.clinic_phno}
@@ -223,32 +205,16 @@ const AddDoctor = () => {
                     />
                 </div>
 
-                <div>
-                    <label className="block font-medium text-violet-700">
-                        Address Line 1
-                    </label>
-                    <input
-                        type="text"
-                        name="line1"
-                        value={form.address.line1}
+                <div className="md:col-span-2">
+                    <label className="block font-medium text-violet-700 mb-1">Address</label>
+                    <textarea
+                        name="address"
+                        value={form.address}
                         onChange={handleChange}
-                        className="w-full border p-2 rounded-lg"
-                    />
-
-                </div>
-
-                {/* Address Line 2 */}
-                <div>
-                    <label className="block font-medium text-violet-700">
-                        Address Line 2
-                    </label>
-                    <input
-                        type="text"
-                        name="line2"
-                        value={form.address.line2}
-                        onChange={handleChange}
-                        className="w-full border p-2 rounded-lg"
-                    />
+                        className="w-full border p-2 rounded-lg focus:ring-2 focus:ring-violet-500"
+                        placeholder="Full clinic_phno or hospital address"
+                        required
+                    ></textarea>
                 </div>
 
                 <div className="md:col-span-2">

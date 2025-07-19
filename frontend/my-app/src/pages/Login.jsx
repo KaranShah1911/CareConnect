@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { FaGoogle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useUserStore } from "../store/user";
+import { useUserStore } from "../utils/user";
 import { toast } from "react-toastify";
+import { GoogleLogin } from "@react-oauth/google";
 
 const Login = () => {
   const [data, setData] = useState({ email: "", password: "" });
   const { login } = useUserStore();
   const navigate = useNavigate();
-  const API_URL = import.meta.env.VITE_API_URL;
 
   const handleChange = (e) =>
     setData({ ...data, [e.target.name]: e.target.value });
@@ -18,7 +18,7 @@ const Login = () => {
     e.preventDefault();
     console.log("Login with:", data);
     try {
-      axios.post(`${API_URL}/api/user/login`, data, {
+      axios.post("http://localhost:3000/api/user/login", data, {
         withCredentials: true
       })
         .then(response => {

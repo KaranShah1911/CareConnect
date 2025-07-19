@@ -2,9 +2,82 @@ import React, { useEffect, useState } from "react";
 import Loader from "../components/Loader";
 import { FaArrowRight } from "react-icons/fa";
 import { FaArrowLeft } from "react-icons/fa6";
-import { useStore } from "../store/store";
+import { useStore } from "../utils/store";
 import axios from "axios";
 import { toast } from "react-toastify";
+
+const doctors = [
+  {
+    name: "Dr. Smith",
+    img: "https://randomuser.me/api/portraits/men/66.jpg",
+    speciality: "Cardiologist",
+  },
+  {
+    name: "Dr. Alice",
+    img: "https://randomuser.me/api/portraits/men/66.jpg",
+    speciality: "Neurologist",
+  },
+  {
+    name: "Dr. Alice",
+    img: "https://randomuser.me/api/portraits/men/66.jpg",
+    speciality: "Neurologist",
+  },
+  {
+    name: "Dr. Alice",
+    img: "https://randomuser.me/api/portraits/men/66.jpg",
+    speciality: "Neurologist",
+  },
+  {
+    name: "Dr. Alice",
+    img: "https://randomuser.me/api/portraits/men/66.jpg",
+    speciality: "Neurologist",
+  },
+  {
+    name: "Dr. Alice",
+    img: "https://randomuser.me/api/portraits/men/66.jpg",
+    speciality: "Neurologist",
+  },
+  {
+    name: "Dr. Alice",
+    img: "https://randomuser.me/api/portraits/men/66.jpg",
+    speciality: "Neurologist",
+  },
+  {
+    name: "Dr. Alice",
+    img: "https://randomuser.me/api/portraits/men/66.jpg",
+    speciality: "Neurologist",
+  },
+  {
+    name: "Dr. Alice",
+    img: "https://randomuser.me/api/portraits/men/66.jpg",
+    speciality: "Neurologist",
+  },
+  {
+    name: "Dr. Alice",
+    img: "https://randomuser.me/api/portraits/men/66.jpg",
+    speciality: "Neurologist",
+  },
+  {
+    name: "Dr. Alice",
+    img: "https://randomuser.me/api/portraits/men/66.jpg",
+    speciality: "Neurologist",
+  },
+  {
+    name: "Dr. Alice",
+    img: "https://randomuser.me/api/portraits/men/66.jpg",
+    speciality: "Neurologist",
+  },
+  {
+    name: "Dr. Alice",
+    img: "https://randomuser.me/api/portraits/men/66.jpg",
+    speciality: "Neurologist",
+  },
+  {
+    name: "Dr. Alice",
+    img: "https://randomuser.me/api/portraits/men/66.jpg",
+    speciality: "Neurologist",
+  },
+];
 
 const DoctorsperPage = 9;
 
@@ -19,7 +92,7 @@ const AllDoctors = () => {
   const NoofPages = Math.ceil(NoofDoctors / DoctorsperPage);
 
   const API_URL = import.meta.env.VITE_API_URL;
-  
+
   // Fetch all doctors.
   useEffect(() => {
     const fetchData = async () => {

@@ -3,23 +3,19 @@ import React, { useState } from "react";
 import { FaGoogle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useUserStore } from "../store/user";
-import Loader from "../components/Loader";
+import { useUserStore } from "../utils/user";
 
 const Signup = () => {
   const navigate = useNavigate();
   const [data, setData] = useState({ email: "", password: "", name: "" });
   const [termsAcepted, settermsAccepted] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const { login } = useUserStore()
-  const API_URL = import.meta.env.VITE_API_URL;
+  const { login } = useUserStore();
 
   const handleChange = (e) =>
     setData({ ...data, [e.target.name]: e.target.value });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     if (!termsAcepted) {
       toast.error("Accept terms");
       return;
@@ -29,48 +25,42 @@ const Signup = () => {
       return;
     }
     console.log("Sign up with:", data);
-    setLoading(true);
     try {
-      axios.post(`${API_URL}/api/user/register`, data, {
-        withCredentials: true
-      })
-        .then(res => {
-          const image = res.data.image
+      axios
+        .post("http://localhost:3000/api/user/register", data, {
+          withCredentials: true,
+        })
+        .then((res) => {
+          const image = res.data.image;
           login(image);
           toast.success("User account created");
           navigate("/profile");
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error.response);
-          toast.error(error.response.data.message || "Error signing up.");
+          toast.error(error.response.data.message);
         })
         .finally(() => {
           setData({
             name: "",
             password: "",
-            email: ""
+            email: "",
           });
-        })
+        });
     } catch (error) {
       console.error(error);
     }
-    setLoading(false);
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = `${API_URL}/api/auth/google`;
-  }
-
-  if (loading) return (
-    <div className="fixed inset-0 z-1 flex items-center bg-white">
-      <Loader />
-    </div>
-  )
+    window.location.href = "http://localhost:3000/api/auth/google";
+  };
 
   return (
     <div className="w-screen min-h-screen flex flex-col justify-center items-center px-4 bg-white gap-10 pt-20 md:pt-20">
       <h1 className="text-2xl md:text-3xl text-[#1E1E2F] text-center">
-        Join <span className="text-indigo-400">CareConnect</span> and connect with trusted Doctors
+        Join <span className="text-indigo-400">CareConnect</span> and connect
+        with trusted Doctors
       </h1>
       {/* Google Button */}
       <button
@@ -122,7 +112,7 @@ const Signup = () => {
         </div>
 
         <div className="flex flex-col">
-          <label className="text-sm mb-1 text-indigo-700">Name</label>
+          <label className="text-sm mb-1 text-indigo-700">Password</label>
           <div className="flex items-center border rounded-lg px-3">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -183,7 +173,15 @@ const Signup = () => {
           </div>
           <div className="flex justify-between items-center text-sm mt-1">
             <label className="flex items-center gap-2">
-              <input type="checkbox" onChange={(e) => settermsAccepted(e.target.checked)} className="accent-violet-500 cursor-pointer" />Accept the<a href="/term-and-conditions" className="text-indigo-500">Terms and Conditions</a>
+              <input
+                type="checkbox"
+                onChange={(e) => settermsAccepted(e.target.checked)}
+                className="accent-violet-500 cursor-pointer"
+              />
+              Accept the
+              <a href="/term-and-conditions" className="text-indigo-500">
+                Terms and Conditions
+              </a>
             </label>
           </div>
         </div>

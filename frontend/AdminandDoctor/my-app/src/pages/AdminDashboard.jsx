@@ -3,7 +3,7 @@ import { CheckCircle, XCircle, Clock } from "lucide-react";
 import Loader from "../components/Loader";
 import { FaArrowRight } from "react-icons/fa";
 import { FaArrowLeft } from "react-icons/fa6";
-import { useStore } from "../store/store";
+import { useStore } from "../utils/store";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -358,38 +358,44 @@ const AdminDashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredAppointments.length == 0 ? <tr className="text-xl text-center w-full"><td>No Appointments</td></tr> :  filteredAppointments.slice(start, end).map((app, idx) => (
-                  <tr key={app._id} className="border-t">
-                    <td className="p-3 items-center space-x-4">
-                      <img
-                        src={app.doctorId?.image || "/default-user.png"}
-                        className="w-10 h-10 rounded-full inline"
-                      />
-                      <span>{app.doctorId?.name || "NA"}</span>
-                    </td>
-                    <td className="p-3 items-center space-x-4">
-                      <img
-                        src={app.userId?.image || "/default-user.png"}
-                        className="w-10 h-10 rounded-full inline"
-                      />
-                      <span>{app.userId?.name || "NA"}</span>
-                    </td>
-                    <td className="p-3">{app.date}</td>
-                    <td className="p-3">
-                      {getStatusIcon(app.isCompleted, app.cancelled)}
-                    </td>
-                    <td className="p-3">
-                      {!app.isCompleted && !app.cancelled && (
-                        <button
-                          onClick={() => handleCancelAppointment(app._id)}
-                          className="bg-red-500 text-white px-3 py-1 rounded-lg"
-                        >
-                          Cancel
-                        </button>
-                      )}
-                    </td>
+                {filteredAppointments.length == 0 ? (
+                  <tr className="text-xl text-center w-full">
+                    <td>No Appointments</td>
                   </tr>
-                ))}
+                ) : (
+                  filteredAppointments.slice(start, end).map((app, idx) => (
+                    <tr key={app._id} className="border-t">
+                      <td className="p-3 items-center space-x-4">
+                        <img
+                          src={app.doctorId?.image || "/default-user.png"}
+                          className="w-10 h-10 rounded-full inline"
+                        />
+                        <span>{app.doctorId?.name || "NA"}</span>
+                      </td>
+                      <td className="p-3 items-center space-x-4">
+                        <img
+                          src={app.userId?.image || "/default-user.png"}
+                          className="w-10 h-10 rounded-full inline"
+                        />
+                        <span>{app.userId?.name || "NA"}</span>
+                      </td>
+                      <td className="p-3">{app.date}</td>
+                      <td className="p-3">
+                        {getStatusIcon(app.isCompleted, app.cancelled)}
+                      </td>
+                      <td className="p-3">
+                        {!app.isCompleted && !app.cancelled && (
+                          <button
+                            onClick={() => handleCancelAppointment(app._id)}
+                            className="bg-red-500 text-white px-3 py-1 rounded-lg"
+                          >
+                            Cancel
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

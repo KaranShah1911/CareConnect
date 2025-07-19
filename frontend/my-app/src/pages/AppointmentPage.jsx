@@ -5,7 +5,7 @@ import { MdCurrencyRupee } from "react-icons/md";
 import { FaUserDoctor } from "react-icons/fa6";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useUserStore } from "../store/user";
+import { useUserStore } from "../utils/user";
 
 const getNextDays = (count = 12) => {
   const days = [];
@@ -39,25 +39,25 @@ const reviews = [
 
 const AppointmentPage = () => {
   const navigate = useNavigate();
-  const {doctorId} = useParams();
+  const { doctorId } = useParams();
   const location = useLocation();
   let doctor = location.state?.doctor;
-  doctor.address = typeof doctor.address === "string" ? JSON.parse(doctor.address) : doctor.address;
+  // doctor.address = doctor.address;
   const similarDoctors = location.state?.similarDoctors;
-  const { isLoggedin } = useUserStore()
+  const { isLoggedin } = useUserStore();
   const API_URL = import.meta.env.VITE_API_URL;
 
   const [appointment, setappointmentdate] = useState({
     date: "",
-    time: ""
+    time: "",
   });
 
   const handleAppointment = (date, time) => {
     setappointmentdate({
       date: date,
-      time: time
+      time: time,
     });
-  }
+  };
 
   const handleBooking = () => {
     if (!isLoggedin) {
@@ -65,30 +65,38 @@ const AppointmentPage = () => {
       return;
     }
     if (!appointment.date || !appointment.time) {
-      toast.error("Please Select valid date and time....")
+      toast.error("Please Select valid date and time....");
       return;
     }
-    try { 
-      axios.post(`${API_URL}/api/user/book-appointment`, { doctorId: doctor._id, slotTime: appointment.time, slotDate: appointment.date }, {
-        withCredentials: true
-      })
+    try {
+      axios
+        .post(
+          `${API_URL}/user/book-appointment`,
+          {
+            doctorId: doctor._id,
+            slotTime: appointment.time,
+            slotDate: appointment.date,
+          },
+          {
+            withCredentials: true,
+          }
+        )
         .then((response) => {
           doctor.slots_booked[appointment.date] = [appointment.time];
           toast.success("Appointment booked successfully");
-          navigate("/my-appointment")
+          navigate("/my-appointment");
         })
         .catch((error) => console.log(error))
         .finally(() => {
           setappointmentdate({
             date: "",
-            time: ""
+            time: "",
           });
         });
-
     } catch (err) {
-      console.error(err)
+      console.error(err);
     }
-  }
+  };
 
   return (
     <section key={doctorId} className="max-w-6xl mx-auto px-4 py-10 pt-24">
@@ -101,7 +109,9 @@ const AppointmentPage = () => {
         />
 
         <div className="bg-white rounded-xl shadow-lg p-6 flex-1 border hover:bg-gray-50">
-          <h2 className="text-3xl font-bold text-gray-800">{"Dr. " + doctor.name}</h2>
+          <h2 className="text-3xl font-bold text-gray-800">
+            {"Dr. " + doctor.name}
+          </h2>
           <p className="text-indigo-600 font-medium mt-1">{doctor.specialty}</p>
           <p className="text-sm text-gray-600 mt-2">{doctor.about}</p>
 
@@ -112,19 +122,21 @@ const AppointmentPage = () => {
 
           <div className="mt-4 space-y-2 text-gray-700 text-sm">
             <p className="flex items-center gap-2">
-              <FaMapMarkerAlt /> {doctor.address["line1"] + ", " + doctor.address["line2"]}
+              <FaMapMarkerAlt /> {doctor.address || "Not Available"}
             </p>
             <p className="flex items-center gap-2">
               <FaPhoneAlt /> {doctor.clinic_phno}
             </p>
             <p className="flex items-center gap-2">
-              <FaClock /> {doctor.timings || "Not Available"}
+              <FaClock /> {doctor.timings || "9am to 5pm"}
             </p>
             <p className="flex items-center gap-2">
-              <MdCurrencyRupee className="size-5" /> {doctor.fees || "Not Available"}
+              <MdCurrencyRupee className="size-5" />{" "}
+              {doctor.fees || "Not Available"}
             </p>
             <p className="flex items-center gap-2">
-              <FaUserDoctor className="size-5" /> {doctor.specialization || "Not Available"}
+              <FaUserDoctor className="size-5" />{" "}
+              {doctor.specialization || "Not Available"}
             </p>
           </div>
         </div>
@@ -145,7 +157,11 @@ const AppointmentPage = () => {
                   <button
                     key={i}
                     disabled={doctor.slots_booked[date]?.includes(time)}
-                    className={`px-3 py-1 rounded-lg text-sm disabled:bg-red-200 disabled:text-red-800  ${appointment.date === date && appointment.time === time ? "bg-indigo-700 text-indigo-100" : "bg-indigo-100 text-indigo-700 hover:bg-indigo-200"}`}
+                    className={`px-3 py-1 rounded-lg text-sm disabled:bg-red-200 disabled:text-red-800  ${
+                      appointment.date === date && appointment.time === time
+                        ? "bg-indigo-700 text-indigo-100"
+                        : "bg-indigo-100 text-indigo-700 hover:bg-indigo-200"
+                    }`}
                     onClick={() => handleAppointment(date, time)}
                   >
                     {time}
@@ -157,7 +173,10 @@ const AppointmentPage = () => {
         </div>
 
         <div className="mt-6">
-          <button className="px-6 py-3 bg-[#5C67F2] text-white rounded-xl hover:bg-indigo-600 transition cursor-pointer" onClick={() => handleBooking()}>
+          <button
+            className="px-6 py-3 bg-[#5C67F2] text-white rounded-xl hover:bg-indigo-600 transition cursor-pointer"
+            onClick={() => handleBooking()}
+          >
             Book Now
           </button>
         </div>
@@ -177,36 +196,41 @@ const AppointmentPage = () => {
       </div>
 
       {/* Similar Doctors */}
-      <div className="mt-10">
+      {/* <div className="mt-10">
         <h3 className="text-xl font-semibold mb-4">Similar Specialists</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {similarDoctors.filter((doc) => doc._id !== doctor._id).map((doc, index) => (
-            <div
-              key={index}
-              className="bg-white p-4 rounded-xl shadow hover:shadow-md transition text-center"
-            >
-              <img
-                src={doc.image}
-                alt={doc.name}
-                className="w-20 h-20 rounded-full object-cover mx-auto mb-3"
-              />
-              <h4 className="font-semibold text-gray-800">{doc.name}</h4>
-              <p className="text-sm text-gray-500">{doc.specialization}</p>
-              <button
-                onClick={() => {
-                  if (doc.available === false) {
-                    toast.error("Doctor is not available currently..");
-                    return;
-                  }
-                  navigate(`/appointment?doctorId=${doc._id}`, { state: { doctor:doc , similarDoctors } })
-                }}
-                className="mt-2 px-4 py-1 text-sm text-indigo-600 hover:underline cursor-pointer">
-                View Profile
-              </button>
-            </div>
-          ))}
+          {similarDoctors
+            .filter((doc) => doc._id !== doctor._id)
+            .map((doc, index) => (
+              <div
+                key={index}
+                className="bg-white p-4 rounded-xl shadow hover:shadow-md transition text-center"
+              >
+                <img
+                  src={doc.image}
+                  alt={doc.name}
+                  className="w-20 h-20 rounded-full object-cover mx-auto mb-3"
+                />
+                <h4 className="font-semibold text-gray-800">{doc.name}</h4>
+                <p className="text-sm text-gray-500">{doc.specialization}</p>
+                <button
+                  onClick={() => {
+                    if (doc.available === false) {
+                      toast.error("Doctor is not available currently..");
+                      return;
+                    }
+                    navigate(`/appointment?doctorId=${doc._id}`, {
+                      state: { doctor: doc, similarDoctors },
+                    });
+                  }}
+                  className="mt-2 px-4 py-1 text-sm text-indigo-600 hover:underline cursor-pointer"
+                >
+                  View Profile
+                </button>
+              </div>
+            ))}
         </div>
-      </div>
+      </div> */}
     </section>
   );
 };

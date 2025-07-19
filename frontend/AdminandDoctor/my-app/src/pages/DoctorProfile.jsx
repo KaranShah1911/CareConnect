@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaEdit, FaSave, FaTimes } from "react-icons/fa";
-import { useStore } from "../store/store";
+import { useStore } from "../utils/store";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
@@ -13,21 +13,18 @@ const DoctorInfo = () => {
   const API_URL = import.meta.env.VITE_API_URL;
 
   const [form, setForm] = useState({
-        name: "",
-        email: "",
-        clinic_phno: null,
-        specialization: "",
-        degree: "",
-        address: {
-            line1: "",
-            line2: ""
-        },
-        experience: null,
-        fees: null,
-        about: "",
-        image: null,
-        available : false
-    });
+    name: "",
+    email: "",
+    clinic_phno: null,
+    specialization: "",
+    degree: "",
+    address: "",
+    experience: null,
+    fees: null,
+    about: "",
+    image: null,
+    available: false,
+  });
   const [originalData, setOriginalData] = useState({});
 
   // fetch profile data
@@ -39,8 +36,8 @@ const DoctorInfo = () => {
         });
         const data = response.data.profileData;
         console.log("profile successfull", data);
-        setForm({...data,});
-        setOriginalData({...data,});        
+        setForm({ ...data });
+        setOriginalData({ ...data });
       } catch (err) {
         console.error(err);
       }
@@ -55,11 +52,6 @@ const DoctorInfo = () => {
       setForm({ ...form, image: files[0] });
     } else if (type === "checkbox") {
       setForm({ ...form, [name]: checked });
-    } else if (name === "line1" || name === "line2") {
-      setForm({
-        ...form,
-        address: { ...form.address, [name]: value.toUpperCase() },
-      });
     } else {
       setForm({ ...form, [name]: value });
     }
@@ -77,20 +69,20 @@ const DoctorInfo = () => {
       formData.append("about", form.about);
       formData.append("fees", form.fees);
       formData.append("available", form.available);
-      formData.append("address", JSON.stringify(form.address));
+      formData.append("address", form.address);
 
       if (form.image instanceof File) {
         formData.append("image", form.image);
       }
 
       axios
-        .patch(`${API_URL}/api/doctor/update-profile`, formData, {
+        .post(`${API_URL}/doctor/update-profile`, formData, {
           withCredentials: true,
         })
         .then((res) => {
-          const data = res.data.updatedProfile;
-          setForm({...data,});
-          setOriginalData({...data,});
+          const data = res.data.data;
+          setForm({ ...data });
+          setOriginalData({ ...data });
           toast.success("profile updated successfully");
         })
         .catch((err) => {
@@ -280,39 +272,21 @@ const DoctorInfo = () => {
               )}
             </div>
 
-            {/* Address Line 1 */}
-            <div>
-              <label className="block font-medium text-violet-700">
-                Address Line 1
-              </label>
-              {editMode ? (
-                <input
-                  type="text"
-                  name="line1"
-                  value={form.address.line1}
-                  onChange={handleChange}
-                  className="w-full border p-2 rounded-lg"
-                />
-              ) : (
-                <p className="p-2 bg-gray-50 rounded">{form?.address?.line1}</p>
-              )}
-            </div>
-
             {/* Address Line 2 */}
             <div>
               <label className="block font-medium text-violet-700">
-                Address Line 2
+                Address
               </label>
               {editMode ? (
                 <input
                   type="text"
-                  name="line2"
-                  value={form.address.line2}
+                  name="address"
+                  value={form.address}
                   onChange={handleChange}
                   className="w-full border p-2 rounded-lg"
                 />
               ) : (
-                <p className="p-2 bg-gray-50 rounded">{form?.address?.line2}</p>
+                <p className="p-2 bg-gray-50 rounded">{form?.address}</p>
               )}
             </div>
 

@@ -40,12 +40,12 @@ const doctorSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    degree:{
-      type : String,
-      required : true
+    degree: {
+      type: String,
+      required: true,
     },
     address: {
-      type: Object,
+      type: String,
       required: true,
     },
     slots_booked: {
