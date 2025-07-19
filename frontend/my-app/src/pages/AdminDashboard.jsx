@@ -268,7 +268,7 @@ const AdminDashboard = () => {
     setfilteredAppointments(
       appointments.filter(
         (app) =>
-          app.doctorId.name.toLowerCase().includes(filter.doctor) &&
+          app.doctorId?.name.toLowerCase().includes(filter.doctor) &&
           (status === "all" ||
             (status === "completed"
               ? app.isCompleted
@@ -362,17 +362,17 @@ const AdminDashboard = () => {
                   <tr key={app._id} className="border-t">
                     <td className="p-3 items-center space-x-4">
                       <img
-                        src={app.doctorId.image || "/default-user.png"}
+                        src={app.doctorId?.image || "/default-user.png"}
                         className="w-10 h-10 rounded-full inline"
                       />
-                      <span>{app.doctorId.name || "NA"}</span>
+                      <span>{app.doctorId?.name || "NA"}</span>
                     </td>
                     <td className="p-3 items-center space-x-4">
                       <img
-                        src={app.userId.image || "/default-user.png"}
+                        src={app.userId?.image || "/default-user.png"}
                         className="w-10 h-10 rounded-full inline"
                       />
-                      <span>{app.userId.name || "NA"}</span>
+                      <span>{app.userId?.name || "NA"}</span>
                     </td>
                     <td className="p-3">{app.date}</td>
                     <td className="p-3">

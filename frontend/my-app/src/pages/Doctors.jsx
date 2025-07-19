@@ -277,6 +277,7 @@ const Doctors = () => {
         .then((response) => {
           // console.log(response.data.doctors);
           const responsedoctors = response.data.doctors;
+          console.log(responsedoctors);
           setCategories(["All" , ...new Set(responsedoctors.map((doctor) => doctor.specialization))]);
           setDoctors(responsedoctors)
           setFilterDoctors(responsedoctors)
@@ -380,7 +381,7 @@ const Doctors = () => {
                     toast.error("Doctor is not available currently..");
                     return;
                   }
-                  navigate(`/appointment?doctorId=${doctor._id}` , {state : {doctor}})
+                  navigate(`/appointment?doctorId=${doctor._id}` , {state : {doctor , similarDoctors : filterDoctors.filter((doc) => doc.specialization.toLowerCase()===doctor.specialization.toLowerCase())}})
                 }}
                 to={`/appointment?doctorId=${doctor._id}`}
                 className="max-w-sm bg-white border border-gray-primary rounded-lg shadow-sm text-black hover:-translate-y-[7px] transition-all duration-300"

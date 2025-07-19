@@ -12,22 +12,22 @@ const DoctorInfo = () => {
   const sidebar = useStore((state) => state.sidebar);
 
   const [form, setForm] = useState({
-    image:
-      "https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o=",
-    name: "Dr. Sneha Patil",
-    degree: "MBBS, MD",
-    specialization: "Dermatologist",
-    experience: "8",
-    about:
-      "Dedicated dermatologist with 8+ years of experience in treating skin and hair disorders.",
-    fees: "500",
-    address: {
-      line1: "Vasant Vihar Clinic",
-      line2: "Mumbai",
-    },
-    available: true,
-  });
-  const [originalData, setOriginalData] = useState(form);
+        name: "",
+        email: "",
+        clinic_phno: null,
+        specialization: "",
+        degree: "",
+        address: {
+            line1: "",
+            line2: ""
+        },
+        experience: null,
+        fees: null,
+        about: "",
+        image: null,
+        available : false
+    });
+  const [originalData, setOriginalData] = useState({});
 
   // fetch profile data
   useEffect(() => {
@@ -37,27 +37,14 @@ const DoctorInfo = () => {
         const response = await axios.get(`${API_URL}/doctor/profile`, {
           withCredentials: true,
         });
-        console.log("profile successfull", response.data);
-        const data = await response.data.profileData;
-        const parsedAddress =
-          typeof data.address === "string"
-            ? JSON.parse(data.address)
-            : data.address;
-
-        setForm({
-          ...form,
-          ...data,
-          address: {
-            line1: parsedAddress?.line1 || "",
-            line2: parsedAddress?.line2 || "",
-          },
-        });
-        console.log("form data", form);
+        const data = response.data.profileData;
+        console.log("profile successfull", data);
+        setForm({...data,});
+        setOriginalData({...data,});        
       } catch (err) {
         console.error(err);
       }
     };
-
     fetchData();
   }, []);
 
@@ -71,7 +58,7 @@ const DoctorInfo = () => {
     } else if (name === "line1" || name === "line2") {
       setForm({
         ...form,
-        address: { ...form.address, [name]: value },
+        address: { ...form.address, [name]: value.toUpperCase() },
       });
     } else {
       setForm({ ...form, [name]: value });
@@ -97,38 +84,14 @@ const DoctorInfo = () => {
       }
 
       axios
-        .post("http://localhost:3000/api/doctor/update-profile", formData, {
+        .patch("http://localhost:3000/api/doctor/update-profile", formData, {
           withCredentials: true,
         })
         .then((res) => {
-          console.log("Yogesh", res.data);
-
-          const data = res.data.data;
-          const parsedAddress =
-            typeof data.address === "string"
-              ? JSON.parse(data.address)
-              : data.address;
-
-          setForm({
-            ...form,
-            ...data,
-            address: {
-              line1: parsedAddress?.line1 || "",
-              line2: parsedAddress?.line2 || "",
-            },
-          });
-
-          setOriginalData({
-            ...originalData,
-            ...data,
-            address: {
-              line1: parsedAddress?.line1 || "",
-              line2: parsedAddress?.line2 || "",
-            },
-          });
-
+          const data = res.data.updatedProfile;
+          setForm({...data,});
+          setOriginalData({...data,});
           toast.success("profile updated successfully");
-          setLoading(false);
         })
         .catch((err) => {
           toast.error(err.response || "Profile update failed");
@@ -138,7 +101,7 @@ const DoctorInfo = () => {
       console.error(error);
       toast.error("Profile update failed");
     }
-    // setLoading(false);
+    setLoading(false);
     setEditMode(false);
   };
 
@@ -147,12 +110,12 @@ const DoctorInfo = () => {
     setEditMode(false);
   };
 
-  // if (loading)
-  //   return (
-  //     <div className="fixed inset-0 z-1 flex items-center bg-white">
-  //       <Loader />
-  //     </div>
-  //   );
+  if (loading)
+    return (
+      <div className="fixed inset-0 z-1 flex items-center bg-white">
+        <Loader />
+      </div>
+    );
 
   return (
     <div
