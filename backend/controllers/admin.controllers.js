@@ -1,11 +1,11 @@
 import { validationResult } from "express-validator";
 import uploadOnCloudinary from "../config/cloudinary.js";
-import Doctor from "../models/doctor.models.js";
+import Doctor from "../models/doctor.js";
 import { ApiError } from "../utility/ApiError.js";
 import { ApiResponse } from "../utility/ApiResponse.js";
 import jwt from "jsonwebtoken";
-import appointmentModel from "../models/appointment.models.js";
-import User from "../models/user.models.js";
+import appointmentModel from "../models/appointment.js";
+import User from "../models/user.js";
 import "dotenv/config";
 
 const addDoctor = async (req, res) => {
@@ -17,6 +17,8 @@ const addDoctor = async (req, res) => {
     }
 
     let data = req.body;
+    const address = JSON.parse(data.address);
+    data.address = address;
 
     // Check for image file
     if (!req.file) {
@@ -114,7 +116,7 @@ const appointmentCancel = async (req, res) => {
 
     const appointmentData = await appointmentModel.findById(appointmentId);
 
-    await appointmentModel.findByIdAndUpdate(appointmentData, {
+    await appointmentModel.findByIdAndUpdate(appointmentId, {
       cancelled: true,
     });
 
@@ -131,7 +133,7 @@ const appointmentCancel = async (req, res) => {
 
     await Doctor.findByIdAndUpdate(doctorId, { slots_booked });
 
-    res.json({ success: true, message: "Appointment Cancelled" });
+    res.status(200).json({ success: true, message: "Appointment Cancelled" });
   } catch (error) {
     return res
       .status(error.statusCode || 500)

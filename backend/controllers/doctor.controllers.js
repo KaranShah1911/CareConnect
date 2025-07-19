@@ -1,10 +1,10 @@
-import doctorModel from "../models/doctor.models.js";
+import doctorModel from "../models/doctor.js";
 import { ApiError } from "../utility/ApiError.js";
 import { ApiResponse } from "../utility/ApiResponse.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
-import appointmentModel from "../models/appointment.models.js";
+import appointmentModel from "../models/appointment.js";
 import uploadOnCloudinary from "../config/cloudinary.js";
 
 const changeAvailibility = async (req, res) => {
@@ -28,7 +28,7 @@ const doctorList = async (req, res) => {
   try {
     const doctors = await doctorModel.find({}).select(["-password", "-email"]);
 
-    res.json({ success: true, doctors });
+    res.status(200).json({ success: true, doctors });
   } catch (error) {
     return res
       .status(error.statusCode || 500)
@@ -183,6 +183,8 @@ const doctorProfile = async (req, res) => {
       .findById(doctorId)
       .select("-password");
 
+    console.log(profileData);
+
     res.json({ success: true, profileData });
   } catch (error) {
     return res
@@ -194,45 +196,21 @@ const doctorProfile = async (req, res) => {
 // API to update doctor profile data from doctor panel
 const updateDoctorProfile = async (req, res) => {
   try {
-    const {
-      name,
-      degree,
-      specialization,
-      experience,
-      about,
-      fees,
-      address,
-      available,
-    } = req.body;
-
-    const imageFile = req.file;
+    let data = req.body;
+    const address = JSON.parse(data.address);
+    data.address = address;
+    const imageFile = req.file?.path;
     const docId = req.body.userId;
 
     if (imageFile) {
-      // console.log("Uploading with image");
-      const image = await uploadOnCloudinary(imageFile.path);
-      const imageUrl = image.url;
-      await doctorModel.findByIdAndUpdate(docId, { image: imageUrl });
+      const image = await uploadOnCloudinary(imageFile);
+      data.image = image.url;
     }
 
-    const changedDoc = await doctorModel.findByIdAndUpdate(
-      docId,
-      {
-        name,
-        degree,
-        specialization,
-        experience,
-        about,
-        fees,
-        address,
-        available,
-      },
-      {
-        new: true,
-      }
-    );
+    const updatedProfile = await doctorModel.findByIdAndUpdate( docId, data,{ new: true});
+    console.log(updatedProfile)
 
-    res.json({ success: true, message: "Profile Updated", data: changedDoc });
+    res.status(200).json({ success: true, message: "Profile Updated", updatedProfile });
   } catch (error) {
     console.log(error);
     return res

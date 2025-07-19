@@ -1,13 +1,13 @@
 import validator from "validator";
 import bcrypt from "bcrypt";
-import User from "../models/user.models.js";
+import User from "../models/user.js";
 import "dotenv/config";
 import jwt from "jsonwebtoken";
 import { ApiError } from "../utility/ApiError.js";
 import { ApiResponse } from "../utility/ApiResponse.js";
 import uploadOnCloudinary from "../config/cloudinary.js";
-import appointmentModel from "../models/appointment.models.js";
-import Doctor from "../models/doctor.models.js";
+import appointmentModel from "../models/appointment.js";
+import Doctor from "../models/doctor.js";
 import mongoose from "mongoose";
 import razorpay from "razorpay";
 

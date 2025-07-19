@@ -25,7 +25,7 @@ doctorRouter.post("/cancel-appointment", verifyJWT, appointmentCancel);
 doctorRouter.get("/dashboard", verifyJWT, doctorDashboard);
 
 doctorRouter.get("/profile", verifyJWT, doctorProfile);
-doctorRouter.post(
+doctorRouter.patch(
   "/update-profile",
   upload.single("image"),
   verifyJWT,
