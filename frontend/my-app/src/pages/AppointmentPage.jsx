@@ -5,7 +5,7 @@ import { MdCurrencyRupee } from "react-icons/md";
 import { FaUserDoctor } from "react-icons/fa6";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useUserStore } from "../utils/user";
+import { useUserStore } from "../store/user";
 
 const getNextDays = (count = 12) => {
   const days = [];
@@ -45,6 +45,7 @@ const AppointmentPage = () => {
   doctor.address = typeof doctor.address === "string" ? JSON.parse(doctor.address) : doctor.address;
   const similarDoctors = location.state?.similarDoctors;
   const { isLoggedin } = useUserStore()
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const [appointment, setappointmentdate] = useState({
     date: "",
@@ -67,8 +68,8 @@ const AppointmentPage = () => {
       toast.error("Please Select valid date and time....")
       return;
     }
-    try {
-      axios.post("http://localhost:3000/api/user/book-appointment", { doctorId: doctor._id, slotTime: appointment.time, slotDate: appointment.date }, {
+    try { 
+      axios.post(`${API_URL}/api/user/book-appointment`, { doctorId: doctor._id, slotTime: appointment.time, slotDate: appointment.date }, {
         withCredentials: true
       })
         .then((response) => {

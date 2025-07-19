@@ -6,7 +6,7 @@ import { FiLogOut } from "react-icons/fi";
 import { RiCalendarScheduleLine } from "react-icons/ri";
 import { CgProfile } from "react-icons/cg";
 import { RiArrowDropDownLine, RiArrowDropUpLine } from "react-icons/ri";
-import { useUserStore } from '../utils/user';
+import { useUserStore } from '../store/user';
 
 export default function Navbar() {
   const navigate = useNavigate();

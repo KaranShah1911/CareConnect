@@ -3,7 +3,7 @@ import { CheckCircle, XCircle, Clock } from "lucide-react";
 import Loader from "../components/Loader";
 import { FaArrowRight } from "react-icons/fa";
 import { FaArrowLeft } from "react-icons/fa6";
-import { useStore } from "../utils/store";
+import { useStore } from "../store/store";
 import axios from "axios";
 import { toast } from "react-toastify";
 

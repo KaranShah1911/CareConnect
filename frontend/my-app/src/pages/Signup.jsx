@@ -3,19 +3,23 @@ import React, { useState } from "react";
 import { FaGoogle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useUserStore } from "../utils/user";
+import { useUserStore } from "../store/user";
+import Loader from "../components/Loader";
 
 const Signup = () => {
   const navigate = useNavigate();
   const [data, setData] = useState({ email: "", password: "", name: "" });
   const [termsAcepted, settermsAccepted] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { login } = useUserStore()
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const handleChange = (e) =>
     setData({ ...data, [e.target.name]: e.target.value });
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (!termsAcepted) {
       toast.error("Accept terms");
       return;
@@ -25,8 +29,9 @@ const Signup = () => {
       return;
     }
     console.log("Sign up with:", data);
+    setLoading(true);
     try {
-      axios.post("http://localhost:3000/api/user/register", data, {
+      axios.post(`${API_URL}/api/user/register`, data, {
         withCredentials: true
       })
         .then(res => {
@@ -37,7 +42,7 @@ const Signup = () => {
         })
         .catch(error => {
           console.log(error.response);
-          toast.error(error.response.data.message);
+          toast.error(error.response.data.message || "Error signing up.");
         })
         .finally(() => {
           setData({
@@ -49,11 +54,18 @@ const Signup = () => {
     } catch (error) {
       console.error(error);
     }
+    setLoading(false);
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:3000/api/auth/google"
+    window.location.href = `${API_URL}/api/auth/google`;
   }
+
+  if (loading) return (
+    <div className="fixed inset-0 z-1 flex items-center bg-white">
+      <Loader />
+    </div>
+  )
 
   return (
     <div className="w-screen min-h-screen flex flex-col justify-center items-center px-4 bg-white gap-10 pt-20 md:pt-20">

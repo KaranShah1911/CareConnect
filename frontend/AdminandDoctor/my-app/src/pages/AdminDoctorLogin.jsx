@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
-import { useDoctorStore , useAdminStore } from "../utils/store";
+import { useDoctorStore , useAdminStore } from "../store/store";
 import axios from "axios";
 
 const LoginPage = () => {
@@ -9,7 +9,6 @@ const LoginPage = () => {
   const [role, setRole] = useState("doctor");
   const {  login : Doctorlogin  } = useDoctorStore()
   const {  login : Adminlogin  } = useAdminStore()
-  // const {  login : adminLogin } = adminStore();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const API_URL = import.meta.env.VITE_API_URL;
 

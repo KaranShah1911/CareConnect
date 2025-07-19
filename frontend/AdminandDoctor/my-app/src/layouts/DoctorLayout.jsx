@@ -7,8 +7,6 @@ const DoctorLayout = () => {
     return (
         <>  
             <SideBar content={DoctorSideBar} role={"doctor"}/>
-            {/* <DoctorNavbar /> */}
-            {/* <DoctorSidebar /> */}
             <Outlet />
         </>
     )

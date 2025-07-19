@@ -2,198 +2,12 @@ import React, { useEffect, useState } from "react";
 import { CheckCircle, XCircle } from "lucide-react";
 import { FaArrowRight } from "react-icons/fa";
 import { FaArrowLeft } from "react-icons/fa6";
-import { useStore } from "../utils/store";
+import { useStore } from "../store/store";
 import { FcMoneyTransfer } from "react-icons/fc";
 import { RiCalendarScheduleLine } from "react-icons/ri";
 import { IoPeopleOutline } from "react-icons/io5";
-import axios, { all } from "axios";
+import axios from "axios";
 import { toast } from "react-toastify";
-const initialappointments = [
-  {
-    id: 1,
-    name: "Avinash Kr",
-    date: "5 Oct 2024",
-    image: "https://randomuser.me/api/portraits/men/32.jpg",
-    status: "Pending",
-    payment: "Cash",
-  },
-  {
-    id: 2,
-    name: "Ravi Verma",
-    date: "6 Oct 2024",
-    image: "https://randomuser.me/api/portraits/men/45.jpg",
-    status: "Completed",
-    payment: "Online",
-  },
-  {
-    id: 3,
-    name: "Pooja Desai",
-    date: "7 Oct 2024",
-    image: "https://randomuser.me/api/portraits/women/47.jpg",
-    status: "Pending",
-    payment: "Cash",
-  },
-  {
-    id: 4,
-    name: "Karan Mehta",
-    date: "8 Oct 2024",
-    image: "https://randomuser.me/api/portraits/men/28.jpg",
-    status: "Cancelled",
-    payment: "Online",
-  },
-  {
-    id: 5,
-    name: "Shalini Rao",
-    date: "9 Oct 2024",
-    image: "https://randomuser.me/api/portraits/women/50.jpg",
-    status: "Completed",
-    payment: "Cash",
-  },
-  {
-    id: 6,
-    name: "Rohan Joshi",
-    date: "10 Oct 2024",
-    image: "https://randomuser.me/api/portraits/men/58.jpg",
-    status: "Pending",
-    payment: "Online",
-  },
-  {
-    id: 7,
-    name: "Sneha Patil",
-    date: "11 Oct 2024",
-    image: "https://randomuser.me/api/portraits/women/65.jpg",
-    status: "Cancelled",
-    payment: "Cash",
-  },
-  {
-    id: 8,
-    name: "Deepak Sharma",
-    date: "12 Oct 2024",
-    image: "https://randomuser.me/api/portraits/men/40.jpg",
-    status: "Completed",
-    payment: "Cash",
-  },
-  {
-    id: 9,
-    name: "Alok Pandey",
-    date: "13 Oct 2024",
-    image: "https://randomuser.me/api/portraits/men/21.jpg",
-    status: "Pending",
-    payment: "Cash",
-  },
-  {
-    id: 10,
-    name: "Mitali Kaur",
-    date: "14 Oct 2024",
-    image: "https://randomuser.me/api/portraits/women/33.jpg",
-    status: "Completed",
-    payment: "Online",
-  },
-  {
-    id: 11,
-    name: "Shubham Tiwari",
-    date: "15 Oct 2024",
-    image: "https://randomuser.me/api/portraits/men/19.jpg",
-    status: "Pending",
-    payment: "Cash",
-  },
-  {
-    id: 12,
-    name: "Ritika Singh",
-    date: "16 Oct 2024",
-    image: "https://randomuser.me/api/portraits/women/26.jpg",
-    status: "Cancelled",
-    payment: "Online",
-  },
-  {
-    id: 13,
-    name: "Sameer Shaikh",
-    date: "17 Oct 2024",
-    image: "https://randomuser.me/api/portraits/men/37.jpg",
-    status: "Completed",
-    payment: "Cash",
-  },
-  {
-    id: 14,
-    name: "Disha More",
-    date: "18 Oct 2024",
-    image: "https://randomuser.me/api/portraits/women/21.jpg",
-    status: "Pending",
-    payment: "Online",
-  },
-  {
-    id: 15,
-    name: "Akash Jain",
-    date: "19 Oct 2024",
-    image: "https://randomuser.me/api/portraits/men/18.jpg",
-    status: "Cancelled",
-    payment: "Online",
-  },
-  {
-    id: 16,
-    name: "Ritu Agarwal",
-    date: "20 Oct 2024",
-    image: "https://randomuser.me/api/portraits/women/60.jpg",
-    status: "Completed",
-    payment: "Cash",
-  },
-  {
-    id: 17,
-    name: "Nikhil Raj",
-    date: "21 Oct 2024",
-    image: "https://randomuser.me/api/portraits/men/16.jpg",
-    status: "Completed",
-    payment: "Online",
-  },
-  {
-    id: 18,
-    name: "Avni Chawla",
-    date: "22 Oct 2024",
-    image: "https://randomuser.me/api/portraits/women/13.jpg",
-    status: "Pending",
-    payment: "Cash",
-  },
-  {
-    id: 19,
-    name: "Tanmay Shah",
-    date: "23 Oct 2024",
-    image: "https://randomuser.me/api/portraits/men/39.jpg",
-    status: "Cancelled",
-    payment: "Online",
-  },
-  {
-    id: 20,
-    name: "Neha Jadhav",
-    date: "24 Oct 2024",
-    image: "https://randomuser.me/api/portraits/women/34.jpg",
-    status: "Completed",
-    payment: "Cash",
-  },
-  {
-    id: 21,
-    name: "Yash Patil",
-    date: "25 Oct 2024",
-    image: "https://randomuser.me/api/portraits/men/35.jpg",
-    status: "Pending",
-    payment: "Online",
-  },
-  {
-    id: 22,
-    name: "Aarti Bhosale",
-    date: "26 Oct 2024",
-    image: "https://randomuser.me/api/portraits/women/39.jpg",
-    status: "Completed",
-    payment: "Cash",
-  },
-  {
-    id: 23,
-    name: "Saurabh Dube",
-    date: "27 Oct 2024",
-    image: "https://randomuser.me/api/portraits/men/50.jpg",
-    status: "Cancelled",
-    payment: "Online",
-  },
-];
 
 const DoctorDashboard = () => {
   const [appointments, setAppointments] = useState([]);
@@ -218,11 +32,8 @@ const DoctorDashboard = () => {
         const response = await axios.get(`${API_URL}/doctor/dashboard`, {
           withCredentials: true,
         });
-        const docId = response.data.doctorId;
-
         console.log("successfull dashboard", response.data);
         setStats(response.data.dashData);
-        setAppointments(allAppointments);
       } catch (err) {
         console.error(err);
       }

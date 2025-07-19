@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useStore } from "../utils/store";
+import { useStore } from "../store/store";
 import { toast } from "react-toastify";
 import axios from "axios";
 
@@ -64,7 +64,8 @@ const AddDoctor = () => {
 
         console.log("Adding doctor", formdata);
         try {
-            axios.post("http://localhost:3000/api/admin/add-doctor", formdata, {
+            const API_URL = import.meta.env.VITE_API_URL
+            axios.post(`${API_URL}/api/admin/add-doctor`, formdata, {
                 withCredentials: true
             })
                 .then(res => {

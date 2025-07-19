@@ -1,13 +1,15 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaEdit, FaSave, FaTimes } from "react-icons/fa";
-import { useUserStore } from "../utils/user";
+import { useUserStore } from "../store/user";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
 
 const UserProfile = () => {
   const [editMode, setEditMode] = useState(false);
   const { setImage } = useUserStore();
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const [form, setForm] = useState({
     image: null,
     name: "",
@@ -34,7 +36,7 @@ const UserProfile = () => {
   };
 
   useEffect(() => {
-    axios.get("http://localhost:3000/api/user/get-profile", {
+    axios.get(`${API_URL}/api/user/get-profile`, {
       withCredentials: true
     })
       .then(res => {
@@ -70,11 +72,10 @@ const UserProfile = () => {
     }
     try {
       setLoading(true);
-      axios.patch("http://localhost:3000/api/user/update-profile", formData, {
+      axios.patch(`${API_URL}/api/user/update-profile`, formData, {
         withCredentials: true
       })
         .then(res => {
-          setLoading(false);
           setForm(res.data.updatedUser);
           setOriginalData(res.data.updatedUser);
           setImage(res.data.updatedUser.image);
@@ -85,15 +86,17 @@ const UserProfile = () => {
           setForm(originalData);
           console.error(err);
         })
-    } catch (err) {
-      console.error(err);
-    }
+      } catch (err) {
+        console.error(err);
+      }
+      setLoading(false);
   };
 
   const handleCancel = () => {
     setEditMode(false);
     setForm(originalData);
   };
+
   if (loading) return (
     <div className="fixed inset-0 z-1 flex items-center bg-white">
       <Loader />

@@ -4,7 +4,7 @@ import { FaWpforms } from "react-icons/fa";
 import { IoPeople } from "react-icons/io5";
 import { FaAngleRight, FaAngleLeft } from "react-icons/fa";
 import { Link , useNavigate} from 'react-router-dom';
-import { useStore , useDoctorStore , useAdminStore } from '../utils/store';
+import { useStore , useDoctorStore , useAdminStore } from '../store/store';
 
 const SideBar = ({content , role}) => {
     const navigate = useNavigate();

@@ -2,7 +2,7 @@ import { React, useEffect, useState } from "react";
 import { CheckCircle, XCircle } from "lucide-react";
 import { FaArrowRight } from "react-icons/fa";
 import { FaArrowLeft } from "react-icons/fa6";
-import { useStore } from "../utils/store";
+import { useStore } from "../store/store";
 import axios from "axios";
 import { toast } from "react-toastify";
 

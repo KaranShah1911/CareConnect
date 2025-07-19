@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaEdit, FaSave, FaTimes } from "react-icons/fa";
-import { useStore } from "../utils/store";
+import { useStore } from "../store/store";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
@@ -10,6 +10,7 @@ const DoctorInfo = () => {
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const sidebar = useStore((state) => state.sidebar);
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const [form, setForm] = useState({
         name: "",
@@ -32,7 +33,6 @@ const DoctorInfo = () => {
   // fetch profile data
   useEffect(() => {
     const fetchData = async () => {
-      const API_URL = import.meta.env.VITE_API_URL;
       try {
         const response = await axios.get(`${API_URL}/doctor/profile`, {
           withCredentials: true,
@@ -84,7 +84,7 @@ const DoctorInfo = () => {
       }
 
       axios
-        .patch("http://localhost:3000/api/doctor/update-profile", formData, {
+        .patch(`${API_URL}/api/doctor/update-profile`, formData, {
           withCredentials: true,
         })
         .then((res) => {
