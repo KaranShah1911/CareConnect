@@ -1,0 +1,25 @@
+.nav-items::before{
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    border-radius: 10px;
+    background-color: #5C67F2;
+    box-shadow : 0px 0px 1px 0px #5C67F2;
+  }
+  .nav-items:hover{
+    color: #5C67F2;
+  }
+  
+  .active {
+    color: #5C67F2; 
+  }
+  
+  .nav-items:hover::before{
+    width: 100%;
+    /* box-shadow : 0px 0px 15px 3px #5C67F2; */
+    transition: width 0.3s;
+  }
