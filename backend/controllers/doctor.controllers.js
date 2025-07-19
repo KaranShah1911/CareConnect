@@ -5,10 +5,11 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
 import appointmentModel from "../models/appointment.models.js";
+import uploadOnCloudinary from "../config/cloudinary.js";
 
 const changeAvailibility = async (req, res) => {
   try {
-    const {docId}  = req.body;
+    const { docId } = req.body;
 
     const docData = await doctorModel.findById(docId);
     await doctorModel.findByIdAndUpdate(docId, {
@@ -49,7 +50,10 @@ const loginDoctor = async (req, res) => {
     const isMatch = await bcrypt.compare(password, doctor.password);
 
     if (isMatch) {
-      const token = jwt.sign({ id: doctor._id, role: "DOCTOR" }, process.env.JWT_SECRET);
+      const token = jwt.sign(
+        { id: doctor._id, role: "DOCTOR" },
+        process.env.JWT_SECRET
+      );
 
       res.cookie("token", token, {
         httpOnly: true,
@@ -57,8 +61,7 @@ const loginDoctor = async (req, res) => {
       });
 
       res.json({ success: true, token, doctorId: doctor._id });
-    }
-    else {
+    } else {
       throw new ApiError(404, "Invalid Credentials");
     }
   } catch (error) {
@@ -71,10 +74,10 @@ const loginDoctor = async (req, res) => {
 // API to get doctor appointments for doctor panel
 const appointmentsDoctor = async (req, res) => {
   try {
-    const doctorId  = req.body.userId;
+    const doctorId = req.body.userId;
     const appointments = await appointmentModel.find({ doctorId }).populate({
-      path:'userId',
-      select : 'name image age',
+      path: "userId",
+      select: "name image age",
     });
 
     res.json({ success: true, appointments });
@@ -124,7 +127,9 @@ const appointmentCancel = async (req, res) => {
 
       return res.json({ success: true, message: "Appointment Cancelled" });
     } else {
-      return res.status(400).json({ success: false, message: "Cancellation Failed" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Cancellation Failed" });
     }
   } catch (error) {
     return res
@@ -174,7 +179,9 @@ const doctorDashboard = async (req, res) => {
 const doctorProfile = async (req, res) => {
   try {
     const doctorId = req.body.userId;
-    const profileData = await doctorModel.findById(doctorId).select("-password");
+    const profileData = await doctorModel
+      .findById(doctorId)
+      .select("-password");
 
     res.json({ success: true, profileData });
   } catch (error) {
@@ -187,12 +194,47 @@ const doctorProfile = async (req, res) => {
 // API to update doctor profile data from doctor panel
 const updateDoctorProfile = async (req, res) => {
   try {
-    const { fees, address, available } = req.body;
-    const docId = req.body.userId;
-    await doctorModel.findByIdAndUpdate(docId, { fees, address, available });
+    const {
+      name,
+      degree,
+      specialization,
+      experience,
+      about,
+      fees,
+      address,
+      available,
+    } = req.body;
 
-    res.json({ success: true, message: "Profile Updated" });
+    const imageFile = req.file;
+    const docId = req.body.userId;
+
+    if (imageFile) {
+      // console.log("Uploading with image");
+      const image = await uploadOnCloudinary(imageFile.path);
+      const imageUrl = image.url;
+      await doctorModel.findByIdAndUpdate(docId, { image: imageUrl });
+    }
+
+    const changedDoc = await doctorModel.findByIdAndUpdate(
+      docId,
+      {
+        name,
+        degree,
+        specialization,
+        experience,
+        about,
+        fees,
+        address,
+        available,
+      },
+      {
+        new: true,
+      }
+    );
+
+    res.json({ success: true, message: "Profile Updated", data: changedDoc });
   } catch (error) {
+    console.log(error);
     return res
       .status(error.statusCode || 500)
       .json(new ApiResponse(error.statusCode || 500, error.message));

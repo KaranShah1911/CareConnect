@@ -10,6 +10,7 @@ import {
   updateDoctorProfile,
 } from "../controllers/doctor.controllers.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
+import { upload } from "../middlewares/multer.js";
 
 const doctorRouter = express.Router();
 
@@ -24,6 +25,11 @@ doctorRouter.post("/cancel-appointment", verifyJWT, appointmentCancel);
 doctorRouter.get("/dashboard", verifyJWT, doctorDashboard);
 
 doctorRouter.get("/profile", verifyJWT, doctorProfile);
-doctorRouter.post("/update-profile", verifyJWT, updateDoctorProfile);
+doctorRouter.post(
+  "/update-profile",
+  upload.single("image"),
+  verifyJWT,
+  updateDoctorProfile
+);
 
 export default doctorRouter;
