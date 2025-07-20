@@ -58,6 +58,7 @@ const loginDoctor = async (req, res) => {
       res.cookie("token", token, {
         httpOnly: true,
         secure: true,
+        sameSite: "none",
       });
 
       res.json({ success: true, token, doctorId: doctor._id });

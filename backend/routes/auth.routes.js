@@ -19,7 +19,8 @@ router.get(
     );
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true
+      secure: true,
+      sameSite: "none",
     });
     res.redirect(`${process.env.FRONTEND_URL}/google-redirect?success=true&image=${user.image}`); // Your frontend redirect
   }

@@ -64,7 +64,7 @@ const handleAdminLogin = async (req, res) => {
       res.cookie("token", token, {
         httpOnly: true,
         secure: true,
-        // sameSite: "none",
+        sameSite: "none",
       });
 
       return res.status(200).json({

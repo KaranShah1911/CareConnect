@@ -50,7 +50,8 @@ const registerUser = async (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true
+      secure: true,
+      sameSite: "none",
     });
 
     res.status(202).json({ success: true, token, image: user.image });
@@ -81,7 +82,8 @@ const loginUser = async (req, res) => {
       );
       res.cookie("token", token, {
         httpOnly: true,
-        secure: true
+        secure: true,
+        sameSite: "none",
       });
 
       const userImage = user.image;
