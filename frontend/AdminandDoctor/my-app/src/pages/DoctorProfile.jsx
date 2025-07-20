@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaEdit, FaSave, FaTimes } from "react-icons/fa";
-import { useStore } from "../utils/store";
+import { useStore } from "../store/store";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";

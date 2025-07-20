@@ -5,7 +5,7 @@ import { MdCurrencyRupee } from "react-icons/md";
 import { FaUserDoctor } from "react-icons/fa6";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useUserStore } from "../utils/user";
+import { useUserStore } from "../store/user";
 import Loader from "../components/Loader";
 const API_URL = import.meta.env.VITE_API_URL;
 

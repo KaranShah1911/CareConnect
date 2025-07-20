@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Loader from "../components/Loader";
 import { FaArrowRight } from "react-icons/fa";
 import { FaArrowLeft } from "react-icons/fa6";
-import { useStore } from "../utils/store";
+import { useStore } from "../store/store";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
@@ -87,7 +87,7 @@ const AllDoctors = () => {
       <Loader />
     </div>
   )
-  
+
   return (
     <div
       className={`${sidebar ? "pl-[200px]" : "pl-[60px]"

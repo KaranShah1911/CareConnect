@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FaGoogle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useUserStore } from "../utils/user";
+import { useUserStore } from "../store/user";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
 const API_URL = import.meta.env.VITE_API_URL;
