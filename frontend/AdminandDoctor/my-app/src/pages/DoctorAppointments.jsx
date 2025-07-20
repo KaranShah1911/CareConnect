@@ -5,150 +5,9 @@ import { FaArrowLeft } from "react-icons/fa6";
 import { useStore } from "../utils/store";
 import axios from "axios";
 import { toast } from "react-toastify";
+import Loader from "../components/Loader";
+const API_URL = import.meta.env.VITE_API_URL;
 
-// dummy appointments data
-// const appointments = [
-//   {
-//     id: 0,
-//     name: "Avinash Kr",
-//     age: 31,
-//     payment: "CASH",
-//     dateTime: "5 Oct 2024, 12:00 PM",
-//     fee: "$50",
-//     status: "Pending",
-//     image: "https://randomuser.me/api/portraits/men/32.jpg",
-//   },
-//   {
-//     id: 1,
-//     name: "Ravi Verma",
-//     age: 29,
-//     payment: "Online",
-//     dateTime: "6 Oct 2024, 11:30 AM",
-//     fee: "$45",
-//     status: "Pending",
-//     image: "https://randomuser.me/api/portraits/men/45.jpg",
-//   },
-//   {
-//     id: 2,
-//     name: "Pooja Desai",
-//     age: 26,
-//     payment: "CASH",
-//     dateTime: "6 Oct 2024, 03:00 PM",
-//     fee: "$50",
-//     status: "Completed",
-//     image: "https://randomuser.me/api/portraits/women/47.jpg",
-//   },
-//   {
-//     id: 3,
-//     name: "Karan Mehta",
-//     age: 34,
-//     payment: "Online",
-//     dateTime: "7 Oct 2024, 10:00 AM",
-//     fee: "$60",
-//     status: "Cancelled",
-//     image: "https://randomuser.me/api/portraits/men/28.jpg",
-//   },
-//   {
-//     id: 4,
-//     name: "Shalini Rao",
-//     age: 30,
-//     payment: "CASH",
-//     dateTime: "7 Oct 2024, 04:00 PM",
-//     fee: "$55",
-//     status: "Pending",
-//     image: "https://randomuser.me/api/portraits/women/50.jpg",
-//   },
-//   {
-//     id: 5,
-//     name: "Rohan Joshi",
-//     age: 27,
-//     payment: "Online",
-//     dateTime: "8 Oct 2024, 02:30 PM",
-//     fee: "$40",
-//     status: "Completed",
-//     image: "https://randomuser.me/api/portraits/men/58.jpg",
-//   },
-//   {
-//     id: 6,
-//     name: "Sneha Patil",
-//     age: 23,
-//     payment: "CASH",
-//     dateTime: "8 Oct 2024, 05:00 PM",
-//     fee: "$35",
-//     status: "Cancelled",
-//     image: "https://randomuser.me/api/portraits/women/65.jpg",
-//   },
-//   {
-//     id: 7,
-//     name: "Deepak Sharma",
-//     age: 36,
-//     payment: "Online",
-//     dateTime: "9 Oct 2024, 01:00 PM",
-//     fee: "$50",
-//     status: "Pending",
-//     image: "https://randomuser.me/api/portraits/men/40.jpg",
-//   },
-//   {
-//     id: 8,
-//     name: "Alok Pandey",
-//     age: 38,
-//     payment: "CASH",
-//     dateTime: "9 Oct 2024, 11:00 AM",
-//     fee: "$50",
-//     status: "Completed",
-//     image: "https://randomuser.me/api/portraits/men/21.jpg",
-//   },
-//   {
-//     id: 9,
-//     name: "Mitali Kaur",
-//     age: 25,
-//     payment: "Online",
-//     dateTime: "10 Oct 2024, 09:30 AM",
-//     fee: "$45",
-//     status: "Completed",
-//     image: "https://randomuser.me/api/portraits/women/33.jpg",
-//   },
-//   {
-//     id: 10,
-//     name: "Shubham Tiwari",
-//     age: 28,
-//     payment: "CASH",
-//     dateTime: "10 Oct 2024, 03:45 PM",
-//     fee: "$40",
-//     status: "Pending",
-//     image: "https://randomuser.me/api/portraits/men/19.jpg",
-//   },
-//   {
-//     id: 11,
-//     name: "Ritika Singh",
-//     age: 24,
-//     payment: "Online",
-//     dateTime: "11 Oct 2024, 12:15 PM",
-//     fee: "$50",
-//     status: "Cancelled",
-//     image: "https://randomuser.me/api/portraits/women/26.jpg",
-//   },
-//   {
-//     id: 12,
-//     name: "Sameer Shaikh",
-//     age: 32,
-//     payment: "CASH",
-//     dateTime: "11 Oct 2024, 06:00 PM",
-//     fee: "$60",
-//     status: "Completed",
-//     image: "https://randomuser.me/api/portraits/men/37.jpg",
-//   },
-//   {
-//     id: 13,
-//     name: "Disha More",
-//     age: 29,
-//     payment: "Online",
-//     dateTime: "12 Oct 2024, 10:30 AM",
-//     fee: "$55",
-//     status: "Pending",
-//     image: "https://randomuser.me/api/portraits/women/21.jpg",
-//   },
-// ];
 
 const DoctorAppointments = () => {
   const [appointments, setAppointments] = useState([]);
@@ -158,66 +17,83 @@ const DoctorAppointments = () => {
     patient: "",
     status: "all",
   });
+  const [loading, setLoading] = useState(true);
   const sidebar = useStore((state) => state.sidebar);
 
-  const API_URL = import.meta.env.VITE_API_URL;
   // fetch appointments
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${API_URL}/doctor/appointments`, {
+        axios.get(`${API_URL}/doctor/appointments`, {
           withCredentials: true,
-        });
-        // const {name, age, _id} =  
-        setAppointments(response.data.appointments);
-        setFilteredAppointments(response.data.appointments);
-        console.log("appointments fetched successfully", response.data.appointments);
+        })
+          .then((response) => {
+            setAppointments(response.data.appointments);
+            setFilteredAppointments(response.data.appointments);
+            console.log("appointments fetched successfully", response.data.appointments);
+          })
+          .catch((error) => {
+            toast.error("Error fetching appointments. Please try again.");
+            console.error(error);
+          });
       } catch (err) {
         console.error(err);
       }
+      setLoading(false);
     };
-
     fetchData();
   }, []);
 
   // handle status changes
   const handleStatusChange = async (appointmentId, newStatus) => {
     try {
-      let response ;
-      if(newStatus == "Completed") {
-        response = await axios.post(`${API_URL}/doctor/complete-appointment` , {appointmentId}, {withCredentials: true})
-        toast.success("Appointment Completed")
-        setAppointments((prev) =>
-        prev.map((app) => {
-          if (app._id === appointmentId) return { ...app, isCompleted : true  };
-          return app;
-        }))
-        setFilteredAppointments((prev) =>
-        prev.map((app) => {
-          if (app._id === appointmentId) return { ...app, isCompleted : true  };
-          return app;
-        })
-      );
+      setLoading(true);
+      if (newStatus == "Completed") {
+        axios.post(`${API_URL}/doctor/complete-appointment`, { appointmentId }, { withCredentials: true })
+          .then((response) => {
+            toast.success("Appointment Completed")
+            setAppointments((prev) =>
+              prev.map((app) => {
+                if (app._id === appointmentId) return { ...app, isCompleted: true };
+                return app;
+              }))
+            setFilteredAppointments((prev) =>
+              prev.map((app) => {
+                if (app._id === appointmentId) return { ...app, isCompleted: true };
+                return app;
+              })
+            );
+          })
+          .catch((err) => {
+            toast.error("Error completing appointment. Please try again.");
+            console.error(err)
+          });
       }
       else {
-        response = await axios.post(`${API_URL}/doctor/cancel-appointment` , {appointmentId}, {withCredentials: true})
-        toast.success("Appointment Cancelled")
-        setAppointments((prev) =>
-        prev.map((app) => {
-          if (app._id === appointmentId) return { ...app, cancelled : true  };
-          return app;
-        }))
-        setFilteredAppointments((prev) =>
-        prev.map((app) => {
-          if (app._id === appointmentId) return { ...app, cancelled : true  };
-          return app;
-        }))
-        
+        axios.post(`${API_URL}/doctor/cancel-appointment`, { appointmentId }, { withCredentials: true })
+          .then((response) => {
+            toast.success("Appointment Cancelled")
+            setAppointments((prev) =>
+              prev.map((app) => {
+                if (app._id === appointmentId) return { ...app, cancelled: true };
+                return app;
+              }))
+            setFilteredAppointments((prev) =>
+              prev.map((app) => {
+                if (app._id === appointmentId) return { ...app, cancelled: true };
+                return app;
+              }))
+          })
+          .catch((err) => {
+            toast.error("Error cancelling appointment. Please try again.");
+            console.error(err)
+          });
       }
       console.log("status changed successfully", response.data)
     } catch (err) {
       console.log(err);
     }
+    setLoading(false);
   };
 
   // pagination logic
@@ -242,7 +118,7 @@ const DoctorAppointments = () => {
       appointments.filter(
         (app) =>
           app.userId.name.toLowerCase().includes(name) &&
-          (filter.status === "all" || (filter.status=="completed" ? app.isCompleted : filter.status==="cancelled" ? app.cancelled : (!app.isCompleted && !app.cancelled)))
+          (filter.status === "all" || (filter.status == "completed" ? app.isCompleted : filter.status === "cancelled" ? app.cancelled : (!app.isCompleted && !app.cancelled)))
       )
     );
   };
@@ -255,16 +131,21 @@ const DoctorAppointments = () => {
       appointments.filter(
         (app) =>
           app.userId.name.toLowerCase().includes(filter.patient) &&
-          (status === "all" || (status=="completed" ? app.isCompleted : status==="cancelled" ? app.cancelled : (!app.isCompleted && !app.cancelled)))
+          (status === "all" || (status == "completed" ? app.isCompleted : status === "cancelled" ? app.cancelled : (!app.isCompleted && !app.cancelled)))
       )
     );
   };
 
+  if (loading) return (
+    <div className="fixed inset-0 z-1 flex items-center bg-white">
+      <Loader />
+    </div>
+  )
+
   return (
     <div
-      className={`flex flex-col min-h-screen gap-2 p-5 pt-30 ${
-        sidebar ? "pl-50" : "pl-15"
-      } transition-all duration-300`}
+      className={`flex flex-col min-h-screen gap-2 p-5 pt-30 ${sidebar ? "pl-50" : "pl-15"
+        } transition-all duration-300`}
     >
       <div className="flex flex-col gap-5">
         {/* Header + Filters */}
@@ -322,7 +203,7 @@ const DoctorAppointments = () => {
               {filteredAppointments.length > 0 ? (
                 filteredAppointments.slice(start, end).map((appointment, index) => (
                   <tr key={appointment._id} className="border-b">
-                    <td className="px-4 py-4">{index+1}</td>
+                    <td className="px-4 py-4">{index + 1}</td>
                     <td className="px-4 py-4 flex items-center">
                       <img
                         src={appointment.userId.image}
@@ -394,9 +275,8 @@ const DoctorAppointments = () => {
             <button
               key={ind}
               onClick={() => handlePageChange(ind + 1)}
-              className={`border p-2 rounded-md ${
-                currentPage === ind + 1 ? "bg-[#5C67F2] text-white" : ""
-              }`}
+              className={`border p-2 rounded-md ${currentPage === ind + 1 ? "bg-[#5C67F2] text-white" : ""
+                }`}
             >
               {ind + 1}
             </button>

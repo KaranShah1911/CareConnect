@@ -3,142 +3,11 @@ import { CheckCircle, XCircle, Clock } from "lucide-react";
 import Loader from "../components/Loader";
 import { FaArrowRight } from "react-icons/fa";
 import { FaArrowLeft } from "react-icons/fa6";
-import { useStore } from "../utils/store";
+import { useStore } from "../store/store";
 import axios from "axios";
 import { toast } from "react-toastify";
-
-// const appointments = [
-//   {
-//     id: 1,
-//     doctor: {
-//       name: "Dr. Smith",
-//       img: "https://randomuser.me/api/portraits/men/66.jpg",
-//     },
-//     patient: {
-//       name: "John Doe",
-//       img: "https://randomuser.me/api/portraits/men/66.jpg",
-//     },
-//     date: "2025-07-13",
-//     status: "completed",
-//   },
-//   {
-//     id: 2,
-//     doctor: {
-//       name: "Dr. Alice",
-//       img: "https://randomuser.me/api/portraits/men/66.jpg",
-//     },
-//     patient: {
-//       name: "Jane Roe",
-//       img: "https://randomuser.me/api/portraits/men/66.jpg",
-//     },
-//     date: "2025-07-14",
-//     status: "cancelled",
-//   },
-//   {
-//     id: 3,
-//     doctor: {
-//       name: "Dr. Rahul",
-//       img: "https://randomuser.me/api/portraits/men/66.jpg",
-//     },
-//     patient: {
-//       name: "Karan Mehta",
-//       img: "https://randomuser.me/api/portraits/men/66.jpg",
-//     },
-//     date: "2025-07-15",
-//     status: "pending",
-//   },
-//   {
-//     id: 4,
-//     doctor: {
-//       name: "Dr. Rahul",
-//       img: "https://randomuser.me/api/portraits/men/66.jpg",
-//     },
-//     patient: {
-//       name: "Karan Mehta",
-//       img: "https://randomuser.me/api/portraits/men/66.jpg",
-//     },
-//     date: "2025-07-15",
-//     status: "pending",
-//   },
-//   {
-//     id: 5,
-//     doctor: {
-//       name: "Dr. Rahul",
-//       img: "https://randomuser.me/api/portraits/men/66.jpg",
-//     },
-//     patient: {
-//       name: "Karan Mehta",
-//       img: "https://randomuser.me/api/portraits/men/66.jpg",
-//     },
-//     date: "2025-07-15",
-//     status: "pending",
-//   },
-//   {
-//     id: 6,
-//     doctor: {
-//       name: "Dr. Rahul",
-//       img: "https://randomuser.me/api/portraits/men/66.jpg",
-//     },
-//     patient: {
-//       name: "Karan Mehta",
-//       img: "https://randomuser.me/api/portraits/men/66.jpg",
-//     },
-//     date: "2025-07-15",
-//     status: "pending",
-//   },
-//   {
-//     id: 7,
-//     doctor: {
-//       name: "Dr. Rahul",
-//       img: "https://randomuser.me/api/portraits/men/66.jpg",
-//     },
-//     patient: {
-//       name: "Karan Mehta",
-//       img: "https://randomuser.me/api/portraits/men/66.jpg",
-//     },
-//     date: "2025-07-15",
-//     status: "pending",
-//   },
-//   {
-//     id: 8,
-//     doctor: {
-//       name: "Dr. Rahul",
-//       img: "https://randomuser.me/api/portraits/men/66.jpg",
-//     },
-//     patient: {
-//       name: "Karan Mehta",
-//       img: "https://randomuser.me/api/portraits/men/66.jpg",
-//     },
-//     date: "2025-07-15",
-//     status: "pending",
-//   },
-//   {
-//     id: 9,
-//     doctor: {
-//       name: "Dr. Rahul",
-//       img: "https://randomuser.me/api/portraits/men/66.jpg",
-//     },
-//     patient: {
-//       name: "Karan Mehta",
-//       img: "https://randomuser.me/api/portraits/men/66.jpg",
-//     },
-//     date: "2025-07-15",
-//     status: "pending",
-//   },
-//   {
-//     id: 10,
-//     doctor: {
-//       name: "Dr. Rahul",
-//       img: "https://randomuser.me/api/portraits/men/66.jpg",
-//     },
-//     patient: {
-//       name: "Karan Mehta",
-//       img: "https://randomuser.me/api/portraits/men/66.jpg",
-//     },
-//     date: "2025-07-15",
-//     status: "pending",
-//   },
-// ];
+import Loader from "../components/Loader";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const DoctorsperPage = 5;
 
@@ -164,74 +33,74 @@ const AdminDashboard = () => {
 
   const NoofDoctors = filteredAppointments.length;
   const NoofPages = Math.ceil(NoofDoctors / DoctorsperPage);
-  const API_URL = import.meta.env.VITE_API_URL;
 
   const handleCancelAppointment = async (appointmentId) => {
     // set the status of the appointment to cancel..
-    //backend call to update status
     try {
-      const response = await axios.post(
+      setLoading(true);
+      axios.post(
         `${API_URL}/admin/cancel-appointment`,
         { appointmentId },
         { withCredentials: true }
-      );
-      setAppointments((prev) =>
-        prev.map((app) => {
-          if (app._id === appointmentId) return { ...app, cancelled: true };
-          return app;
-        })
-      );
-      setfilteredAppointments((prev) =>
-        prev.map((app) => {
-          if (app._id === appointmentId) return { ...app, cancelled: true };
-          return app;
-        })
-      );
+      )
+        .then((response) => {
+          console.log(response.data);
 
-      console.log(response.data);
+          setAppointments((prev) =>
+            prev.map((app) =>
+              app._id === appointmentId ? { ...app, cancelled: true } : app
+            )
+          );
+          setfilteredAppointments((prev) =>
+            prev.map((app) => {
+              if (app._id === appointmentId) return { ...app, cancelled: true };
+              return app;
+            })
+          );
 
-      setAppointments((prev) =>
-        prev.map((app) =>
-          app.id === appointmentId ? { ...app, cancelled: true } : app
-        )
-      );
-      setfilteredAppointments((prev) =>
-        prev.map((app) => {
-          if (app.id === appointmentId) return { ...app, cancelled: true };
-          return app;
+          toast.success("Appointment Cancelled");
         })
-      );
+        .catch((error) => {
+          console.error(error);
+          toast.error("Failed to cancel appointment. Please try again.");
+        });
 
-      toast.success("Appointment Cancelled");
     } catch (err) {
       console.error(err);
       toast.error("Failed to cancel appointment");
     }
+    setLoading(false);
   };
 
   // To fetch the appointment data from the API
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${API_URL}/admin/dashboard`, {
+        axios.get(`${API_URL}/admin/dashboard`, {
           withCredentials: true,
-        });
-        console.log("dashboard data fetch successfull", response.data);
-        setLoading(false);
+        })
+          .then((response) => {
+            console.log("dashboard data fetch successfull", response.data);
+            setLoading(false);
 
-        const { appointments, doctors, patiens, latestAppointments } =
-          response.data.dashData;
-        const completed = latestAppointments.filter((a) => !a.cancelled).length;
-        const cancelled = latestAppointments.filter((a) => a.cancelled).length;
-        setStats([
-          { title: "Doctors", count: doctors },
-          { title: "Patients", count: patiens },
-          { title: "Completed Appointments", count: completed },
-          { title: "Cancelled Appointments", count: cancelled },
-        ]);
+            const { doctors, patiens, latestAppointments } = response.data.dashData;
+            const completed = latestAppointments.filter((a) => !a.cancelled).length;
+            const cancelled = latestAppointments.filter((a) => a.cancelled).length;
+            setStats([
+              { title: "Doctors", count: doctors },
+              { title: "Patients", count: patiens },
+              { title: "Completed Appointments", count: completed },
+              { title: "Cancelled Appointments", count: cancelled },
+            ]);
 
-        setAppointments(latestAppointments);
-        setfilteredAppointments(latestAppointments);
+            setAppointments(latestAppointments);
+            setfilteredAppointments(latestAppointments);
+          })
+          .catch((error) => {
+            console.error(error);
+            toast.error("Failed to fetch data. Please try again.");
+          });
+
       } catch (err) {
         toast.error(err.response.data.message);
         console.error(err);
@@ -254,8 +123,8 @@ const AdminDashboard = () => {
             (filter.status === "completed"
               ? app.isCompleted
               : filter.status === "cancelled"
-              ? app.cancelled
-              : !app.isCompleted && !app.cancelled))
+                ? app.cancelled
+                : !app.isCompleted && !app.cancelled))
       )
     );
   };
@@ -273,8 +142,8 @@ const AdminDashboard = () => {
             (status === "completed"
               ? app.isCompleted
               : status === "cancelled"
-              ? app.cancelled
-              : !app.isCompleted && !app.cancelled))
+                ? app.cancelled
+                : !app.isCompleted && !app.cancelled))
       )
     );
   };
@@ -291,11 +160,16 @@ const AdminDashboard = () => {
     setEnd(page * DoctorsperPage);
   };
 
+  if (loading) return (
+    <div className="fixed inset-0 z-1 flex items-center bg-white">
+      <Loader />
+    </div>
+  )
+
   return (
     <div
-      className={`min-h-screen pt-25 pb-5 pr-5 space-y-6 ${
-        sidebar ? "pl-[200px]" : "pl-[60px]"
-      } transition-all duration-300`}
+      className={`min-h-screen pt-25 pb-5 pr-5 space-y-6 ${sidebar ? "pl-[200px]" : "pl-[60px]"
+        } transition-all duration-300`}
     >
       <h1 className="text-3xl font-bold text-indigo-700">Admin Dashboard</h1>
       {loading ? (
@@ -413,9 +287,8 @@ const AdminDashboard = () => {
               <button
                 onClick={() => handlePageChange(ind + 1)}
                 key={ind}
-                className={`border-1 rounded-md p-2 cursor-pointer ${
-                  currentPage === ind + 1 ? "bg-[#5C67F2] text-white" : ""
-                }`}
+                className={`border-1 rounded-md p-2 cursor-pointer ${currentPage === ind + 1 ? "bg-[#5C67F2] text-white" : ""
+                  }`}
               >
                 {ind + 1}
               </button>

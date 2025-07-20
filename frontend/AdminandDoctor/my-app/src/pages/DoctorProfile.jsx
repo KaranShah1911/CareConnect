@@ -4,13 +4,13 @@ import { useStore } from "../utils/store";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
+const API_URL = import.meta.env.VITE_API_URL;
 
 // issue - some issue with image - after saving.
-const DoctorInfo = () => {
+const DoctorProfile = () => {
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const sidebar = useStore((state) => state.sidebar);
-  const API_URL = import.meta.env.VITE_API_URL;
 
   const [form, setForm] = useState({
     name: "",
@@ -29,18 +29,26 @@ const DoctorInfo = () => {
 
   // fetch profile data
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchData = () => {
       try {
-        const response = await axios.get(`${API_URL}/doctor/profile`, {
+        setLoading(true);
+        axios.get(`${API_URL}/doctor/profile`, {
           withCredentials: true,
-        });
-        const data = response.data.profileData;
-        console.log("profile successfull", data);
-        setForm({ ...data });
-        setOriginalData({ ...data });
+        })
+          .then((response) => {
+            const data = response.data.profileData;
+            console.log("profile successfull", data);
+            setForm({ ...data });
+            setOriginalData({ ...data });
+          })
+          .catch((error) => {
+            toast.error("Error fetching profile data");
+            console.error(error);
+          });
       } catch (err) {
         console.error(err);
       }
+      setLoading(false);
     };
     fetchData();
   }, []);
@@ -83,7 +91,7 @@ const DoctorInfo = () => {
           const data = res.data.data;
           setForm({ ...data });
           setOriginalData({ ...data });
-          toast.success("profile updated successfully");
+          toast.success("Profile updated successfully");
         })
         .catch((err) => {
           toast.error(err.response || "Profile update failed");
@@ -111,9 +119,8 @@ const DoctorInfo = () => {
 
   return (
     <div
-      className={`flex gap-5 p-5 pt-30 min-h-screen ${
-        sidebar ? "pl-60" : "pl-16"
-      } transition-all duration-300`}
+      className={`flex gap-5 p-5 pt-30 min-h-screen ${sidebar ? "pl-60" : "pl-16"
+        } transition-all duration-300`}
     >
       {loading ? (
         <Loader />
@@ -272,7 +279,7 @@ const DoctorInfo = () => {
               )}
             </div>
 
-            {/* Address Line 2 */}
+            {/* Address */}
             <div>
               <label className="block font-medium text-violet-700">
                 Address
@@ -320,11 +327,10 @@ const DoctorInfo = () => {
                 />
               ) : (
                 <span
-                  className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    form?.available
-                      ? "bg-green-100 text-green-700"
-                      : "bg-red-100 text-red-600"
-                  }`}
+                  className={`px-3 py-1 rounded-full text-sm font-medium ${form?.available
+                    ? "bg-green-100 text-green-700"
+                    : "bg-red-100 text-red-600"
+                    }`}
                 >
                   {form?.available ? "Available" : "Unavailable"}
                 </span>
@@ -337,4 +343,4 @@ const DoctorInfo = () => {
   );
 };
 
-export default DoctorInfo;
+export default DoctorProfile;

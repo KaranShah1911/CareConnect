@@ -4,6 +4,7 @@ import { FaEdit, FaSave, FaTimes } from "react-icons/fa";
 import { useUserStore } from "../store/user";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const UserProfile = () => {
   const [editMode, setEditMode] = useState(false);
@@ -34,20 +35,20 @@ const UserProfile = () => {
   };
 
   useEffect(() => {
-    axios.get("http://localhost:3000/api/user/get-profile", {
+    axios.get(`${API_URL}/user/get-profile`, {
       withCredentials: true
     })
       .then(res => {
-        setLoading(false);
         const data = res.data.userData;
         console.log(data);
         setOriginalData(data);
         setForm(data);
       })
       .catch(err => {
-        toast.error(err.response.data.message)
+        toast.error(err.response.data.message || "Error fetching profile data");
         console.error(err)
       });
+      setLoading(false);
   }, []);
 
   const handleSave = () => {
@@ -70,11 +71,10 @@ const UserProfile = () => {
     }
     try {
       setLoading(true);
-      axios.patch("http://localhost:3000/api/user/update-profile", formData, {
+      axios.patch(`${API_URL}/user/update-profile`, formData, {
         withCredentials: true
       })
         .then(res => {
-          setLoading(false);
           setForm(res.data.updatedUser);
           setOriginalData(res.data.updatedUser);
           setImage(res.data.updatedUser.image);
@@ -85,6 +85,7 @@ const UserProfile = () => {
           setForm(originalData);
           console.error(err);
         })
+        setLoading(false);
     } catch (err) {
       console.error(err);
     }
@@ -94,6 +95,7 @@ const UserProfile = () => {
     setEditMode(false);
     setForm(originalData);
   };
+  
   if (loading) return (
     <div className="fixed inset-0 z-1 flex items-center bg-white">
       <Loader />

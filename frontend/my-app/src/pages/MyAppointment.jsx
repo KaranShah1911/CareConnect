@@ -1,56 +1,18 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
-const allAppointments = [
-  {
-    id: 1,
-    doctorName: "Dr. Christopher Lee",
-    specialty: "Pediatrician",
-    address: "37th Cross, Richmond Circle, Ring Road, London",
-    dateTime: "11 Aug 2025 | 01:00 PM",
-    image:
-      "https://img.freepik.com/free-photo/portrait-smiling-handsome-male-doctor-man_171337-5055.jpg",
-    appointmentCancelled: false,
-  },
-  {
-    id: 2,
-    doctorName: "Dr. Sarah Patel",
-    specialty: "Dermatologist",
-    address: "37th Cross, Richmond Circle, Ring Road, London",
-    dateTime: "11 Aug 2025 | 01:00 PM",
-    image:
-      "https://img.freepik.com/free-photo/young-male-doctor-white-coat-with-stethoscope-holding-clipboard_114579-9966.jpg",
-    appointmentCancelled: true,
-  },
-  {
-    id: 3,
-    doctorName: "Dr. Anita Desai",
-    specialty: "Neurologist",
-    address: "45 Queen Street, Westminster, London",
-    dateTime: "13 Aug 2025 | 10:30 AM",
-    image:
-      "https://img.freepik.com/free-photo/young-male-doctor-white-coat-with-stethoscope-holding-clipboard_114579-9966.jpg",
-    appointmentCancelled: false,
-  },
-  {
-    id: 4,
-    doctorName: "Dr. Priya Singh",
-    specialty: "ENT Specialist",
-    address: "78 King Cross Road, London",
-    dateTime: "14 Aug 2025 | 03:15 PM",
-    image:
-      "https://img.freepik.com/free-photo/young-male-doctor-white-coat-with-stethoscope-holding-clipboard_114579-9966.jpg",
-    appointmentCancelled: true,
-  },
-];
+import { toast } from "react-toastify";
+import Loader from "../components/Loader";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const MyAppointments = () => {
   const [appointments, setAppointments] = useState([]);
+  const [loading, setLoading] = useState(true);
   const handleCancel = (appointmentId) => {
     try {
+      setLoading(true);
       axios
         .post(
-          "http://localhost:3000/api/user/cancel-appointment",
+          `${API_URL}/user/cancel-appointment`,
           { appointmentId },
           {
             withCredentials: true,
@@ -63,15 +25,19 @@ const MyAppointments = () => {
               return app;
             })
           );
-          alert("Appointment cancelled");
-        });
+          toast.success("Appointment cancelled");
+        })
+        .catch((err) => console.error(err));
+        
+      setLoading(false);
     } catch (err) {
       console.log(err);
     }
   };
+
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/user/list-appointments", {
+      .get(`${API_URL}/user/list-appointments`, {
         withCredentials: true,
       })
       .then((res) => {
@@ -79,7 +45,15 @@ const MyAppointments = () => {
         console.log(res.data.data);
       })
       .catch((err) => console.error(err));
+    setLoading(false);
   }, []);
+
+  if (loading) return (
+    <div className="fixed inset-0 z-1 flex items-center bg-white">
+      <Loader />
+    </div>
+  )
+
   return (
     <div className="mb-20 pt-30 p-5 m-auto">
       {/* Page Header */}
@@ -142,22 +116,12 @@ const MyAppointments = () => {
               {/* Action Buttons */}
               <div className="mt-6 flex flex-col sm:flex-row justify-end gap-3">
                 <button
-                  className={`py-2 px-6 rounded-md text-sm font-medium hover:bg-blue-700 hover:text-white transition border border-gray-300 cursor-pointer ${
-                    appointment.cancelled || appointment.isCompleted
-                      ? "hidden"
-                      : "block"
-                  }`}
-                >
-                  Pay Online
-                </button>
-                <button
                   onClick={() => handleCancel(appointment._id)}
                   disabled={appointment.cancelled}
-                  className={`border text-gray-700 py-2 px-6 rounded-md text-sm font-medium  transition ${
-                    appointment.cancelled
-                      ? "text-red-600 cursor-not-allowed"
-                      : "border-gray-300 cursor-pointer"
-                  }`}
+                  className={`border text-gray-700 py-2 px-6 rounded-md text-sm font-medium  transition ${appointment.cancelled
+                    ? "text-red-600 cursor-not-allowed"
+                    : "border-gray-300 cursor-pointer"
+                    }`}
                 >
                   {appointment.cancelled ? (
                     <div className="text-red-600">Appointment cancelled</div>

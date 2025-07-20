@@ -6,205 +6,20 @@ import { useStore } from "../utils/store";
 import { FcMoneyTransfer } from "react-icons/fc";
 import { RiCalendarScheduleLine } from "react-icons/ri";
 import { IoPeopleOutline } from "react-icons/io5";
-import axios, { all } from "axios";
+import axios from "axios";
 import { toast } from "react-toastify";
-const initialappointments = [
-  {
-    id: 1,
-    name: "Avinash Kr",
-    date: "5 Oct 2024",
-    image: "https://randomuser.me/api/portraits/men/32.jpg",
-    status: "Pending",
-    payment: "Cash",
-  },
-  {
-    id: 2,
-    name: "Ravi Verma",
-    date: "6 Oct 2024",
-    image: "https://randomuser.me/api/portraits/men/45.jpg",
-    status: "Completed",
-    payment: "Online",
-  },
-  {
-    id: 3,
-    name: "Pooja Desai",
-    date: "7 Oct 2024",
-    image: "https://randomuser.me/api/portraits/women/47.jpg",
-    status: "Pending",
-    payment: "Cash",
-  },
-  {
-    id: 4,
-    name: "Karan Mehta",
-    date: "8 Oct 2024",
-    image: "https://randomuser.me/api/portraits/men/28.jpg",
-    status: "Cancelled",
-    payment: "Online",
-  },
-  {
-    id: 5,
-    name: "Shalini Rao",
-    date: "9 Oct 2024",
-    image: "https://randomuser.me/api/portraits/women/50.jpg",
-    status: "Completed",
-    payment: "Cash",
-  },
-  {
-    id: 6,
-    name: "Rohan Joshi",
-    date: "10 Oct 2024",
-    image: "https://randomuser.me/api/portraits/men/58.jpg",
-    status: "Pending",
-    payment: "Online",
-  },
-  {
-    id: 7,
-    name: "Sneha Patil",
-    date: "11 Oct 2024",
-    image: "https://randomuser.me/api/portraits/women/65.jpg",
-    status: "Cancelled",
-    payment: "Cash",
-  },
-  {
-    id: 8,
-    name: "Deepak Sharma",
-    date: "12 Oct 2024",
-    image: "https://randomuser.me/api/portraits/men/40.jpg",
-    status: "Completed",
-    payment: "Cash",
-  },
-  {
-    id: 9,
-    name: "Alok Pandey",
-    date: "13 Oct 2024",
-    image: "https://randomuser.me/api/portraits/men/21.jpg",
-    status: "Pending",
-    payment: "Cash",
-  },
-  {
-    id: 10,
-    name: "Mitali Kaur",
-    date: "14 Oct 2024",
-    image: "https://randomuser.me/api/portraits/women/33.jpg",
-    status: "Completed",
-    payment: "Online",
-  },
-  {
-    id: 11,
-    name: "Shubham Tiwari",
-    date: "15 Oct 2024",
-    image: "https://randomuser.me/api/portraits/men/19.jpg",
-    status: "Pending",
-    payment: "Cash",
-  },
-  {
-    id: 12,
-    name: "Ritika Singh",
-    date: "16 Oct 2024",
-    image: "https://randomuser.me/api/portraits/women/26.jpg",
-    status: "Cancelled",
-    payment: "Online",
-  },
-  {
-    id: 13,
-    name: "Sameer Shaikh",
-    date: "17 Oct 2024",
-    image: "https://randomuser.me/api/portraits/men/37.jpg",
-    status: "Completed",
-    payment: "Cash",
-  },
-  {
-    id: 14,
-    name: "Disha More",
-    date: "18 Oct 2024",
-    image: "https://randomuser.me/api/portraits/women/21.jpg",
-    status: "Pending",
-    payment: "Online",
-  },
-  {
-    id: 15,
-    name: "Akash Jain",
-    date: "19 Oct 2024",
-    image: "https://randomuser.me/api/portraits/men/18.jpg",
-    status: "Cancelled",
-    payment: "Online",
-  },
-  {
-    id: 16,
-    name: "Ritu Agarwal",
-    date: "20 Oct 2024",
-    image: "https://randomuser.me/api/portraits/women/60.jpg",
-    status: "Completed",
-    payment: "Cash",
-  },
-  {
-    id: 17,
-    name: "Nikhil Raj",
-    date: "21 Oct 2024",
-    image: "https://randomuser.me/api/portraits/men/16.jpg",
-    status: "Completed",
-    payment: "Online",
-  },
-  {
-    id: 18,
-    name: "Avni Chawla",
-    date: "22 Oct 2024",
-    image: "https://randomuser.me/api/portraits/women/13.jpg",
-    status: "Pending",
-    payment: "Cash",
-  },
-  {
-    id: 19,
-    name: "Tanmay Shah",
-    date: "23 Oct 2024",
-    image: "https://randomuser.me/api/portraits/men/39.jpg",
-    status: "Cancelled",
-    payment: "Online",
-  },
-  {
-    id: 20,
-    name: "Neha Jadhav",
-    date: "24 Oct 2024",
-    image: "https://randomuser.me/api/portraits/women/34.jpg",
-    status: "Completed",
-    payment: "Cash",
-  },
-  {
-    id: 21,
-    name: "Yash Patil",
-    date: "25 Oct 2024",
-    image: "https://randomuser.me/api/portraits/men/35.jpg",
-    status: "Pending",
-    payment: "Online",
-  },
-  {
-    id: 22,
-    name: "Aarti Bhosale",
-    date: "26 Oct 2024",
-    image: "https://randomuser.me/api/portraits/women/39.jpg",
-    status: "Completed",
-    payment: "Cash",
-  },
-  {
-    id: 23,
-    name: "Saurabh Dube",
-    date: "27 Oct 2024",
-    image: "https://randomuser.me/api/portraits/men/50.jpg",
-    status: "Cancelled",
-    payment: "Online",
-  },
-];
+const API_URL = import.meta.env.VITE_API_URL;
 
 const DoctorDashboard = () => {
   const [appointments, setAppointments] = useState([]);
   const [latestAppointments, setlatestAppointments] = useState([]);
+  const [loading, setLoading] = useState(true);
   const sidebar = useStore((state) => state.sidebar);
   const perPage = 8;
   const totalPages = Math.ceil(latestAppointments.length / perPage);
   const [currentPage, setCurrentPage] = useState(1);
   const [start, setStart] = useState(0);
   const [end, setEnd] = useState(perPage);
-  const API_URL = import.meta.env.VITE_API_URL;
   const [stats, setStats] = useState({
     appointments: 0,
     earnings: 0,
@@ -215,17 +30,21 @@ const DoctorDashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${API_URL}/doctor/dashboard`, {
+        axios.get(`${API_URL}/doctor/dashboard`, {
           withCredentials: true,
-        });
-        const docId = response.data.doctorId;
-
-        console.log("successfull dashboard", response.data);
-        setStats(response.data.dashData);
-        setAppointments(allAppointments);
+        })
+          .then((response) => {
+            console.log("successfull dashboard", response.data);
+            setStats(response.data.dashData);
+          })
+          .catch((error) => {
+            toast.error("Error fetching dashboard data. Please try again.");
+            console.error(error);
+          });
       } catch (err) {
         console.error(err);
       }
+      setLoading(false);
     };
 
     fetchData();
@@ -233,23 +52,30 @@ const DoctorDashboard = () => {
 
   // fetch Appointments (latest - pending apts)
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchData = () => {
       try {
-        const response = await axios.get(`${API_URL}/doctor/appointments`, {
+        setLoading(true);
+        axios.get(`${API_URL}/doctor/appointments`, {
           withCredentials: true,
-        });
-        // const {name, age, _id} =
-        setAppointments(response.data.appointments);
-        setlatestAppointments(
-          response.data.appointments.filter((app) => !app.isCompleted && !app.cancelled)
-        );
-        console.log(
-          "appointments fetched successfully",
-          response.data.appointments
-        );
+        })
+          .then((response) => {
+            setAppointments(response.data.appointments);
+            setlatestAppointments(
+              response.data.appointments.filter((app) => !app.isCompleted && !app.cancelled)
+            );
+            console.log(
+              "appointments fetched successfully",
+              response.data.appointments
+            );
+          })
+          .catch((error) => {
+            toast.error("Error fetching appointments. Please try again.");
+            console.error(error);
+          });
       } catch (err) {
         console.error(err);
       }
+      setLoading(false);
     };
 
     fetchData();
@@ -262,59 +88,78 @@ const DoctorDashboard = () => {
   };
 
   // handle status changes - needs to verify
-  const handleStatusChange = async (appointmentId, newStatus) => {
+  const handleStatusChange = (appointmentId, newStatus) => {
     try {
-      let response;
+      setLoading(true);
       if (newStatus == "Completed") {
-        response = await axios.post(
+        axios.post(
           `${API_URL}/doctor/complete-appointment`,
           { appointmentId },
           { withCredentials: true }
-        );
-        toast.success("Appointment Completed");
-        setAppointments((prev) =>
-          prev.map((app) => {
-            if (app._id === appointmentId) return { ...app, isCompleted: true };
-            return app;
+        )
+          .then((response) => {
+            toast.success("Appointment Completed");
+            setAppointments((prev) =>
+              prev.map((app) => {
+                if (app._id === appointmentId) return { ...app, isCompleted: true };
+                return app;
+              })
+            );
+            setlatestAppointments((prev) =>
+              prev.map((app) => {
+                if (app._id === appointmentId) return { ...app, isCompleted: true };
+                return app;
+              })
+            );
           })
-        );
-        setlatestAppointments((prev) =>
-          prev.map((app) => {
-            if (app._id === appointmentId) return { ...app, isCompleted: true };
-            return app;
-          })
-        );
+          .catch((err) => {
+            toast.error("Error completing appointment. Please try again.");
+            console.error(err);
+          });
+
       } else {
-        response = await axios.post(
+        axios.post(
           `${API_URL}/doctor/cancel-appointment`,
           { appointmentId },
           { withCredentials: true }
-        );
-        toast.success("Appointment Cancelled");
-        setAppointments((prev) =>
-          prev.map((app) => {
-            if (app._id === appointmentId) return { ...app, cancelled: true };
-            return app;
+        )
+          .then((response) => {
+            toast.success("Appointment Cancelled");
+            setAppointments((prev) =>
+              prev.map((app) => {
+                if (app._id === appointmentId) return { ...app, cancelled: true };
+                return app;
+              })
+            );
+            setlatestAppointments((prev) =>
+              prev.map((app) => {
+                if (app._id === appointmentId) return { ...app, cancelled: true };
+                return app;
+              })
+            );
           })
-        );
-        setlatestAppointments((prev) =>
-          prev.map((app) => {
-            if (app._id === appointmentId) return { ...app, cancelled: true };
-            return app;
-          })
-        );
+          .catch((err) => {
+            toast.error("Error cancelling appointment. Please try again.");
+            console.error(err);
+          });
       }
       console.log("status changed successfully", response.data);
     } catch (err) {
       console.log(err);
     }
+    setLoading(false);
   };
+
+  if (loading) return (
+    <div className="fixed inset-0 z-1 flex items-center bg-white">
+      <Loader />
+    </div>
+  )
 
   return (
     <div
-      className={`flex flex-col min-h-[100vh] gap-5 px-4 sm:px-6 pb-6 pt-[100px] transition-all duration-300 ${
-        sidebar ? "pl-[200px] md:pl-[200px]" : "pl-[60px] md:pl-[60px]"
-      }`}
+      className={`flex flex-col min-h-[100vh] gap-5 px-4 sm:px-6 pb-6 pt-[100px] transition-all duration-300 ${sidebar ? "pl-[200px] md:pl-[200px]" : "pl-[60px] md:pl-[60px]"
+        }`}
     >
       {/* Dashboard Title */}
       <h1 className="text-3xl font-bold text-indigo-700">Dashboard</h1>
@@ -408,7 +253,7 @@ const DoctorDashboard = () => {
                       {appointment.cancelled && (
                         <span className="text-red-400">Cancelled</span>
                       )}
-                      {!appointment.isCompleted && !appointment.cancelled &&  (
+                      {!appointment.isCompleted && !appointment.cancelled && (
                         <span className="text-yellow-500">Pending</span>
                       )}
                     </td>
@@ -449,9 +294,8 @@ const DoctorDashboard = () => {
                 <button
                   key={ind}
                   onClick={() => handlePageChange(ind + 1)}
-                  className={`border p-2 rounded-md ${
-                    currentPage === ind + 1 ? "bg-[#5C67F2] text-white" : ""
-                  }`}
+                  className={`border p-2 rounded-md ${currentPage === ind + 1 ? "bg-[#5C67F2] text-white" : ""
+                    }`}
                 >
                   {ind + 1}
                 </button>

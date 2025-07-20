@@ -6,6 +6,8 @@ import { FaUserDoctor } from "react-icons/fa6";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useUserStore } from "../utils/user";
+import Loader from "../components/Loader";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const getNextDays = (count = 12) => {
   const days = [];
@@ -42,15 +44,14 @@ const AppointmentPage = () => {
   const { doctorId } = useParams();
   const location = useLocation();
   let doctor = location.state?.doctor;
-  // doctor.address = doctor.address;
   const similarDoctors = location.state?.similarDoctors;
   const { isLoggedin } = useUserStore();
-  const API_URL = import.meta.env.VITE_API_URL;
 
   const [appointment, setappointmentdate] = useState({
     date: "",
     time: "",
   });
+  const [loading, setLoading] = useState(true);
 
   const handleAppointment = (date, time) => {
     setappointmentdate({
@@ -69,6 +70,7 @@ const AppointmentPage = () => {
       return;
     }
     try {
+      setLoading(true);
       axios
         .post(
           `${API_URL}/user/book-appointment`,
@@ -86,17 +88,27 @@ const AppointmentPage = () => {
           toast.success("Appointment booked successfully");
           navigate("/my-appointment");
         })
-        .catch((error) => console.log(error))
+        .catch((error) => {
+          console.log(error);
+          toast.error("Failed to book appointment. Please try again.");
+        })
         .finally(() => {
           setappointmentdate({
             date: "",
             time: "",
           });
         });
+      setLoading(false);
     } catch (err) {
       console.error(err);
     }
   };
+
+  if (loading) return (
+    <div className="fixed inset-0 z-1 flex items-center bg-white">
+      <Loader />
+    </div>
+  )
 
   return (
     <section key={doctorId} className="max-w-6xl mx-auto px-4 py-10 pt-24">
@@ -157,11 +169,10 @@ const AppointmentPage = () => {
                   <button
                     key={i}
                     disabled={doctor.slots_booked[date]?.includes(time)}
-                    className={`px-3 py-1 rounded-lg text-sm disabled:bg-red-200 disabled:text-red-800  ${
-                      appointment.date === date && appointment.time === time
-                        ? "bg-indigo-700 text-indigo-100"
-                        : "bg-indigo-100 text-indigo-700 hover:bg-indigo-200"
-                    }`}
+                    className={`px-3 py-1 rounded-lg text-sm disabled:bg-red-200 disabled:text-red-800  ${appointment.date === date && appointment.time === time
+                      ? "bg-indigo-700 text-indigo-100"
+                      : "bg-indigo-100 text-indigo-700 hover:bg-indigo-200"
+                      }`}
                     onClick={() => handleAppointment(date, time)}
                   >
                     {time}
@@ -196,7 +207,7 @@ const AppointmentPage = () => {
       </div>
 
       {/* Similar Doctors */}
-      {/* <div className="mt-10">
+      <div className="mt-10">
         <h3 className="text-xl font-semibold mb-4">Similar Specialists</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {similarDoctors
@@ -230,7 +241,7 @@ const AppointmentPage = () => {
               </div>
             ))}
         </div>
-      </div> */}
+      </div>
     </section>
   );
 };

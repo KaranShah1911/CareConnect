@@ -4,10 +4,12 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useUserStore } from "../utils/user";
 import { toast } from "react-toastify";
-import { GoogleLogin } from "@react-oauth/google";
+import Loader from "../components/Loader";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const Login = () => {
   const [data, setData] = useState({ email: "", password: "" });
+  const [loading, setLoading] = useState(false);
   const { login } = useUserStore();
   const navigate = useNavigate();
 
@@ -18,28 +20,35 @@ const Login = () => {
     e.preventDefault();
     console.log("Login with:", data);
     try {
-      axios.post("http://localhost:3000/api/user/login", data, {
+      setLoading(true);
+      axios.post(`${API_URL}/user/login`, data, {
         withCredentials: true
       })
         .then(response => {
           const image = response.data.userImage;
-          toast.success("User login success");
+          toast.success("Login success");
           login(image);
           navigate("/")
         })
         .catch(error => {
           console.log(error.response);
-          toast.error(error.response.data.message);
+          toast.error(error.response.data.message || "Login failed. Please try again.");
         });
-
+        setLoading(false);
     } catch (err) {
       console.log(err);
     }
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:3000/api/auth/google"
+    window.location.href = `${API_URL}/auth/google`;
   }
+
+  if (loading) return (
+      <div className="fixed inset-0 z-1 flex items-center bg-white">
+        <Loader />
+      </div>
+    )
 
   return (
     <div className="w-screen min-h-screen flex flex-col justify-center items-center px-4 bg-white gap-10 pt-20 md:pt-10">

@@ -4,11 +4,14 @@ import { FaGoogle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useUserStore } from "../utils/user";
+import Loader from "../components/Loader";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const Signup = () => {
   const navigate = useNavigate();
   const [data, setData] = useState({ email: "", password: "", name: "" });
   const [termsAcepted, settermsAccepted] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { login } = useUserStore();
 
   const handleChange = (e) =>
@@ -26,8 +29,9 @@ const Signup = () => {
     }
     console.log("Sign up with:", data);
     try {
+      setLoading(true);
       axios
-        .post("http://localhost:3000/api/user/register", data, {
+        .post(`${API_URL}/user/register`, data, {
           withCredentials: true,
         })
         .then((res) => {
@@ -47,14 +51,21 @@ const Signup = () => {
             email: "",
           });
         });
+        setLoading(false);
     } catch (error) {
       console.error(error);
     }
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:3000/api/auth/google";
+    window.location.href = `${API_URL}/auth/google`;
   };
+
+  if (loading) return (
+    <div className="fixed inset-0 z-1 flex items-center bg-white">
+      <Loader />
+    </div>
+  )
 
   return (
     <div className="w-screen min-h-screen flex flex-col justify-center items-center px-4 bg-white gap-10 pt-20 md:pt-20">
@@ -145,21 +156,11 @@ const Signup = () => {
         <div className="flex flex-col">
           <label className="text-sm mb-1 text-indigo-700">Name</label>
           <div className="flex items-center border rounded-lg px-3">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              fill="none"
-              viewBox="0 0 512 512"
-            >
-              <path
-                fill="#432dd7"
-                d="M336 512H48c-26.453 0-48-21.523-48-48V240c0-26.477 21.547-48 48-48h288c26.453 0 48 21.523 48 48v224c0 26.477-21.547 48-48 48zM48 224c-8.813 0-16 7.168-16 16v224c0 8.832 7.187 16 16 16h288c8.813 0 16-7.168 16-16V240c0-8.832-7.187-16-16-16z"
-              />
-              <path
-                fill="currentColor"
-                d="M304 224c-8.832 0-16-7.168-16-16v-80c0-52.93-43.07-96-96-96S96 75.07 96 128v80c0 8.832-7.168 16-16 16s-16-7.168-16-16v-80c0-70.594 57.406-128 128-128s128 57.406 128 128v80c0 8.832-7.168 16-16 16z"
-              />
+            <svg fill="#432dd7" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" stroke="#432dd7">
+              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+              <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier">
+                <path d="M16 15.503A5.041 5.041 0 1 0 16 5.42a5.041 5.041 0 0 0 0 10.083zm0 2.215c-6.703 0-11 3.699-11 5.5v3.363h22v-3.363c0-2.178-4.068-5.5-11-5.5z"></path>
+              </g>
             </svg>
             <input
               type="text"

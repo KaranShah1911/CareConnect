@@ -5,79 +5,8 @@ import { FaArrowLeft } from "react-icons/fa6";
 import { useStore } from "../utils/store";
 import axios from "axios";
 import { toast } from "react-toastify";
-
-const doctors = [
-  {
-    name: "Dr. Smith",
-    img: "https://randomuser.me/api/portraits/men/66.jpg",
-    speciality: "Cardiologist",
-  },
-  {
-    name: "Dr. Alice",
-    img: "https://randomuser.me/api/portraits/men/66.jpg",
-    speciality: "Neurologist",
-  },
-  {
-    name: "Dr. Alice",
-    img: "https://randomuser.me/api/portraits/men/66.jpg",
-    speciality: "Neurologist",
-  },
-  {
-    name: "Dr. Alice",
-    img: "https://randomuser.me/api/portraits/men/66.jpg",
-    speciality: "Neurologist",
-  },
-  {
-    name: "Dr. Alice",
-    img: "https://randomuser.me/api/portraits/men/66.jpg",
-    speciality: "Neurologist",
-  },
-  {
-    name: "Dr. Alice",
-    img: "https://randomuser.me/api/portraits/men/66.jpg",
-    speciality: "Neurologist",
-  },
-  {
-    name: "Dr. Alice",
-    img: "https://randomuser.me/api/portraits/men/66.jpg",
-    speciality: "Neurologist",
-  },
-  {
-    name: "Dr. Alice",
-    img: "https://randomuser.me/api/portraits/men/66.jpg",
-    speciality: "Neurologist",
-  },
-  {
-    name: "Dr. Alice",
-    img: "https://randomuser.me/api/portraits/men/66.jpg",
-    speciality: "Neurologist",
-  },
-  {
-    name: "Dr. Alice",
-    img: "https://randomuser.me/api/portraits/men/66.jpg",
-    speciality: "Neurologist",
-  },
-  {
-    name: "Dr. Alice",
-    img: "https://randomuser.me/api/portraits/men/66.jpg",
-    speciality: "Neurologist",
-  },
-  {
-    name: "Dr. Alice",
-    img: "https://randomuser.me/api/portraits/men/66.jpg",
-    speciality: "Neurologist",
-  },
-  {
-    name: "Dr. Alice",
-    img: "https://randomuser.me/api/portraits/men/66.jpg",
-    speciality: "Neurologist",
-  },
-  {
-    name: "Dr. Alice",
-    img: "https://randomuser.me/api/portraits/men/66.jpg",
-    speciality: "Neurologist",
-  },
-];
+import Loader from "../components/Loader";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const DoctorsperPage = 9;
 
@@ -91,21 +20,24 @@ const AllDoctors = () => {
   const NoofDoctors = doctors.length;
   const NoofPages = Math.ceil(NoofDoctors / DoctorsperPage);
 
-  const API_URL = import.meta.env.VITE_API_URL;
-
   // Fetch all doctors.
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${API_URL}/admin/all-doctors`, {
+        axios.get(`${API_URL}/admin/all-doctors`, {
           withCredentials: true,
-        });
-
-        setDoctors(response.data.doctors);
-        console.log("doctors fetched", response.data);
-        setLoading(false);
+        })
+          .then((response) => {
+            setDoctors(response.data.doctors);
+            console.log("doctors fetched", response.data);
+            setLoading(false);
+          })
+          .catch((error) => {
+            toast.error("Error fetching doctors. Please try again.");
+            console.error(error);
+          });
       } catch (err) {
-        toast.error("Error! Something Wrong");
+        toast.error("Error fetching doctors. Please try again.");
         console.error(err);
       }
     };
@@ -114,25 +46,34 @@ const AllDoctors = () => {
   }, []);
 
   // handle availability change
-  const handleAvailChange = async (docId) => {
+  const handleAvailChange = (docId) => {
     try {
-      const response = await axios.post(
+      setLoading(true);
+      axios.post(
         `${API_URL}/admin/change-availibility`,
         { docId },
         { withCredentials: true }
-      );
-      console.log("avail changed", response.data)
-      toast.success("Availability Changed");
-      setDoctors((prev) =>
-        prev.map((doctor) =>
-          doctor._id === docId
-            ? { ...doctor, available: !doctor.available }
-            : doctor
-        )
-      );
+      )
+        .then((response) => {
+          console.log("avail changed", response.data)
+          toast.success("Availability Changed");
+          setDoctors((prev) =>
+            prev.map((doctor) =>
+              doctor._id === docId
+                ? { ...doctor, available: !doctor.available }
+                : doctor
+            )
+          );
+        })
+        .catch((error) => {
+          toast.error("Failed to change availability. Please try again.");
+          console.error(error);
+        });
+
     } catch (error) {
       console.error(err);
     }
+    setLoading(false);
   };
 
   const handlePageChange = (page) => {
@@ -141,11 +82,16 @@ const AllDoctors = () => {
     setEnd(page * DoctorsperPage);
   };
 
+  if (loading) return (
+    <div className="fixed inset-0 z-1 flex items-center bg-white">
+      <Loader />
+    </div>
+  )
+  
   return (
     <div
-      className={`${
-        sidebar ? "pl-[200px]" : "pl-[60px]"
-      } transition-all duration-300 pt-25 p-5 min-h-screen`}
+      className={`${sidebar ? "pl-[200px]" : "pl-[60px]"
+        } transition-all duration-300 pt-25 p-5 min-h-screen`}
     >
       <h1 className="text-3xl font-bold text-indigo-700 mb-6">All Doctors</h1>
       {loading ? (
@@ -193,9 +139,8 @@ const AllDoctors = () => {
                 <button
                   onClick={() => handlePageChange(ind + 1)}
                   key={ind}
-                  className={`border-1 rounded-md p-2 cursor-pointer ${
-                    currentPage === ind + 1 ? "bg-[#5C67F2] text-white" : ""
-                  }`}
+                  className={`border-1 rounded-md p-2 cursor-pointer ${currentPage === ind + 1 ? "bg-[#5C67F2] text-white" : ""
+                    }`}
                 >
                   {ind + 1}
                 </button>

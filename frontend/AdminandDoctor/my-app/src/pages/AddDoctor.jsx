@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { useStore } from "../utils/store";
 import { toast } from "react-toastify";
+import Loader from "../components/Loader";
 import axios from "axios";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const AddDoctor = () => {
     const [form, setForm] = useState({
@@ -17,19 +19,20 @@ const AddDoctor = () => {
         about: "",
         image: null
     });
+    const [loading, setLoading] = useState(false);
     const sidebar = useStore((state) => state.sidebar)
 
     const handleChange = (e) => {
         setForm((prev) => { return { ...prev, [e.target.name]: e.target.value } });
     };
-    const handlFileChange = (e)=>{
+    const handlFileChange = (e) => {
         const file = e.target.files[0];
         setForm((prev) => { return { ...prev, [e.target.name]: file } });
     }
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if(form.clinic_phno?.length < 8 || form.clinic_phno?.length > 10 || form.clinic_phno?.length==9){
+        if (form.clinic_phno?.length < 8 || form.clinic_phno?.length > 10 || form.clinic_phno?.length == 9) {
             toast.error("Enter valid clinic_phno number....");
             return;
         }
@@ -45,24 +48,27 @@ const AddDoctor = () => {
         formdata.append("experience", form.experience);
         formdata.append("fees", form.fees);
         formdata.append("about", form.about);
-        
-        if(form.image instanceof File){
+
+        if (form.image instanceof File) {
             formdata.append("image", form.image);
         }
 
-        console.log("Adding doctor" , formdata);
+        console.log("Adding doctor", formdata);
         try {
-            axios.post("http://localhost:3000/api/admin/add-doctor" , formdata , {
-                withCredentials : true
+            setLoading(true);
+            axios.post(`${API_URL}/admin/add-doctor`, formdata, {
+                withCredentials: true
             })
-            .then(res => {
-                console.log(res.data);
-            })
-            .catch(err=>{
-                console.log(err);
-            })
-            .finally(()=>clearForm())
-
+                .then(res => {
+                    toast.success("Doctor added successfully");
+                    console.log(res.data);
+                })
+                .catch(err => {
+                    toast.error(err.response.data.message || "Failed to add doctor. Please try again.");
+                    console.log(err);
+                })
+                .finally(() => clearForm());
+            setLoading(false);
         } catch (err) {
             console.log(err);
         }
@@ -84,6 +90,12 @@ const AddDoctor = () => {
             image: null
         });
     }
+
+    if (loading) return (
+        <div className="fixed inset-0 z-1 flex items-center bg-white">
+            <Loader />
+        </div>
+    )
     return (
         <div className={`pt-25 pb-10 max-w-4xl mx-auto transition-all duration-300 ${sidebar ? "pl-10" : ""}`}>
             <h1 className="text-3xl font-bold text-indigo-700 mb-6">Add Doctor</h1>
@@ -95,7 +107,7 @@ const AddDoctor = () => {
                         name="image"
                         onChange={handlFileChange}
                         required
-                        />
+                    />
                     {form.image && (
                         <img
                             src={typeof form.image === "string" ? form.image : URL.createObjectURL(form.image)}
