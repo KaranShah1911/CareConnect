@@ -9,7 +9,7 @@ router.get("/google", passport.authenticate("google", { scope: ["profile", "emai
 router.get(
   "/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "http://localhost:5173/google-redirect?success=false",
+    failureRedirect: `${process.env.FRONTEND_URL}/google-redirect?success=false`,
   }),
   (req, res) => {
     const user = req.user;
@@ -21,7 +21,7 @@ router.get(
       httpOnly: true,
       secure: true
     });
-    res.redirect(`http://localhost:5173/google-redirect?success=true&image=${user.image}`); // Your frontend redirect
+    res.redirect(`${process.env.FRONTEND_URL}/google-redirect?success=true&image=${user.image}`); // Your frontend redirect
   }
 );
 
