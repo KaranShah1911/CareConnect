@@ -160,9 +160,18 @@ const doctorDashboard = async (req, res) => {
       }
     });
 
+    let count = 0;
+
+    appointments.forEach(a => {
+      if(!a.cancelled && !a.isCompleted)
+      {
+        count++;
+      }
+    });
+    
     const dashData = {
       earnings,
-      appointments: appointments.length,
+      appointments: count,
       patients: patients.length,
       latestAppointment: appointments.reverse().slice(0, 5),
     };
