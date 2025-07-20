@@ -117,11 +117,8 @@ const MyAppointments = () => {
               <div className="mt-6 flex flex-col sm:flex-row justify-end gap-3">
                 <button
                   onClick={() => handleCancel(appointment._id)}
-                  disabled={appointment.cancelled}
-                  className={`border text-gray-700 py-2 px-6 rounded-md text-sm font-medium  transition ${appointment.cancelled
-                    ? "text-red-600 cursor-not-allowed"
-                    : "border-gray-300 cursor-pointer"
-                    }`}
+                  disabled={appointment.cancelled || appointment.isCompleted}
+                  className={`border text-gray-700 py-2 px-6 rounded-md text-sm font-medium transition disabled:cursor-not-allowed`}
                 >
                   {appointment.cancelled ? (
                     <div className="text-red-600">Appointment cancelled</div>

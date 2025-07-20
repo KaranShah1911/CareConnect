@@ -36,12 +36,12 @@ const Doctors = () => {
           ]);
           setDoctors(responsedoctors);
           setFilterDoctors(responsedoctors);
-          setLoading(false);
         })
         .catch((error) => console.log(error));
-    } catch (err) {
-      console.error(err);
-    }
+      } catch (err) {
+        console.error(err);
+      }
+      setLoading(false);
   }, []);
 
   const NoofDoctors = filterDoctors.length;

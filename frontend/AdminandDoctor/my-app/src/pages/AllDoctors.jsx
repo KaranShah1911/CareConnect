@@ -5,7 +5,6 @@ import { FaArrowLeft } from "react-icons/fa6";
 import { useStore } from "../store/store";
 import axios from "axios";
 import { toast } from "react-toastify";
-import Loader from "../components/Loader";
 const API_URL = import.meta.env.VITE_API_URL;
 
 const DoctorsperPage = 9;

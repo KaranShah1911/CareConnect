@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useStore } from "../utils/store";
+import { useStore } from "../store/store";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
 import axios from "axios";

@@ -6,7 +6,6 @@ import { FaArrowLeft } from "react-icons/fa6";
 import { useStore } from "../store/store";
 import axios from "axios";
 import { toast } from "react-toastify";
-import Loader from "../components/Loader";
 const API_URL = import.meta.env.VITE_API_URL;
 
 const DoctorsperPage = 5;
@@ -84,7 +83,7 @@ const AdminDashboard = () => {
             setLoading(false);
 
             const { doctors, patiens, latestAppointments } = response.data.dashData;
-            const completed = latestAppointments.filter((a) => !a.cancelled).length;
+            const completed = latestAppointments.filter((a) => a.isCompleted).length;
             const cancelled = latestAppointments.filter((a) => a.cancelled).length;
             setStats([
               { title: "Doctors", count: doctors },

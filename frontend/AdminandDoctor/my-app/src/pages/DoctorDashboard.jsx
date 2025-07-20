@@ -8,6 +8,7 @@ import { RiCalendarScheduleLine } from "react-icons/ri";
 import { IoPeopleOutline } from "react-icons/io5";
 import axios from "axios";
 import { toast } from "react-toastify";
+import Loader from "../components/Loader";
 const API_URL = import.meta.env.VITE_API_URL;
 
 const DoctorDashboard = () => {

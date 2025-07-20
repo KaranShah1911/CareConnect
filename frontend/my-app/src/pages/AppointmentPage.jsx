@@ -51,7 +51,7 @@ const AppointmentPage = () => {
     date: "",
     time: "",
   });
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const handleAppointment = (date, time) => {
     setappointmentdate({
