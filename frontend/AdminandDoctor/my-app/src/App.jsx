@@ -38,7 +38,7 @@ function App() {
           <Route path="doctors" element={<AllDoctors />}></Route>
         </Route>
 
-        <Route path="/login" element={<AdminDoctorLogin />}></Route>
+        <Route path="/" element={<AdminDoctorLogin />}></Route>
       </Routes>
       {/* for doctor and admin panel - footer is not there */}
       <ToastContainer position="top-left" autoClose={1500}/>
