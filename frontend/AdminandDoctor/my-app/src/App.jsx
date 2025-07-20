@@ -25,14 +25,14 @@ function App() {
       <Routes>
 
         {/* Doctor Layout */}
-        <Route path="/doctor" element={doctor ? <DoctorLayout /> : <Navigate to="/login" />}>
+        <Route path="/doctor" element={doctor ? <DoctorLayout /> : <Navigate to="/" />}>
           <Route index element={<DoctorDashboard />} />
           <Route path="appointments" element={<DoctorAppointments />}> </Route>
           <Route path="profile" element={<DoctorProfile />}> </Route>
         </Route>
 
         {/* Admin Layout */}
-        <Route path="/admin" element={admin ? <AdminLayout /> : <Navigate to="/login"/>}>
+        <Route path="/admin" element={admin ? <AdminLayout /> : <Navigate to="/"/>}>
           <Route index element={<AdminDashboard />} />
           <Route path="add-doctor" element={<AddDoctor />}></Route>
           <Route path="doctors" element={<AllDoctors />}></Route>
