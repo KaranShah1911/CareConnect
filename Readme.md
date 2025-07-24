@@ -1,6 +1,6 @@
 # 🩺 CareConnect
 
-[![Frontend](https://img.shields.io/badge/frontend-react-blue)](https://careconnect.vercel.app)  
+[![Frontend](https://img.shields.io/badge/frontend-react-blue)](https://care-connect-black.vercel.app/)  
 [![Backend](https://img.shields.io/badge/backend-nodejs-green)](https://render.com)  
 
 **Live Demo:** [https://care-connect-black.vercel.app/](https://care-connect-black.vercel.app/)
