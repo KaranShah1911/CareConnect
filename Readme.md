@@ -3,7 +3,9 @@
 [![Frontend](https://img.shields.io/badge/frontend-react-blue)](https://care-connect-black.vercel.app/)  
 [![Backend](https://img.shields.io/badge/backend-nodejs-green)](https://render.com)  
 
-**Live Demo:** [https://care-connect-black.vercel.app/](https://care-connect-black.vercel.app/)
+**Live Demo (Patient):** [https://care-connect-black.vercel.app/](https://care-connect-black.vercel.app/)
+
+**Live Demo (Admin & Doctor):** [https://care-connect-doctor.vercel.app/](https://care-connect-doctor.vercel.app/) 
 
 Welcome to **CareConnect** — your trusted role-based doctor appointment platform designed to seamlessly connect patients with verified healthcare professionals. Experience secure, fast, and hassle-free booking and management of medical appointments all in one place.
 
