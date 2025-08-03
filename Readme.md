@@ -153,10 +153,10 @@ The backend will run at: `http://localhost:3000`
 
 ## 👨‍💻 Contributors
 
-- [DARSHIT SHAH](https://github.com/DARSHITSHAH-2906) - Lead Developer & Architect  
-- [Ritesh Saindane](https://github.com/aaravpatel) - Frontend Developer  
-- [Karan Shah](https://github.com/meerajoshi) - Backend Developer  
-- [Yogesh Palve](https://github.com/rohandesai) - UI/UX Designer  
+- [Karan Shah](https://github.com/KaranShah1911) - Backend Developer  
+- [DARSHIT SHAH](https://github.com/DARSHITSHAH-2906) - Frontend Developer
+- [Ritesh Saindane](https://github.com/Ritesh-Saindane) - Backend Developer  
+- [Yogesh Palve](https://github.com/Yogesh-Palve) - Frontend Developer  
 
 _Open for contributions! Feel free to submit issues and PRs!_
 
@@ -164,11 +164,10 @@ _Open for contributions! Feel free to submit issues and PRs!_
 
 ## 🖼️ Screenshots
 
-| User Dashboard                         | Doctor Dashboard                       | Admin Dashboard                         |
-| ------------------------------------ | ------------------------------------ | ------------------------------------- |
-| ![UserView](https://your-image-link/user-dashboard.png) | ![DoctorView](https://your-image-link/doctor-dashboard.png) | ![AdminView](https://your-image-link/admin-dashboard.png) |
+| User Dashboard | Doctor Dashboard | Admin Dashboard |
+|---|---|---|
+| ![UserView](https://github.com/user-attachments/assets/b8c12b68-d59d-4d92-a2b7-9a8152f08527) | ![DoctorView](https://github.com/user-attachments/assets/249287aa-87e0-4c62-be80-6f7d3f851b75) | ![AdminView](https://github.com/user-attachments/assets/56f83044-4ca9-4288-996b-824190122779) |
 
----
 
 ---
 
