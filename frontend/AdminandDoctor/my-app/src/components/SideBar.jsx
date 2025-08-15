@@ -17,10 +17,8 @@ const SideBar = ({content , role}) => {
         try{
             if(role === "admin"){
                 Adminlogout();
-                navigate("/");
             }else if(role === "doctor"){
                 Doctorlogout();
-                navigate("/");
             }
 
         }catch(err){
